@@ -1,5 +1,7 @@
 source :gemcutter
 
+gem 'activesupport', '>=2.3', :require => 'active_support'
+
 group :test do
   gem 'rspec', '2.0.0.beta.19'
   gem 'vcr', '1.0.3'
