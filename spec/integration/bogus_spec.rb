@@ -1,4 +1,4 @@
-require 'spec_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe VaultedBilling::Gateways::Bogus do
   let(:gateway) { VaultedBilling::Gateways::Bogus.new }
@@ -6,112 +6,56 @@ describe VaultedBilling::Gateways::Bogus do
   let(:credit_card) { Factory.build(:credit_card) }
 
   context 'add_customer' do
-    it 'successfully adds a customer' do
-      gateway.add_customer(customer).should be_success
-    end
+    subject { gateway.add_customer(customer) }
+    it_should_behave_like 'a customer request'
 
-    it 'returns a Gateway::Response' do
-      gateway.add_customer(customer).should be_kind_of(VaultedBilling::Gateway::Response)
-    end
-
-    it 'returns a Customer result' do
-      gateway.add_customer(customer).result.should be_kind_of(VaultedBilling::Customer)
-    end
-
-    it 'returns a Customer result with an identifier' do
-      gateway.add_customer(customer).result.id.should_not be_blank
+    it 'is successful' do
+      subject.should be_success
     end
   end
 
   context 'update_customer' do
-    it 'successfully updates a customer' do
-      gateway.update_customer(customer).should be_success
-    end
+    subject { gateway.update_customer(customer) }
+    it_should_behave_like 'a customer request'
 
-    it 'returns a Gateway::Response' do
-      gateway.update_customer(customer).should be_kind_of(VaultedBilling::Gateway::Response)
-    end
-
-    it 'returns a Customer result' do
-      gateway.update_customer(customer).result.should be_kind_of(VaultedBilling::Customer)
-    end
-
-    it 'returns a Customer result with matching identifier' do
-      original_id = customer.id.dup
-      gateway.update_customer(customer).result.id.should == original_id
+    it 'is successful' do
+      subject.should be_success
     end
   end
 
   context 'remove_customer' do
-    it 'successfully removes a customer' do
-      gateway.remove_customer(customer).should be_success
-    end
+    subject { gateway.remove_customer(customer) }
+    it_should_behave_like 'a customer request'
 
-    it 'returns a Gateway::Response' do
-      gateway.remove_customer(customer).should be_kind_of(VaultedBilling::Gateway::Response)
-    end
-
-    it 'returns a Customer' do
-      gateway.remove_customer(customer).result.should be_kind_of(VaultedBilling::Customer)
-    end
-
-    it 'returns the Customer provided' do
-      gateway.remove_customer(customer).result.should == customer
+    it 'is successful' do
+      subject.should be_success
     end
   end
 
   context 'update_customer_credit_card' do
-    it "successfully updates the credit card" do
-      gateway.update_customer_credit_card(customer, credit_card).should be_success
-    end
+    subject { gateway.update_customer_credit_card(customer, credit_card) }
+    it_should_behave_like 'a credit card request'
 
-    it "returns a Gateway::Response" do
-      gateway.update_customer_credit_card(customer, credit_card).should be_kind_of(VaultedBilling::Gateway::Response)
-    end
-
-    it 'returns a CreditCard result' do
-      gateway.update_customer_credit_card(customer, credit_card).result.should be_kind_of(VaultedBilling::CreditCard)
-    end
-
-    it "return a CreditCard with matching identifier" do
-      original_id = credit_card.id
-      gateway.update_customer_credit_card(customer, credit_card).result.id.should == original_id
+    it 'is successful' do
+      subject.should be_success
     end
   end
 
   context 'add_customer_credit_card' do
-    it "successfully adds the credit card" do
-      gateway.add_customer_credit_card(customer, credit_card).should be_success
-    end
+    subject { gateway.add_customer_credit_card(customer, credit_card) }
+    it_should_behave_like 'a credit card request'
 
-    it "returns a Gateway::Response" do
-      gateway.add_customer_credit_card(customer, credit_card).should be_kind_of(VaultedBilling::Gateway::Response)
-    end
-
-    it 'returns a CreditCard result' do
-      gateway.add_customer_credit_card(customer, credit_card).result.should be_kind_of(VaultedBilling::CreditCard)
-    end
-
-    it "returns a CreditCard with an identifier" do
-      gateway.add_customer_credit_card(customer, credit_card).result.id.should_not be_blank
+    it 'is successful' do
+      subject.should be_success
     end
   end
 
   context 'remove_customer_credit_card' do
-    it "successfully remove the credit card" do
-      gateway.remove_customer_credit_card(customer, credit_card).should_not be_blank
-    end
+    subject { gateway.remove_customer_credit_card(customer, credit_card) }
+    it_should_behave_like 'a credit card request'
 
-    it "returns a Gateway::Response" do
-      gateway.remove_customer_credit_card(customer, credit_card).should be_kind_of(VaultedBilling::Gateway::Response)
-    end
-
-    it 'returns a CreditCard result' do
-      gateway.remove_customer_credit_card(customer, credit_card).result.should be_kind_of(VaultedBilling::CreditCard)
-    end
-
-    it "returns the CreditCard provided" do
-      gateway.remove_customer_credit_card(customer, credit_card).result.should == credit_card
+    it 'is successful' do
+      subject.should be_success
     end
   end
 
