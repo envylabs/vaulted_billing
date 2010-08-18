@@ -1,9 +1,13 @@
 require 'spec_helper'
 
+class TestGateway
+  include VaultedBilling::Gateway
+end
+
 describe VaultedBilling::Gateway do
-  let(:gateway) { VaultedBilling::Gateway.new }
-  let(:customer) { VaultedBilling::Customer.new }
-  let(:credit_card) { VaultedBilling::CreditCard.new }
+  let(:gateway) { TestGateway.new }
+  let(:customer) { Factory.build(:customer) }
+  let(:credit_card) { Factory.build(:credit_card) }
 
   subject { gateway }
 

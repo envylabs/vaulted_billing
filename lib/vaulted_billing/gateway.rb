@@ -1,5 +1,15 @@
 module VaultedBilling
-  class Gateway
+  module Gateway
+    class Response
+      attr_reader :result
+
+      def initialize(success, result)
+        @success = success
+        @result = result
+      end
+
+      def success?; @success; end
+    end
 
     def add_customer(customer)
       raise NotImplementedError
@@ -40,6 +50,5 @@ module VaultedBilling
     def void(transaction_id)
       raise NotImplementedError
     end
-
   end
 end
