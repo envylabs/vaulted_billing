@@ -3,6 +3,7 @@ module VaultedBilling
   autoload :Gateways, 'vaulted_billing/gateways'
   autoload :Customer, 'vaulted_billing/customer'
   autoload :CreditCard, 'vaulted_billing/credit_card'
+  autoload :Transaction, 'vaulted_billing/transaction'
 
   ##
   # Return the matching gateway for the name provided.
