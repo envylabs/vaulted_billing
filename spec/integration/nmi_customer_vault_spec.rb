@@ -7,7 +7,10 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
 
   context 'add_customer' do
     subject { gateway.add_customer(customer) }
-    it_should_behave_like 'a customer request'
+
+    it 'returns a Customer' do
+      subject.result.should be_kind_of VaultedBilling::Customer
+    end
 
     it 'is successful' do
       subject.should be_success
@@ -220,7 +223,14 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
         @response = gateway.refund(capture_transaction, 30.00)
       end
       subject { @response }
-      it_should_behave_like 'a transaction request'
+
+      it 'returns a Transaction' do
+        subject.result.should be_kind_of VaultedBilling::Transaction
+      end
+
+      it 'returns a Transaction without an identifier' do
+        subject.result.id.should be_blank
+      end
 
       it 'is unsuccessful' do
         should_not be_success
