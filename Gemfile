@@ -1,6 +1,7 @@
 source :gemcutter
 
 gem 'activesupport', '>=2.3', :require => 'active_support'
+gem 'builder', '>=2.1.2'
 
 group :test do
   gem 'rspec', '2.0.0.beta.19'

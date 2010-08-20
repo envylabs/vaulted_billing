@@ -45,11 +45,11 @@ module VaultedBilling
     ##
     # Posts the given data to the uri and returns the response.
     #
-    def post_data(data)
+    def post_data(data, request_headers = {})
       request = Net::HTTP::Post.new(uri.path)
       request.initialize_http_header({
         'User-Agent' => "vaulted_billing #{VaultedBilling::Version}"
-      })
+      }.reverse_merge(request_headers))
       request.body = data
       response = Net::HTTP.new(uri.host, uri.port).tap do |https|
         https.use_ssl = true

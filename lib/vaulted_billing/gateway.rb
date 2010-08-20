@@ -1,11 +1,14 @@
 module VaultedBilling
   module Gateway
     class Response
-      attr_reader :result
+      attr_accessor :result
+      attr_accessor :message
+      attr_writer :success
 
-      def initialize(success, result)
+      def initialize(success = false, result = nil)
         @success = success
         @result = result
+        yield(self) if block_given?
       end
 
       def success?; @success; end

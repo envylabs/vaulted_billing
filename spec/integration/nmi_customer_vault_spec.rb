@@ -1,9 +1,19 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe VaultedBilling::Gateways::NmiCustomerVault do
-  let(:gateway) { VaultedBilling::Gateways::NmiCustomerVault.new(:username => 'demo', :password => 'password') }
+  let(:gateway) { VaultedBilling.gateway(:nmi_customer_vault).new(:username => 'demo', :password => 'password') }
   let(:customer) { Factory.build(:customer) }
   let(:credit_card) { Factory.build(:credit_card) }
+
+  it 'uses the correct URI in test mode' do
+    gateway.use_test_uri = true
+    gateway.uri.to_s.should == 'https://secure.nmi.com/api/transact.php'
+  end
+
+  it 'uses the correct URI in live mode' do
+    gateway.use_test_uri = false
+    gateway.uri.to_s.should == 'https://secure.nmi.com/api/transact.php'
+  end
 
   context 'add_customer' do
     subject { gateway.add_customer(customer) }

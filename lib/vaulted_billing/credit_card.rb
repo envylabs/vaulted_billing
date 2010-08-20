@@ -3,6 +3,7 @@ module VaultedBilling
     attr_accessor :id
     attr_accessor :currency
     attr_accessor :card_number
+    attr_accessor :cvv_number
     attr_accessor :expires_on
     attr_accessor :first_name
     attr_accessor :last_name
