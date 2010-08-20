@@ -1,0 +1,100 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=855 Mante Motorway&ccexp=1108&ccnumber=5459804026655480&city=East Mike&country=US&customer_vault=add_customer&email=conor@parisian.com&first_name=Noe&last_name=Marks&method=creditcard&password=password&phone=(026)799-5951 x5878&state=Louisiana&username=demo&zip=32727
+    headers: 
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.0
+      content-length: 
+      - "276"
+      host: 
+      - secure.nmi.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Fri, 20 Aug 2010 16:55:04 GMT
+      content-length: 
+      - "151"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1986798152
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=10.0&customer_vault_id=1986798152&password=password&type=auth&username=demo
+    headers: 
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.0
+      content-length: 
+      - "82"
+      host: 
+      - secure.nmi.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Fri, 20 Aug 2010 16:55:05 GMT
+      content-length: 
+      - "165"
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1270111133&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=1986798152
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: password=password&transactionid=1270111133&type=void&username=demo
+    headers: 
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.0
+      content-length: 
+      - "66"
+      host: 
+      - secure.nmi.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Fri, 20 Aug 2010 16:55:08 GMT
+      content-length: 
+      - "155"
+    body: response=1&responsetext=Transaction Void Successful&authcode=123456&transactionid=1270111133&avsresponse=&cvvresponse=&orderid=&type=void&response_code=100
+    http_version: "1.1"

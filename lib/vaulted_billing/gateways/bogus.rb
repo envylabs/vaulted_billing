@@ -18,7 +18,7 @@ module VaultedBilling
       end
 
       def add_customer_credit_card(customer, credit_card)
-        Response.new(true, credit_card)
+        Response.new(true, credit_card.tap { |c| c.id = new_identifier })
       end
 
       def update_customer_credit_card(customer, credit_card)

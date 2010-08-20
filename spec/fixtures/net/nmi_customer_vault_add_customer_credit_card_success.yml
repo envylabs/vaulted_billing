@@ -1,0 +1,34 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=53427 Leonard Track&ccexp=1108&ccnumber=5120186265015108&city=West Ruthechester&country=US&customer_vault=add_customer&email=marquise_donnelly@west.co.uk&first_name=Lauriane&last_name=Runte&method=creditcard&password=password&phone=710-271-6427 x088&state=Kentucky&username=demo&zip=61411
+    headers: 
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.0
+      content-length: 
+      - "297"
+      host: 
+      - secure.nmi.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Thu, 19 Aug 2010 19:54:16 GMT
+      content-length: 
+      - "151"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1695556243
+    http_version: "1.1"

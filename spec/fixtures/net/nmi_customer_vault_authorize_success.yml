@@ -1,0 +1,34 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=1.0&customer_vault_id=1695556243&password=password&type=auth&username=demo
+    headers: 
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.0
+      content-length: 
+      - "81"
+      host: 
+      - secure.nmi.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Fri, 20 Aug 2010 15:05:28 GMT
+      content-length: 
+      - "165"
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1270003910&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=1695556243
+    http_version: "1.1"

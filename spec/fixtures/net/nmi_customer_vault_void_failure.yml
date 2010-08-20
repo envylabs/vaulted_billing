@@ -1,0 +1,34 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: password=password&transactionid=INVALIDID&type=void&username=demo
+    headers: 
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.0
+      content-length: 
+      - "65"
+      host: 
+      - secure.nmi.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Fri, 20 Aug 2010 16:56:54 GMT
+      content-length: 
+      - "160"
+    body: response=3&responsetext=Invalid Transaction ID specified REFID:109435018&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=void&response_code=300
+    http_version: "1.1"

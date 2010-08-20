@@ -7,4 +7,5 @@ group :test do
   gem 'vcr', '1.0.3'
   gem 'webmock', '1.3.4'
   gem 'factory_girl', '1.3.2'
+  gem 'faker', '0.3.1'
 end

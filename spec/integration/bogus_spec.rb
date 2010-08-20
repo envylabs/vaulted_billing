@@ -15,6 +15,7 @@ describe VaultedBilling::Gateways::Bogus do
   end
 
   context 'update_customer' do
+    let(:customer) { Factory.build(:existing_customer) }
     subject { gateway.update_customer(customer) }
     it_should_behave_like 'a customer request'
 
@@ -24,6 +25,7 @@ describe VaultedBilling::Gateways::Bogus do
   end
 
   context 'remove_customer' do
+    let(:customer) { Factory.build(:existing_customer) }
     subject { gateway.remove_customer(customer) }
     it_should_behave_like 'a customer request'
 
@@ -33,6 +35,8 @@ describe VaultedBilling::Gateways::Bogus do
   end
 
   context 'update_customer_credit_card' do
+    let(:customer) { Factory.build(:existing_customer) }
+    let(:credit_card) { Factory.build(:existing_credit_card) }
     subject { gateway.update_customer_credit_card(customer, credit_card) }
     it_should_behave_like 'a credit card request'
 
@@ -51,6 +55,8 @@ describe VaultedBilling::Gateways::Bogus do
   end
 
   context 'remove_customer_credit_card' do
+    let(:customer) { Factory.build(:existing_customer) }
+    let(:credit_card) { Factory.build(:existing_credit_card) }
     subject { gateway.remove_customer_credit_card(customer, credit_card) }
     it_should_behave_like 'a credit card request'
 
@@ -60,6 +66,8 @@ describe VaultedBilling::Gateways::Bogus do
   end
 
   context 'authorize' do
+    let(:customer) { Factory.build(:existing_customer) }
+    let(:credit_card) { Factory.build(:existing_credit_card) }
     subject { gateway.authorize(customer, credit_card, 1) }
     it_should_behave_like 'a transaction request'
 
