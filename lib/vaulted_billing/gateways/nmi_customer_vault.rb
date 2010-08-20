@@ -60,114 +60,91 @@ module VaultedBilling
       end
 
       def add_customer_credit_card(customer, credit_card)
-        response = post_data(data('add_customer', customer, credit_card))
+        response = post_data(storage_data('add_customer', customer, credit_card))
         Response.new(response.success?, credit_card.tap { |c| c.id = response.body['customer_vault_id'] })
       end
 
       def update_customer_credit_card(customer, credit_card)
-        response = post_data(data('update_customer', customer, credit_card))
+        response = post_data(storage_data('update_customer', customer, credit_card))
         Response.new(response.success?, credit_card)
       end
 
       def remove_customer_credit_card(customer, credit_card)
-        response = post_data({
-          :username => @username,
-          :password => @password,
+        response = post_data(core_data.merge({
           :customer_vault => 'delete_customer',
           :customer_vault_id => credit_card.id
-        }.to_querystring)
+        }).to_querystring)
         Response.new(response.success?, credit_card)
       end
 
       def authorize(customer, credit_card, amount)
-        response = post_data({
-          :username => @username,
-          :password => @password,
+        response = post_data(transaction_data('auth', {
           :customer_vault_id => credit_card.id,
-          :amount => amount,
-          :type => 'auth'
-        }.to_querystring)
-        Response.new(response.success?, Transaction.new({
-          :id => response.body['transactionid'],
-          :avs_response => response.body['avsresponse'] == 'Y',
-          :cvv_response => response.body['cvvresponse'] == 'Y',
-          :authcode => response.body['authcode'],
-          :message => response.body['responsetext'],
-          :code => response.body['response_code'],
+          :amount => amount
         }))
+        Response.new(response.success?,
+                     new_transaction_from_response(response.body))
       end
 
       def capture(transaction_id, amount)
-        response = post_data({
-          :username => @username,
-          :password => @password,
+        response = post_data(transaction_data('capture', {
           :transactionid => transaction_id,
-          :amount => amount,
-          :type => 'capture'
-        }.to_querystring)
-        Response.new(response.success?, Transaction.new({
-          :id => response.body['transactionid'],
-          :avs_response => response.body['avsresponse'] == 'Y',
-          :cvv_response => response.body['cvvresponse'] == 'Y',
-          :authcode => response.body['authcode'],
-          :message => response.body['responsetext'],
-          :code => response.body['response_code'],
+          :amount => amount
         }))
+        Response.new(response.success?,
+                     new_transaction_from_response(response.body))
       end
 
       def refund(transaction_id, amount)
-        response = post_data({
-          :username => @username,
-          :password => @password,
+        response = post_data(transaction_data('refund', {
           :transactionid => transaction_id,
-          :amount => amount,
-          :type => 'refund'
-        }.to_querystring)
-        Response.new(response.success?, Transaction.new({
-          :id => response.body['transactionid'],
-          :avs_response => response.body['avsresponse'] == 'Y',
-          :cvv_response => response.body['cvvresponse'] == 'Y',
-          :authcode => response.body['authcode'],
-          :message => response.body['responsetext'],
-          :code => response.body['response_code'],
+          :amount => amount
         }))
+        Response.new(response.success?,
+                     new_transaction_from_response(response.body))
       end
 
       def void(transaction_id)
-        response = post_data({
-          :username => @username,
-          :password => @password,
-          :transactionid => transaction_id,
-          :type => 'void'
-        }.to_querystring)
-        Response.new(response.success?, Transaction.new({
-          :id => response.body['transactionid'],
-          :avs_response => response.body['avsresponse'] == 'Y',
-          :cvv_response => response.body['cvvresponse'] == 'Y',
-          :authcode => response.body['authcode'],
-          :message => response.body['responsetext'],
-          :code => response.body['response_code'],
+        response = post_data(transaction_data('void', {
+          :transactionid => transaction_id
         }))
+        Response.new(response.success?,
+                     new_transaction_from_response(response.body))
       end
+
+
+      protected
+
 
       def before_post(data)
         VaultedBilling.logger.debug { "Posting %s to %s" % [data.inspect, uri.to_s] }
       end
-      protected :before_post
 
       def after_post(response)
-        VaultedBilling.logger.debug { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] }
+        VaultedBilling.logger.info { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] }
         response.body = Hash.from_querystring(response.body)
         response.success = response.body['response'] == '1'
       end
-      protected :after_post
 
-      def data(method, customer, credit_card)
+
+      private
+
+
+      def core_data
         {
+          :username => @username,
+          :password => @password
+        }
+      end
+
+      def transaction_data(method, overrides = {})
+        core_data.merge(overrides).to_querystring
+      end
+
+      def storage_data(method, customer, credit_card)
+        core_data.merge({
           :customer_vault => method.to_s,
           :customer_vault_id => credit_card.id,
-          :username => @username,
-          :password => @password,
           :currency => credit_card.currency,
           :method => 'creditcard',
           :ccnumber => credit_card.card_number,
@@ -181,9 +158,19 @@ module VaultedBilling
           :country => credit_card.country,
           :phone => credit_card.phone,
           :email => customer.email
-        }.to_querystring
+        }).to_querystring
       end
-      private :data
+
+      def new_transaction_from_response(response)
+        Transaction.new({
+          :id => response['transactionid'],
+          :avs_response => response['avsresponse'] == 'Y',
+          :cvv_response => response['cvvresponse'] == 'Y',
+          :authcode => response['authcode'],
+          :message => response['responsetext'],
+          :code => response['response_code']
+        })
+      end
     end
   end
 end
