@@ -1,16 +1,8 @@
 module VaultedBilling
   module Gateway
-    class Response
-      attr_accessor :result
-      attr_accessor :message
+    module Response
+      attr_accessor :response_message
       attr_writer :success
-
-      def initialize(success = false, result = nil)
-        @success = success
-        @result = result
-        yield(self) if block_given?
-      end
-
       def success?; @success; end
     end
 
@@ -52,6 +44,18 @@ module VaultedBilling
 
     def void(transaction_id)
       raise NotImplementedError
+    end
+
+
+    protected
+
+
+    def respond_with(object, options = {})
+      object.tap do |o|
+        o.extend(VaultedBilling::Gateway::Response)
+        o.success = options.has_key?(:success) ? options[:success] : true
+        yield(o) if block_given?
+      end
     end
   end
 end
