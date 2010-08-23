@@ -8,7 +8,7 @@
       <createCustomerProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
         <merchantAuthentication>
           <name>LOGIN</name>
-          <transactionKey>2Rsb3965z97ZgAWa</transactionKey>
+          <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <profile>
         </profile>

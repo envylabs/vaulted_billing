@@ -8,7 +8,7 @@
       <createCustomerProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
         <merchantAuthentication>
           <name>LOGIN</name>
-          <transactionKey>2Rsb3965z97ZgAWa</transactionKey>
+          <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <profile>
           <email>german_schmeler@haley.name</email>
@@ -58,7 +58,7 @@
       <createCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
         <merchantAuthentication>
           <name>LOGIN</name>
-          <transactionKey>2Rsb3965z97ZgAWa</transactionKey>
+          <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <customerProfileId>2090015</customerProfileId>
         <paymentProfile>
@@ -124,7 +124,7 @@
       <deleteCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
         <merchantAuthentication>
           <name>LOGIN</name>
-          <transactionKey>2Rsb3965z97ZgAWa</transactionKey>
+          <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <customerProfileId>2090015</customerProfileId>
         <customerPaymentProfileId>1831503</customerPaymentProfileId>
@@ -173,7 +173,7 @@
       <deleteCustomerPaymentProfileRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
         <merchantAuthentication>
           <name>LOGIN</name>
-          <transactionKey>2Rsb3965z97ZgAWa</transactionKey>
+          <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <customerProfileId>2090015</customerProfileId>
         <customerPaymentProfileId>1831503</customerPaymentProfileId>

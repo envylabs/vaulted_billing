@@ -1,7 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'spec_helper'))
 
 describe VaultedBilling::Gateways::AuthorizeNetCim do
-  let(:gateway) { VaultedBilling.gateway(:authorize_net_cim).new(:username => 'LOGIN', :password => '2Rsb3965z97ZgAWa').tap { |g| g.use_test_uri = true } }
+  let(:gateway) { VaultedBilling.gateway(:authorize_net_cim).new(:username => 'LOGIN', :password => 'PASSWORD').tap { |g| g.use_test_uri = true } }
 
   it 'uses the correct test uri' do
     gateway.use_test_uri = true
