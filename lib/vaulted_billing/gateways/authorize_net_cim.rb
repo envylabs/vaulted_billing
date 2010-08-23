@@ -11,6 +11,7 @@ module VaultedBilling
       def initialize(options = {})
         self.test_uri = 'https://apitest.authorize.net/xml/v1/request.api'
         self.live_uri = 'https://api.authorize.net/xml/v1/request.api'
+        self.ssl_pem = File.read(File.expand_path(File.join(File.dirname(__FILE__), '..', 'certificate_authorities', 'entrust.pem')))
 
         options = HashWithIndifferentAccess.new(options)
         @login = options[:username]
@@ -133,11 +134,11 @@ module VaultedBilling
       end
 
       def before_post(data)
-        VaultedBilling.logger.debug { "Posting: %s to %s" % [data.inspect, uri.inspect] }
+        VaultedBilling.logger.debug { "Posting: %s to %s" % [data.inspect, uri.inspect] } if VaultedBilling.logger?
       end
 
       def after_post(response)
-        VaultedBilling.logger.debug { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] }
+        VaultedBilling.logger.debug { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] } if VaultedBilling.logger?
         response.body = Hash.from_xml(response.body)
         response.success = response.body[response.body.keys.first]['messages']['resultCode'] == 'Ok'
       end
