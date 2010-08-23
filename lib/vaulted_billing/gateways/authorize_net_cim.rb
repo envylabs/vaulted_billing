@@ -16,6 +16,7 @@ module VaultedBilling
         options = HashWithIndifferentAccess.new(options)
         @login = options[:username]
         @password = options[:password]
+        self.use_test_uri = options[:test]
       end
 
       def add_customer(customer)
