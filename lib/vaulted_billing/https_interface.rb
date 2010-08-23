@@ -4,6 +4,16 @@ require 'uri'
 module VaultedBilling
   module HttpsInterface
 
+    HTTP_ERRORS = [
+      Timeout::Error,
+      Errno::EINVAL,
+      Errno::ECONNRESET,
+      EOFError,
+      Net::HTTPBadResponse,
+      Net::HTTPHeaderSyntaxError,
+      Net::ProtocolError
+    ] unless defined?(HTTP_ERRORS)
+
     class PostResponse
       attr_accessor :code
       attr_accessor :message
@@ -12,11 +22,13 @@ module VaultedBilling
       attr_accessor :raw_response
 
       def initialize(http_response)
-        self.raw_response = http_response
-        self.code = http_response.code
-        self.message = http_response.message
-        self.body = http_response.body
-        self.success = ((http_response.code =~ /^2\d{2}/) == 0)
+        if http_response
+          self.raw_response = http_response
+#          self.code = http_response.code
+#          self.message = http_response.message
+          self.body = http_response.body
+          self.success = ((http_response.code =~ /^2\d{2}/) == 0)
+        end
       end
 
       alias :success? :success
@@ -62,9 +74,17 @@ module VaultedBilling
       end
 
       before_post(data)
-      response = response.request(request)
-      PostResponse.new(response).tap do |post_response|
-        after_post(post_response)
+
+      begin
+        PostResponse.new(response.request(request)).tap do |post_response|
+          after_post(post_response)
+        end
+      rescue *HTTP_ERRORS
+        PostResponse.new(nil).tap do |post_response|
+          post_response.success = false
+          post_response.message = "%s - %s" % [$!.class.name, $!.message]
+          after_post(post_response)
+        end
       end
     end
     protected :post_data
