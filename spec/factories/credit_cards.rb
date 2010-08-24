@@ -12,5 +12,5 @@ Factory.define :credit_card, :class => VaultedBilling::CreditCard do |c|
 end
 
 Factory.define :existing_credit_card, :parent => :credit_card do |c|
-  c.id { Factory.next :identifier }
+  c.vault_id { Factory.next :identifier }
 end

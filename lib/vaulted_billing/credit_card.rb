@@ -1,6 +1,6 @@
 module VaultedBilling
   class CreditCard
-    attr_accessor :id
+    attr_accessor :vault_id
     attr_accessor :currency
     attr_accessor :card_number
     attr_accessor :cvv_number

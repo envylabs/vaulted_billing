@@ -86,8 +86,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
   end
 
   context 'update_customer_credit_card' do
-    let(:customer) { Factory.build(:existing_customer, :id => '1934241072') }
-    let(:credit_card) { Factory.build(:existing_credit_card, :id => '1934241072') }
+    let(:customer) { Factory.build(:existing_customer, :vault_id => '1934241072') }
+    let(:credit_card) { Factory.build(:existing_credit_card, :vault_id => '1934241072') }
 
     cached_request_context 'with a successful result', 
       :scope => 'nmi_customer_vault_update_customer_credit_card_success' do
@@ -114,8 +114,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
   end
 
   context 'remove_customer_credit_card' do
-    let(:customer) { Factory.build(:existing_customer, :id => '1934241072') }
-    let(:credit_card) { Factory.build(:existing_credit_card, :id => '1934241072') }
+    let(:customer) { Factory.build(:existing_customer, :vault_id => '1934241072') }
+    let(:credit_card) { Factory.build(:existing_credit_card, :vault_id => '1934241072') }
 
     cached_request_context 'with a successful result',
      :scope => 'nmi_customer_vault_remove_customer_credit_card_success' do
@@ -129,7 +129,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
 
     cached_request_context 'with an unsuccessful result',
      :scope => 'nmi_customer_vault_remove_customer_credit_card_failure' do
-      let(:credit_card) { Factory.build(:existing_credit_card, :id => 'VERYBADIDENTIFIER!') }
+      let(:credit_card) { Factory.build(:existing_credit_card, :vault_id => 'VERYBADIDENTIFIER!') }
       subject { gateway.remove_customer_credit_card(customer, credit_card) }
       it_should_behave_like 'a credit card request'
 
@@ -140,8 +140,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
   end
 
   context 'authorize' do
-    let(:customer) { Factory.build(:existing_customer, :id => '1695556243') }
-    let(:credit_card) { Factory.build(:existing_credit_card, :id => '1695556243') }
+    let(:customer) { Factory.build(:existing_customer, :vault_id => '1695556243') }
+    let(:credit_card) { Factory.build(:existing_credit_card, :vault_id => '1695556243') }
     
     cached_request_context 'with a successful result',
       :scope => 'nmi_customer_vault_authorize_success' do

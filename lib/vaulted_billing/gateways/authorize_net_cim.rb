@@ -22,18 +22,19 @@ module VaultedBilling
       def add_customer(customer)
         data = build_request('createCustomerProfileRequest') do |xml|
           xml.tag!('profile') do
-            xml.merchantCustomerId customer.id if customer.id
+            xml.merchantCustomerId customer.merchant_id if customer.merchant_id
             xml.email customer.email if customer.email
           end
         end
         result = post_data(data)
-        respond_with(customer, :success => result.success?) { |c| c.id = (result.body['createCustomerProfileResponse'] || {})['customerProfileId'] }
+        respond_with(customer, :success => result.success?) { |c| c.vault_id = (result.body['createCustomerProfileResponse'] || {})['customerProfileId'] }
       end
 
       def update_customer(customer)
         result = post_data(build_request('updateCustomerProfileRequest') { |xml|
           xml.tag!('profile') {
-            xml.merchantCustomerId customer.id
+            xml.customerProfileId customer.vault_id
+            xml.merchantCustomerId customer.merchant_id
             xml.email customer.email
           }
         })
@@ -42,29 +43,29 @@ module VaultedBilling
 
       def remove_customer(customer)
         result = post_data(build_request('deleteCustomerProfileRequest') { |xml|
-          xml.customerProfileId customer.id
+          xml.customerProfileId customer.vault_id
         })
         respond_with(customer, :success => result.success?)
       end
 
       def add_customer_credit_card(customer, credit_card)
         result = post_data(build_request('createCustomerPaymentProfileRequest') { |xml|
-          xml.customerProfileId customer.id
+          xml.customerProfileId customer.vault_id
           xml.paymentProfile do
             billing_info!(xml, customer, credit_card)
             credit_card_info!(xml, customer, credit_card)
           end
         })
-        respond_with(credit_card, :success => result.success?) { |c| c.id = (result.body['createCustomerPaymentProfileResponse'] || {})['customerPaymentProfileId'] }
+        respond_with(credit_card, :success => result.success?) { |c| c.vault_id = (result.body['createCustomerPaymentProfileResponse'] || {})['customerPaymentProfileId'] }
       end
 
       def update_customer_credit_card(customer, credit_card)
         result = post_data(build_request('updateCustomerPaymentProfileRequest') { |xml|
-          xml.customerProfileId customer.id
+          xml.customerProfileId customer.vault_id
           xml.paymentProfile do
             billing_info!(xml, customer, credit_card)
             credit_card_info!(xml, customer, credit_card)
-            xml.customerPaymentProfileId credit_card.id
+            xml.customerPaymentProfileId credit_card.vault_id
           end
         })
         respond_with(credit_card, :success => result.success?)
@@ -72,8 +73,8 @@ module VaultedBilling
 
       def remove_customer_credit_card(customer, credit_card)
         result = post_data(build_request('deleteCustomerPaymentProfileRequest') { |xml|
-          xml.customerProfileId customer.id
-          xml.customerPaymentProfileId credit_card.id
+          xml.customerProfileId customer.vault_id
+          xml.customerPaymentProfileId credit_card.vault_id
         })
         respond_with(credit_card, :success => result.success?)
       end
@@ -83,8 +84,8 @@ module VaultedBilling
           xml.transaction do
             xml.profileTransAuthOnly do
               xml.amount amount
-              xml.customerProfileId customer.id
-              xml.customerPaymentProfileId credit_card.id
+              xml.customerProfileId customer.vault_id
+              xml.customerPaymentProfileId credit_card.vault_id
             end
           end
         })

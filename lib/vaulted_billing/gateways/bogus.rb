@@ -6,7 +6,7 @@ module VaultedBilling
       include VaultedBilling::Gateway
 
       def add_customer(customer)
-        respond_with(customer) { |c| c.id = new_identifier }
+        respond_with(customer) { |c| c.vault_id = new_identifier }
       end
 
       def update_customer(customer)
@@ -18,7 +18,7 @@ module VaultedBilling
       end
 
       def add_customer_credit_card(customer, credit_card)
-        respond_with(credit_card) { |c| c.id = new_identifier }
+        respond_with(credit_card) { |c| c.vault_id = new_identifier }
       end
 
       def update_customer_credit_card(customer, credit_card)

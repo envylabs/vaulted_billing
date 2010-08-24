@@ -1,6 +1,7 @@
 module VaultedBilling
   class Customer
-    attr_accessor :id
+    attr_accessor :vault_id
+    attr_accessor :merchant_id
     attr_accessor :email
 
     def initialize(attributes = {})

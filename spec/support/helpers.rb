@@ -20,7 +20,7 @@ module RSpecHelpers
       end
 
       it 'returns a Customer with an identifier' do
-        subject.id.should_not be_blank
+        subject.vault_id.should_not be_blank
       end
     end
 
@@ -30,7 +30,7 @@ module RSpecHelpers
       end
 
       it 'returns a CreditCard with an identifier' do
-        subject.id.should_not be_blank
+        subject.vault_id.should_not be_blank
       end
     end
   end

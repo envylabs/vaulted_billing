@@ -55,7 +55,7 @@ module VaultedBilling
       def add_customer_credit_card(customer, credit_card)
         response = post_data(storage_data('add_customer', customer, credit_card))
         respond_with(credit_card, :success => response.success?) do |c|
-          c.id = response.body['customer_vault_id']
+          c.vault_id = response.body['customer_vault_id']
         end
       end
 
@@ -67,14 +67,14 @@ module VaultedBilling
       def remove_customer_credit_card(customer, credit_card)
         response = post_data(core_data.merge({
           :customer_vault => 'delete_customer',
-          :customer_vault_id => credit_card.id
+          :customer_vault_id => credit_card.vault_id
         }).to_querystring)
         respond_with(credit_card, :success => response.success?)
       end
 
       def authorize(customer, credit_card, amount)
         response = post_data(transaction_data('auth', {
-          :customer_vault_id => credit_card.id,
+          :customer_vault_id => credit_card.vault_id,
           :amount => amount
         }))
         respond_with(new_transaction_from_response(response.body),
@@ -139,7 +139,7 @@ module VaultedBilling
       def storage_data(method, customer, credit_card)
         core_data.merge({
           :customer_vault => method.to_s,
-          :customer_vault_id => credit_card.id,
+          :customer_vault_id => credit_card.vault_id,
           :currency => credit_card.currency,
           :method => 'creditcard',
           :ccnumber => credit_card.card_number,
