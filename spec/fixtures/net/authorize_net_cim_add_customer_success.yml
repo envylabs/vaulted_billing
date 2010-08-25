@@ -11,7 +11,7 @@
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <profile>
-          <email>abby.welch@larson.ca</email>
+          <email>josie_cremin@dubuque.us</email>
         </profile>
       </createCustomerProfileRequest>
 
@@ -21,11 +21,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "351"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -40,12 +36,12 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 18:28:39 GMT
+      - Wed, 25 Aug 2010 14:26:12 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
       - "504"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2088201</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2118962</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
     http_version: "1.1"

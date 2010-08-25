@@ -3,18 +3,12 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: address1=85488 Flatley Wall&ccexp=1108&ccnumber=347966021484534&city=Garrettown&country=US&customer_vault=add_customer&email=dangelo@stokes.biz&first_name=Reuben&last_name=Lesch&method=creditcard&password=password&phone=(783)553-6019&state=Indiana&username=demo&zip=06777-5085
+    body: address1=154 Strosin Islands&ccexp=1108&ccnumber=5230002140732287&city=Enricoberg&country=US&customer_vault=add_customer&email=lance_beer@wolfkertzmann.co.uk&first_name=Earline&last_name=Zieme&method=creditcard&password=password&phone=267.973.3544&state=Minnesota&username=demo&zip=63339-2873
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "276"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -27,27 +21,21 @@
       server: 
       - Apache
       date: 
-      - Fri, 20 Aug 2010 16:48:09 GMT
+      - Wed, 25 Aug 2010 14:41:54 GMT
       content-length: 
-      - "149"
-    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=88943941
+      - "150"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=401958639
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: amount=10.0&customer_vault_id=88943941&password=password&type=auth&username=demo
+    body: amount=5.0&customer_vault_id=401958639&password=password&type=auth&username=demo
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "80"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -60,27 +48,21 @@
       server: 
       - Apache
       date: 
-      - Fri, 20 Aug 2010 16:48:10 GMT
+      - Wed, 25 Aug 2010 14:41:55 GMT
       content-length: 
-      - "163"
-    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1270108580&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=88943941
+      - "164"
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1272006227&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=401958639
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: amount=5.0&password=password&transactionid=1270108580&type=capture&username=demo
+    body: amount=3.0&password=password&transactionid=1272006227&type=capture&username=demo
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "80"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -93,27 +75,21 @@
       server: 
       - Apache
       date: 
-      - Fri, 20 Aug 2010 16:48:13 GMT
+      - Wed, 25 Aug 2010 14:41:58 GMT
       content-length: 
       - "138"
-    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1270108580&avsresponse=&cvvresponse=&orderid=&type=capture&response_code=100
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1272006227&avsresponse=&cvvresponse=&orderid=&type=capture&response_code=100
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: amount=30.0&password=password&transactionid=#<VaultedBilling::Transaction:0x1017a8d28>&type=refund&username=demo
+    body: amount=300.0&password=password&transactionid=1272006227&type=refund&username=demo
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "112"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -126,8 +102,8 @@
       server: 
       - Apache
       date: 
-      - Fri, 20 Aug 2010 16:48:16 GMT
+      - Wed, 25 Aug 2010 14:42:00 GMT
       content-length: 
-      - "162"
-    body: response=3&responsetext=Invalid Transaction ID specified REFID:109434549&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=refund&response_code=300
+      - "182"
+    body: response=3&responsetext=Refund amount may not exceed the transaction balance REFID:109525613&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=refund&response_code=300
     http_version: "1.1"

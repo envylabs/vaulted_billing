@@ -11,7 +11,7 @@
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <profile>
-          <email>lolita@ondrickagreenfelder.ca</email>
+          <email>kaci@haag.com</email>
         </profile>
       </createCustomerProfileRequest>
 
@@ -21,11 +21,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "360"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -40,14 +36,14 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 19:44:24 GMT
+      - Wed, 25 Aug 2010 14:26:15 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
       - "504"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2089725</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2118964</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -61,8 +57,9 @@
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <profile>
-          <merchantCustomerId>1234567890</merchantCustomerId>
-          <email>lolita@ondrickagreenfelder.ca</email>
+          <customerProfileId>1234567890</customerProfileId>
+          <merchantCustomerId></merchantCustomerId>
+          <email>kaci@haag.com</email>
         </profile>
       </updateCustomerProfileRequest>
 
@@ -72,11 +69,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "416"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -91,12 +84,12 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 19:44:25 GMT
+      - Wed, 25 Aug 2010 14:26:16 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
-      - "383"
+      - "500"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><updateCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Error</resultCode><message><code>E00014</code><text>customerProfileId is required.</text></message></messages></updateCustomerProfileResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><ErrorResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Error</resultCode><message><code>E00003</code><text>The element 'profile' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd' has invalid child element 'merchantCustomerId' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd'.</text></message></messages></ErrorResponse>"
     http_version: "1.1"

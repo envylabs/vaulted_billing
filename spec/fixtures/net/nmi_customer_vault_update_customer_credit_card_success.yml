@@ -3,18 +3,12 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: address1=3613 Brisa Summit&ccexp=1108&ccnumber=4838202546066137&city=Bayleeshire&country=US&customer_vault=update_customer&customer_vault_id=1934241072&email=quentin@tremblay.co.uk&first_name=Joana&last_name=Rogahn&method=creditcard&password=password&phone=820.457.3167&state=Kansas&username=demo&zip=25020-4131
+    body: address1=7263 Megane Track&ccexp=1108&ccnumber=5285948609760819&city=Desireeburgh&country=US&customer_vault=add_customer&email=nat@kuphal.us&first_name=Ike&last_name=Schiller&method=creditcard&password=password&phone=(508)614-5915 x5237&state=New Mexico&username=demo&zip=87025-1020
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "311"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -27,8 +21,35 @@
       server: 
       - Apache
       date: 
-      - Thu, 19 Aug 2010 19:54:18 GMT
+      - Wed, 25 Aug 2010 14:41:30 GMT
+      content-length: 
+      - "151"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1876849765
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=7263 Megane Track&ccexp=1108&ccnumber=5285948609760819&city=Desireeburgh&country=US&customer_vault=update_customer&customer_vault_id=1876849765&email=nat@kuphal.us&first_name=Ike&last_name=Schiller&method=creditcard&password=password&phone=(508)614-5915 x5237&state=New Mexico&username=demo&zip=87025-1020
+    headers: 
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.2
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Wed, 25 Aug 2010 14:41:31 GMT
       content-length: 
       - "163"
-    body: response=1&responsetext=Customer Update Successful&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1934241072
+    body: response=1&responsetext=Customer Update Successful&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1876849765
     http_version: "1.1"

@@ -11,7 +11,7 @@
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <profile>
-          <email>ernestine_dach@pacocha.uk</email>
+          <email>constance@jasternser.com</email>
         </profile>
       </createCustomerProfileRequest>
 
@@ -21,11 +21,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "356"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -40,14 +36,14 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 20:24:23 GMT
+      - Wed, 25 Aug 2010 14:26:24 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
       - "504"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2089940</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2118969</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -60,21 +56,21 @@
           <name>LOGIN</name>
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
-        <customerProfileId>2089940</customerProfileId>
+        <customerProfileId>2118969</customerProfileId>
         <paymentProfile>
           <billTo>
-            <firstName>Zula</firstName>
-            <lastName>Reichel</lastName>
-            <address>7055 Hassie Tunnel</address>
-            <city>New Eliseo</city>
-            <state>Tennessee</state>
-            <zip>21149</zip>
+            <firstName>Margarett</firstName>
+            <lastName>Kreiger</lastName>
+            <address>97835 Kaleigh Pines</address>
+            <city>South Carliechester</city>
+            <state>Utah</state>
+            <zip>84300-5734</zip>
             <country>US</country>
-            <phoneNumber>1-660-092-2508 x47682</phoneNumber>
+            <phoneNumber>1-302-191-9549</phoneNumber>
           </billTo>
           <payment>
             <creditCard>
-              <cardNumber>4539244255469542</cardNumber>
+              <cardNumber>346897195593746</cardNumber>
               <expirationDate>2011-08</expirationDate>
             </creditCard>
           </payment>
@@ -87,11 +83,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "862"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -106,14 +98,14 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 20:24:24 GMT
+      - Wed, 25 Aug 2010 14:26:25 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
       - "435"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerPaymentProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerPaymentProfileId>1831432</customerPaymentProfileId></createCustomerPaymentProfileResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerPaymentProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerPaymentProfileId>1857727</customerPaymentProfileId></createCustomerPaymentProfileResponse>"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -126,25 +118,25 @@
           <name>LOGIN</name>
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
-        <customerProfileId>2089940</customerProfileId>
+        <customerProfileId>2118969</customerProfileId>
         <paymentProfile>
           <billTo>
-            <firstName>Zula</firstName>
-            <lastName>Reichel</lastName>
-            <address>7055 Hassie Tunnel</address>
-            <city>New Eliseo</city>
-            <state>Tennessee</state>
-            <zip>21149</zip>
+            <firstName>Margarett</firstName>
+            <lastName>Kreiger</lastName>
+            <address>97835 Kaleigh Pines</address>
+            <city>South Carliechester</city>
+            <state>Utah</state>
+            <zip>84300-5734</zip>
             <country>US</country>
-            <phoneNumber>1-660-092-2508 x47682</phoneNumber>
+            <phoneNumber>1-302-191-9549</phoneNumber>
           </billTo>
           <payment>
             <creditCard>
-              <cardNumber>4539244255469542</cardNumber>
+              <cardNumber>346897195593746</cardNumber>
               <expirationDate>2012-08</expirationDate>
             </creditCard>
           </payment>
-          <customerPaymentProfileId>1831432</customerPaymentProfileId>
+          <customerPaymentProfileId>1857727</customerPaymentProfileId>
         </paymentProfile>
       </updateCustomerPaymentProfileRequest>
 
@@ -154,11 +146,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "927"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -173,7 +161,7 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 20:24:25 GMT
+      - Wed, 25 Aug 2010 14:26:27 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 

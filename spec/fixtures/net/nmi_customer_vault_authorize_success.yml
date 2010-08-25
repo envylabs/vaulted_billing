@@ -3,18 +3,12 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: amount=1.0&customer_vault_id=1695556243&password=password&type=auth&username=demo
+    body: address1=3336 Tara Club&ccexp=1108&ccnumber=4539244255469542&city=Brownton&country=US&customer_vault=add_customer&email=dulce@lesch.uk&first_name=Sabina&last_name=Batz&method=creditcard&password=password&phone=1-587-409-6495 x34007&state=Nevada&username=demo&zip=11997
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "81"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -27,8 +21,35 @@
       server: 
       - Apache
       date: 
-      - Fri, 20 Aug 2010 15:05:28 GMT
+      - Wed, 25 Aug 2010 14:41:35 GMT
       content-length: 
-      - "165"
-    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1270003910&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=1695556243
+      - "150"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=607452780
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=1.0&customer_vault_id=607452780&password=password&type=auth&username=demo
+    headers: 
+      connection: 
+      - close
+      user-agent: 
+      - vaulted_billing 0.0.2
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Apache
+      date: 
+      - Wed, 25 Aug 2010 14:41:36 GMT
+      content-length: 
+      - "164"
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1272006126&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=607452780
     http_version: "1.1"

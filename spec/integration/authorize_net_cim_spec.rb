@@ -41,9 +41,10 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'update_customer' do
+    let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+
     cached_request_context 'with a successful result',
       :scope => 'authorize_net_cim_update_customer_success' do
-      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       subject { customer.email = 'updated@example.com'; gateway.update_customer(customer) }
 
       it_should_behave_like 'a customer request'
@@ -59,7 +60,6 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
 
     cached_request_context 'with an unsuccessful result',
       :scope => 'authorize_net_cim_update_customer_failure' do
-      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       subject { customer.vault_id = '1234567890'; gateway.update_customer(customer) }
       
       it 'returns a Customer' do

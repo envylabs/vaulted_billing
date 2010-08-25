@@ -133,7 +133,9 @@ module VaultedBilling
       end
 
       def transaction_data(method, overrides = {})
-        core_data.merge(overrides).to_querystring
+        core_data.merge({
+          :type => method.to_s
+        }).merge(overrides).to_querystring
       end
 
       def storage_data(method, customer, credit_card)

@@ -33,7 +33,10 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
   context 'update_customer' do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     subject { gateway.update_customer(customer) }
-    it_should_behave_like 'a customer request'
+
+    it 'returns a Customer' do
+      subject.should be_kind_of VaultedBilling::Customer
+    end
 
     it 'is successful' do
       subject.should be_success
@@ -47,7 +50,10 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
   context 'remove_customer' do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     subject { gateway.remove_customer(customer) }
-    it_should_behave_like 'a customer request'
+
+    it 'returns a Customer' do
+      subject.should be_kind_of VaultedBilling::Customer
+    end
 
     it 'is successful' do
       subject.should be_success
@@ -256,7 +262,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     end
 
     cached_request_context 'with a DECLINE result',
-      :scope => 'nmi_customer_vault_void_failure', :record => :new do
+      :scope => 'nmi_customer_vault_void_failure' do
       let(:void) { gateway.void('INVALIDID') }
       subject { void }
 

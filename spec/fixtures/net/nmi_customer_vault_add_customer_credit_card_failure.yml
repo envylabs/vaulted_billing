@@ -3,18 +3,12 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: address1=6161 Audrey Glen&ccexp=1108&city=Fishertown&country=US&customer_vault=add_customer&email=jacquelyn.leannon@ernser.uk&first_name=Carroll&last_name=Ruecker&method=creditcard&password=password&phone=1-495-060-2676 x969&state=Michigan&username=demo&zip=30957
+    body: address1=6936 Luettgen Square&ccexp=1108&city=Lake Meaganhaven&country=US&customer_vault=add_customer&email=pete_gutmann@pouros.us&first_name=Gus&last_name=Hamill&method=creditcard&password=password&phone=(473)670-8905&state=Delaware&username=demo&zip=49444
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "263"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -27,8 +21,8 @@
       server: 
       - Apache
       date: 
-      - Thu, 19 Aug 2010 19:55:19 GMT
+      - Wed, 25 Aug 2010 14:41:29 GMT
       content-length: 
       - "168"
-    body: response=3&responsetext=Required Field cc_number is Missing or Empty REFID:109420395&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300
+    body: response=3&responsetext=Required Field cc_number is Missing or Empty REFID:109525605&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300
     http_version: "1.1"

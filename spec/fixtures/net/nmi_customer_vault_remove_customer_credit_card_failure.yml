@@ -5,16 +5,10 @@
     uri: https://secure.nmi.com:443/api/transact.php
     body: customer_vault=delete_customer&customer_vault_id=VERYBADIDENTIFIER!&password=password&username=demo
     headers: 
-      content-type: 
-      - application/x-www-form-urlencoded
       connection: 
       - close
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "99"
-      host: 
-      - secure.nmi.com
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -27,8 +21,8 @@
       server: 
       - Apache
       date: 
-      - Thu, 19 Aug 2010 20:17:30 GMT
+      - Wed, 25 Aug 2010 14:41:34 GMT
       content-length: 
       - "188"
-    body: response=3&responsetext=Invalid Customer Vault Id REFID:109420592&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300&customer_vault_id=VERYBADIDENTIFIER%21
+    body: response=3&responsetext=Invalid Customer Vault Id REFID:109525606&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300&customer_vault_id=VERYBADIDENTIFIER%21
     http_version: "1.1"

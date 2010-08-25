@@ -11,7 +11,7 @@
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
         <profile>
-          <email>ernie@hilpertdaniel.ca</email>
+          <email>caterina@ward.name</email>
         </profile>
       </createCustomerProfileRequest>
 
@@ -21,11 +21,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "353"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -40,14 +36,14 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 20:50:52 GMT
+      - Wed, 25 Aug 2010 14:26:37 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
       - "504"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2090119</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>2118973</customerProfileId><customerPaymentProfileIdList /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -60,21 +56,21 @@
           <name>LOGIN</name>
           <transactionKey>PASSWORD</transactionKey>
         </merchantAuthentication>
-        <customerProfileId>2090119</customerProfileId>
+        <customerProfileId>2118973</customerProfileId>
         <paymentProfile>
           <billTo>
-            <firstName>Marlon</firstName>
-            <lastName>Lockman</lastName>
-            <address>389 Jensen Skyway</address>
-            <city>Wolfstad</city>
-            <state>North Carolina</state>
-            <zip>22027</zip>
+            <firstName>Crawford</firstName>
+            <lastName>Fritsch</lastName>
+            <address>07183 Brown Square</address>
+            <city>Ondrickafurt</city>
+            <state>Maryland</state>
+            <zip>54702-6890</zip>
             <country>US</country>
-            <phoneNumber>473.628.9056</phoneNumber>
+            <phoneNumber>739.242.6106</phoneNumber>
           </billTo>
           <payment>
             <creditCard>
-              <cardNumber>348690499380524</cardNumber>
+              <cardNumber>5561825156630626</cardNumber>
               <expirationDate>2011-08</expirationDate>
             </creditCard>
           </payment>
@@ -87,11 +83,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "856"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -106,14 +98,14 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 20:50:54 GMT
+      - Wed, 25 Aug 2010 14:26:37 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
       - "435"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerPaymentProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerPaymentProfileId>1831697</customerPaymentProfileId></createCustomerPaymentProfileResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerPaymentProfileResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerPaymentProfileId>1857731</customerPaymentProfileId></createCustomerPaymentProfileResponse>"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -129,10 +121,11 @@
         <transaction>
           <profileTransAuthOnly>
             <amount>10.0</amount>
-            <customerProfileId>2090119</customerProfileId>
-            <customerPaymentProfileId>1831697</customerPaymentProfileId>
+            <customerProfileId>2118973</customerProfileId>
+            <customerPaymentProfileId>1857731</customerPaymentProfileId>
           </profileTransAuthOnly>
         </transaction>
+        <extraOptions>x_duplicate_window=0</extraOptions>
       </createCustomerProfileTransactionRequest>
 
     headers: 
@@ -141,11 +134,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "544"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -160,12 +149,12 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 20:50:55 GMT
+      - Wed, 25 Aug 2010 14:26:39 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 
-      - "704"
+      - "700"
       cache-control: 
       - private
-    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileTransactionResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><directResponse>1,1,1,This transaction has been approved.,1G7KZQ,P,2154096408,,,10.00,CC,auth_only,,Marlon,Lockman,,389 Jensen Skyway,Wolfstad,North Carolina,22027,US,473.628.9056,,ernie@hilpertdaniel.ca,,,,,,,,,,,,,,87A540E4F68251A9F6ADBDE98F0C132B,,2,,,,,,,,,,,XXXX0524,American Express,,,,,,,,,,,,,,,,</directResponse></createCustomerProfileTransactionResponse>"
+    body: "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileTransactionResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><directResponse>1,1,1,This transaction has been approved.,R0XBP6,Y,2154273548,,,10.00,CC,auth_only,,Crawford,Fritsch,,07183 Brown Square,Ondrickafurt,Maryland,54702-6890,US,739.242.6106,,caterina@ward.name,,,,,,,,,,,,,,AC29F163D019AE41DC1D5A94BE09E76F,,2,,,,,,,,,,,XXXX0626,MasterCard,,,,,,,,,,,,,,,,</directResponse></createCustomerProfileTransactionResponse>"
     http_version: "1.1"

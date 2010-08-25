@@ -20,11 +20,7 @@
       content-type: 
       - text/xml
       user-agent: 
-      - vaulted_billing 0.0.0
-      content-length: 
-      - "311"
-      host: 
-      - apitest.authorize.net
+      - vaulted_billing 0.0.2
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -39,7 +35,7 @@
       connection: 
       - close
       date: 
-      - Fri, 20 Aug 2010 18:41:22 GMT
+      - Wed, 25 Aug 2010 14:26:13 GMT
       server: 
       - Microsoft-IIS/5.0
       content-length: 

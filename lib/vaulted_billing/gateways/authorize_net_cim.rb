@@ -35,9 +35,8 @@ module VaultedBilling
         customer = customer.to_vaulted_billing
         result = post_data(build_request('updateCustomerProfileRequest') { |xml|
           xml.tag!('profile') {
-            xml.customerProfileId customer.vault_id
-            xml.merchantCustomerId customer.merchant_id
             xml.email customer.email
+            xml.customerProfileId customer.vault_id
           }
         })
         respond_with(customer, :success => result.success?, :raw_response => result.raw_response)
