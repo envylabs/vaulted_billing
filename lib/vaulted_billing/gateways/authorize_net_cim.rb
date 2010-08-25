@@ -99,6 +99,7 @@ module VaultedBilling
               xml.customerPaymentProfileId credit_card.vault_id
             end
           end
+          xml.extraOptions 'x_duplicate_window=0'
         })
         respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
       end
@@ -111,6 +112,7 @@ module VaultedBilling
               xml.transId transaction_id
             end
           end
+          xml.extraOptions 'x_duplicate_window=0'
         })
         respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
       end
@@ -123,6 +125,7 @@ module VaultedBilling
               xml.transId transaction_id
             end
           end
+          xml.extraOptions 'x_duplicate_window=0'
         })
         respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
       end
@@ -134,6 +137,7 @@ module VaultedBilling
               xml.transId transaction_id
             end
           end
+          xml.extraOptions 'x_duplicate_window=0'
         })
         respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
       end
