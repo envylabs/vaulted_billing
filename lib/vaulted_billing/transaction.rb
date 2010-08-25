@@ -12,5 +12,22 @@ module VaultedBilling
         send("#{key}=", value) if respond_to?("#{key}=")
       end
     end
+
+    def to_vaulted_billing; self; end
+
+    def ==(o)
+      attributes == o.attributes
+    end
+
+    def attributes
+      {
+        :id => id,
+        :authcode => authcode,
+        :avs_response => avs_response,
+        :cvv_response => cvv_response,
+        :code => code,
+        :message => message
+      }
+    end
   end
 end

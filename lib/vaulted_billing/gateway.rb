@@ -1,6 +1,7 @@
 module VaultedBilling
   module Gateway
     module Response
+      attr_accessor :raw_response
       attr_accessor :response_message
       attr_writer :success
       def success?; @success; end
@@ -54,6 +55,7 @@ module VaultedBilling
       object.tap do |o|
         o.extend(VaultedBilling::Gateway::Response)
         o.success = options.has_key?(:success) ? options[:success] : true
+        o.raw_response = options[:raw_response] || ''
         yield(o) if block_given?
       end
     end

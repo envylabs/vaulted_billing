@@ -5,28 +5,31 @@ module VaultedBilling
     class Bogus
       include VaultedBilling::Gateway
 
+      def initialize(options = {})
+      end
+
       def add_customer(customer)
-        respond_with(customer) { |c| c.vault_id = new_identifier }
+        respond_with(customer.to_vaulted_billing) { |c| c.vault_id = new_identifier }
       end
 
       def update_customer(customer)
-        respond_with customer
+        respond_with customer.to_vaulted_billing
       end
 
       def remove_customer(customer)
-        respond_with customer
+        respond_with customer.to_vaulted_billing
       end
 
       def add_customer_credit_card(customer, credit_card)
-        respond_with(credit_card) { |c| c.vault_id = new_identifier }
+        respond_with(credit_card.to_vaulted_billing) { |c| c.vault_id = new_identifier }
       end
 
       def update_customer_credit_card(customer, credit_card)
-        respond_with credit_card
+        respond_with credit_card.to_vaulted_billing
       end
 
       def remove_customer_credit_card(customer, credit_card)
-        respond_with credit_card
+        respond_with credit_card.to_vaulted_billing
       end
 
       def authorize(customer, credit_card, amount)

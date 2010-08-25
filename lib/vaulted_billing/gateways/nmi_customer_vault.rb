@@ -31,7 +31,7 @@ module VaultedBilling
       # via the add_customer_credit_card method.
       #
       def add_customer(customer)
-        respond_with customer
+        respond_with customer.to_vaulted_billing
       end
 
       ##
@@ -40,7 +40,7 @@ module VaultedBilling
       # handled via the update_customer_credit_card method.
       #
       def update_customer(customer)
-        respond_with customer
+        respond_with customer.to_vaulted_billing
       end
 
       ##
@@ -49,36 +49,36 @@ module VaultedBilling
       # handled via the remove_customer_credit_card method.
       #
       def remove_customer(customer)
-        respond_with customer
+        respond_with customer.to_vaulted_billing
       end
 
       def add_customer_credit_card(customer, credit_card)
-        response = post_data(storage_data('add_customer', customer, credit_card))
-        respond_with(credit_card, :success => response.success?) do |c|
+        response = post_data(storage_data('add_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing))
+        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response) do |c|
           c.vault_id = response.body['customer_vault_id']
         end
       end
 
       def update_customer_credit_card(customer, credit_card)
-        response = post_data(storage_data('update_customer', customer, credit_card))
-        respond_with(credit_card, :success => response.success?)
+        response = post_data(storage_data('update_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing))
+        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response)
       end
 
       def remove_customer_credit_card(customer, credit_card)
         response = post_data(core_data.merge({
           :customer_vault => 'delete_customer',
-          :customer_vault_id => credit_card.vault_id
+          :customer_vault_id => credit_card.to_vaulted_billing.vault_id
         }).to_querystring)
-        respond_with(credit_card, :success => response.success?)
+        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response)
       end
 
       def authorize(customer, credit_card, amount)
         response = post_data(transaction_data('auth', {
-          :customer_vault_id => credit_card.vault_id,
+          :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?)
+                     :success => response.success?, :raw_response => response.raw_response)
       end
 
       def capture(transaction_id, amount)
@@ -87,7 +87,7 @@ module VaultedBilling
           :amount => amount
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?)
+                     :success => response.success?, :raw_response => response.raw_response)
       end
 
       def refund(transaction_id, amount)
@@ -96,7 +96,7 @@ module VaultedBilling
           :amount => amount
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?)
+                     :success => response.success?, :raw_response => response.raw_response)
       end
 
       def void(transaction_id)
@@ -104,7 +104,7 @@ module VaultedBilling
           :transactionid => transaction_id
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?)
+                     :success => response.success?, :raw_response => response.raw_response)
       end
 
 
