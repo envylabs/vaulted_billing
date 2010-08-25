@@ -47,7 +47,7 @@ describe VaultedBilling::HttpsInterface do
 
     it 'sets a custom User-Agent header' do
       gateway.send(:post_data, 'fubar')
-      WebMock.should have_requested(:post, 'https://1.2.3.4/').with(:headers => {'User-Agent' => "vaulted_billing #{VaultedBilling::Version}"})
+      WebMock.should have_requested(:post, 'https://1.2.3.4/').with(:headers => {'User-Agent' => "vaulted_billing/#{VaultedBilling::Version}"})
     end
 
     it 'runs the before_post callback before submission' do
