@@ -145,7 +145,7 @@ module VaultedBilling
           :currency => credit_card.currency,
           :method => 'creditcard',
           :ccnumber => credit_card.card_number,
-          :ccexp => credit_card.expires_on.try(:strftime, "%y%m"),
+          :ccexp => credit_card.expires_on.try(:strftime, "%m%y"),
           :first_name => credit_card.first_name,
           :last_name => credit_card.last_name,
           :address1 => credit_card.street_address,
