@@ -54,14 +54,14 @@ module VaultedBilling
 
       def add_customer_credit_card(customer, credit_card)
         response = post_data(storage_data('add_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing))
-        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response) do |c|
+        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response.try(:body)) do |c|
           c.vault_id = response.body['customer_vault_id']
         end
       end
 
       def update_customer_credit_card(customer, credit_card)
         response = post_data(storage_data('update_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing))
-        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response)
+        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response.try(:body))
       end
 
       def remove_customer_credit_card(customer, credit_card)
@@ -69,7 +69,7 @@ module VaultedBilling
           :customer_vault => 'delete_customer',
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id
         }).to_querystring)
-        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response)
+        respond_with(credit_card, :success => response.success?, :raw_response => response.raw_response.try(:body))
       end
 
       def authorize(customer, credit_card, amount)
@@ -78,7 +78,7 @@ module VaultedBilling
           :amount => amount
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?, :raw_response => response.raw_response)
+                     :success => response.success?, :raw_response => response.raw_response.try(:body))
       end
 
       def capture(transaction_id, amount)
@@ -87,7 +87,7 @@ module VaultedBilling
           :amount => amount
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?, :raw_response => response.raw_response)
+                     :success => response.success?, :raw_response => response.raw_response.try(:body))
       end
 
       def refund(transaction_id, amount)
@@ -96,7 +96,7 @@ module VaultedBilling
           :amount => amount
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?, :raw_response => response.raw_response)
+                     :success => response.success?, :raw_response => response.raw_response.try(:body))
       end
 
       def void(transaction_id)
@@ -104,7 +104,7 @@ module VaultedBilling
           :transactionid => transaction_id
         }))
         respond_with(new_transaction_from_response(response.body),
-                     :success => response.success?, :raw_response => response.raw_response)
+                     :success => response.success?, :raw_response => response.raw_response.try(:body))
       end
 
 

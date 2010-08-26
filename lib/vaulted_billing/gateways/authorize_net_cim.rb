@@ -28,7 +28,7 @@ module VaultedBilling
           end
         end
         result = post_data(data)
-        respond_with(customer, :success => result.success?, :raw_response => result.raw_response) { |c| c.vault_id = (result.body['createCustomerProfileResponse'] || {})['customerProfileId'] }
+        respond_with(customer, :success => result.success?, :raw_response => result.raw_response.try(:body)) { |c| c.vault_id = (result.body['createCustomerProfileResponse'] || {})['customerProfileId'] }
       end
 
       def update_customer(customer)
@@ -39,7 +39,7 @@ module VaultedBilling
             xml.customerProfileId customer.vault_id
           }
         })
-        respond_with(customer, :success => result.success?, :raw_response => result.raw_response)
+        respond_with(customer, :success => result.success?, :raw_response => result.raw_response.try(:body))
       end
 
       def remove_customer(customer)
@@ -60,7 +60,7 @@ module VaultedBilling
             credit_card_info!(xml, customer, credit_card)
           end
         })
-        respond_with(credit_card, :success => result.success?, :raw_response => result.raw_response) { |c| c.vault_id = (result.body['createCustomerPaymentProfileResponse'] || {})['customerPaymentProfileId'] }
+        respond_with(credit_card, :success => result.success?, :raw_response => result.raw_response.try(:body)) { |c| c.vault_id = (result.body['createCustomerPaymentProfileResponse'] || {})['customerPaymentProfileId'] }
       end
 
       def update_customer_credit_card(customer, credit_card)
@@ -84,7 +84,7 @@ module VaultedBilling
           xml.customerProfileId customer.vault_id
           xml.customerPaymentProfileId credit_card.vault_id
         })
-        respond_with(credit_card, :success => result.success?, :raw_response => result.raw_response)
+        respond_with(credit_card, :success => result.success?, :raw_response => result.raw_response.try(:body))
       end
 
       def authorize(customer, credit_card, amount)
@@ -100,7 +100,7 @@ module VaultedBilling
           end
           xml.extraOptions 'x_duplicate_window=0'
         })
-        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
+        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response.try(:body))
       end
 
       def capture(transaction_id, amount)
@@ -113,7 +113,7 @@ module VaultedBilling
           end
           xml.extraOptions 'x_duplicate_window=0'
         })
-        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
+        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response.try(:body))
       end
 
       def refund(transaction_id, amount)
@@ -126,7 +126,7 @@ module VaultedBilling
           end
           xml.extraOptions 'x_duplicate_window=0'
         })
-        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
+        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response.try(:body))
       end
 
       def void(transaction_id)
@@ -138,7 +138,7 @@ module VaultedBilling
           end
           xml.extraOptions 'x_duplicate_window=0'
         })
-        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response)
+        respond_with(new_transaction_from_response(result.body), :success => result.success?, :raw_response => result.raw_response.try(:body))
       end
 
 
