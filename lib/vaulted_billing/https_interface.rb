@@ -24,8 +24,8 @@ module VaultedBilling
       def initialize(http_response)
         if http_response
           self.raw_response = http_response
-#          self.code = http_response.code
-#          self.message = http_response.message
+          self.code = http_response.code
+          self.message = http_response.message
           self.body = http_response.body
           self.success = ((http_response.code =~ /^2\d{2}/) == 0)
         end
