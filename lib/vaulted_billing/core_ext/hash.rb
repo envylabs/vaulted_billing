@@ -9,9 +9,9 @@ module VaultedBilling
 
       module ClassMethods
         def from_querystring(string)
-          ::Hash[string.split(/&/).
+          ::Hash[*(string.split(/&/).
             collect { |i| i.split(/=/) }.
-            collect { |e| e.size == 1 ? (e << '') : e }]
+            collect { |e| e.size == 1 ? (e << '') : e }.flatten)]
         end
       end
     end
