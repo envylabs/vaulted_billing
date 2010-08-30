@@ -1,3 +1,1 @@
-source :gemcutter
-
 gemspec
