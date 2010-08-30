@@ -116,7 +116,7 @@ module VaultedBilling
       end
 
       def after_post(response)
-        VaultedBilling.logger.debug { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] } if VaultedBilling.logger?
+        VaultedBilling.logger.info { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] } if VaultedBilling.logger?
         response.body = Hash.from_querystring(response.body)
         response.success = response.body['response'] == '1'
       end
