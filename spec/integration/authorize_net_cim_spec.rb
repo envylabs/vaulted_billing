@@ -231,6 +231,26 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         should_not be_success
       end
     end
+
+    context 'with a connection exception' do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+
+      before(:each) do
+        WebMock.stub_request(:post, %r{^https://.*?\.authorize\.net/}).
+          to_raise(Errno::ECONNRESET)
+      end
+
+      subject { gateway.authorize(customer, credit_card, 1.00) }
+
+      it 'is unsuccessful' do
+        should_not be_success
+      end
+
+      it 'reports an exception' do
+        subject.message.should == 'There was a problem communicating with the card processor.'
+      end
+    end
   end
 
   context 'capture' do

@@ -9,6 +9,7 @@ module VaultedBilling
 
       module ClassMethods
         def from_querystring(string)
+          return {} if string.nil?
           ::Hash[*(string.split(/&/).
             collect { |i| i.split(/=/) }.
             collect { |e| e.size == 1 ? (e << '') : e }.flatten)]

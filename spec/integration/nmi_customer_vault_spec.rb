@@ -176,6 +176,22 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
         should_not be_success
       end
     end
+
+    context 'with a communication exception' do
+      before(:each) do
+        WebMock.stub_request(:post, %r{^https://.*?\.nmi\.com/}).to_raise(Errno::ECONNRESET)
+      end
+
+      subject { gateway.authorize(customer, credit_card, 1.00) }
+
+      it 'is unsuccessful' do
+        should_not be_success
+      end
+
+      it 'reports the communication issue' do
+        pending
+      end
+    end
   end
 
   context 'capture' do
@@ -270,7 +286,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
         subject.should be_kind_of VaultedBilling::Transaction
       end
 
-      it 'returns a Trnsaction without an identifier' do
+      it 'returns a Transaction without an identifier' do
         subject.id.should be_blank
       end
 

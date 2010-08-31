@@ -73,17 +73,19 @@ module VaultedBilling
         end
       end
 
-      before_post(data)
+      before_post_caller(data)
 
       begin
         PostResponse.new(response.request(request)).tap do |post_response|
-          after_post(post_response)
+          after_post_caller(post_response)
+          after_post_on_success(post_response)
         end
       rescue *HTTP_ERRORS
         PostResponse.new(nil).tap do |post_response|
           post_response.success = false
           post_response.message = "%s - %s" % [$!.class.name, $!.message]
           after_post(post_response)
+          after_post_on_exception(post_response, $!)
         end
       end
     end
@@ -93,8 +95,32 @@ module VaultedBilling
     end
     protected :before_post
 
+    def before_post_caller(data)
+      if VaultedBilling.logger?
+        VaultedBilling.logger.debug { "Posting %s to %s" % [data.inspect, uri.to_s] }
+      end
+      before_post(data)
+    end
+    private :before_post_caller
+
     def after_post(response)
     end
     protected :after_post
+
+    def after_post_caller(response)
+      if VaultedBilling.logger?
+        VaultedBilling.logger.info { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] }
+      end
+      after_post(response)
+    end
+    private :after_post_caller
+
+    def after_post_on_success(response)
+    end
+    protected :after_post_on_success
+
+    def after_post_on_exception(response, exception)
+    end
+    protected :after_post_on_exception
   end
 end

@@ -39,5 +39,9 @@ describe VaultedBilling::CoreExt::Hash do
     it 'returns empty strings for no-value keys' do
       Hash.from_querystring('foo=&bar=').should == {'foo' => '', 'bar' => ''}
     end
+
+    it 'returns an empty hash with a nil value given' do
+      Hash.from_querystring(nil).should == {}
+    end
   end
 end

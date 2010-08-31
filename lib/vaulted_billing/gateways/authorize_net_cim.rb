@@ -149,12 +149,21 @@ module VaultedBilling
         super(data, {'Content-Type' => 'text/xml'}.merge(headers))
       end
 
-      def before_post(data)
-        VaultedBilling.logger.debug { "Posting: %s to %s" % [data.inspect, uri.inspect] } if VaultedBilling.logger?
+      def after_post_on_exception(response, exception)
+        response.body = {
+          'ErrorResponse' => {
+            'directResponse' => ',,,There was a problem communicating with the card processor.,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,',
+            'messages' => {
+              'resultCode' => 'Error',
+              'text' => 'A communication problem has occurred.',
+              'code' => 'E00000'
+            }
+          }
+        }
+        response.success = false
       end
 
-      def after_post(response)
-        VaultedBilling.logger.info { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] } if VaultedBilling.logger?
+      def after_post_on_success(response)
         response.body = Hash.from_xml(response.body)
         response.success = response.body[response.body.keys.first]['messages']['resultCode'] == 'Ok'
       end
@@ -200,23 +209,20 @@ module VaultedBilling
 
       def new_transaction_from_response(response)
         root = response.keys.first
-        if root == 'ErrorResponse'
-          Transaction.new
-        else
-          direct_response = parse_direct_response(response[root]['directResponse'])
-          Transaction.new({
-            :id => direct_response['transaction_id'],
-            :avs_response => direct_response['avs_response'],
-            :cvv_response => direct_response['cvv_response'],
-            :authcode => direct_response['approval_code'],
-            :message => response[root]['messages']['text'],
-            :code => response[root]['messages']['code']
-          })
-        end
+        direct_response = parse_direct_response(response[root]['directResponse'])
+        Transaction.new({
+          :id => direct_response['transaction_id'],
+          :avs_response => direct_response['avs_response'],
+          :cvv_response => direct_response['cvv_response'],
+          :authcode => direct_response['approval_code'],
+          :message => direct_response['message'] || response[root]['messages']['text'],
+          :code => response[root]['messages']['code']
+        })
       end
 
       def parse_direct_response(string)
-        fields = string.split(',')
+        return {} unless string
+        fields = string.split(',', 100).collect { |v| v == '' ? nil : v }
         {
           'message' => fields[3],
           'approval_code' => fields[4],
