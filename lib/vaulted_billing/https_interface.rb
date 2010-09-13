@@ -84,7 +84,7 @@ module VaultedBilling
         PostResponse.new(nil).tap do |post_response|
           post_response.success = false
           post_response.message = "%s - %s" % [$!.class.name, $!.message]
-          after_post(post_response)
+          after_post_caller(post_response)
           after_post_on_exception(post_response, $!)
         end
       end
