@@ -74,6 +74,10 @@ describe VaultedBilling::Gateways::Bogus do
     it "is successful" do
       subject.should be_success
     end
+
+    it "returns an authcode" do
+      subject.authcode.should_not be_nil
+    end
   end
 
   context 'capture' do

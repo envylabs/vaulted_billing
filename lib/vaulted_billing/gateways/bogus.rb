@@ -57,7 +57,10 @@ module VaultedBilling
       end
 
       def transaction_response
-        respond_with VaultedBilling::Transaction.new(:id => new_identifier)
+        respond_with VaultedBilling::Transaction.new({
+          :id => new_identifier,
+          :authcode => new_identifier[0..5]
+        })
       end
     end
   end
