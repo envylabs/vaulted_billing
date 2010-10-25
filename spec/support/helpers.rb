@@ -33,6 +33,14 @@ module RSpecHelpers
         subject.vault_id.should_not be_blank
       end
     end
+
+    shared_examples_for 'a failed connection attempt' do
+      it 'is unsuccessful' do
+        subject.should_not be_success
+      end
+      its(:response_message) { should == 'A communication problem has occurred.' }
+      its(:error_code) { should_not be_blank }
+    end
   end
 end
 

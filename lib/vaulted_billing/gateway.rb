@@ -3,6 +3,7 @@ module VaultedBilling
     module Response
       attr_accessor :raw_response
       attr_accessor :response_message
+      attr_accessor :error_code
       attr_writer :success
       def success?; @success; end
     end
@@ -56,6 +57,8 @@ module VaultedBilling
         o.extend(VaultedBilling::Gateway::Response)
         o.success = options.has_key?(:success) ? options[:success] : true
         o.raw_response = options[:raw_response] || ''
+        o.response_message = options[:response_message]
+        o.error_code = options[:error_code]
         yield(o) if block_given?
       end
     end

@@ -46,6 +46,13 @@ module VCRHelpers
         context(&block)
       end
     end
+
+    def request_exception_context(description = 'with a connection exception', exception = Timeout::Error, &block)
+      context(description) do
+        before(:each) { WebMock.stub_request(:any, //).to_raise(exception) }
+        context(&block)
+      end
+    end
   end
 end
 

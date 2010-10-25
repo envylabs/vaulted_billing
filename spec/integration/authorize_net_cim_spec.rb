@@ -23,13 +23,16 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       it 'is successful' do
         should be_success
       end
+
+      its(:response_message) { should == 'Successful.' }
+      its(:error_code) { should be_nil }
     end
 
     cached_request_context 'with an unsuccessful result',
       :scope => 'authorize_net_cim_add_customer_failure' do
       let(:customer) { VaultedBilling::Customer.new }
       subject { gateway.add_customer(customer) }
-      
+
       it 'returns a Customer' do
         subject.should be_kind_of VaultedBilling::Customer
       end
@@ -37,6 +40,15 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       it 'is unsuccessful' do
         should_not be_success
       end
+
+      its(:response_message) { should == 'One or more fields in profile must contain a value.' }
+      its(:error_code) { should == 'E00041' }
+    end
+
+    request_exception_context do
+      let(:customer) { VaultedBilling::Customer.new }
+      subject { gateway.add_customer(customer) }
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 
@@ -50,18 +62,21 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       it_should_behave_like 'a customer request'
 
       it 'returns the given customer' do
-        subject.should == customer
+        should == customer
       end
 
       it 'is successful' do
         should be_success
       end
+
+      its(:response_message) { should == 'Successful.' }
+      its(:error_code) { should be_nil }
     end
 
     cached_request_context 'with an unsuccessful result',
       :scope => 'authorize_net_cim_update_customer_failure' do
       subject { customer.vault_id = '1234567890'; gateway.update_customer(customer) }
-      
+
       it 'returns a Customer' do
         subject.should be_kind_of VaultedBilling::Customer
       end
@@ -69,6 +84,14 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       it 'is unsuccessful' do
         should_not be_success
       end
+
+      its(:response_message) { should == %|The element 'profile' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd' has invalid child element 'merchantCustomerId' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd'.| }
+      its(:error_code) { should == 'E00003' }
+    end
+
+    request_exception_context do
+      subject { customer.vault_id = '1234567890'; gateway.update_customer(customer) }
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 
@@ -104,6 +127,12 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         should_not be_success
       end
     end
+
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      subject { customer.vault_id = '1234567890'; gateway.remove_customer(customer) }
+      it_should_behave_like 'a failed connection attempt'
+    end
   end
 
   context 'add_customer_credit_card' do
@@ -133,6 +162,13 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       it 'is unsuccessful' do
         should_not be_success
       end
+    end
+
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { Factory.build(:credit_card, :card_number => nil) }
+      subject { gateway.add_customer_credit_card(customer, credit_card) }
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 
@@ -170,6 +206,13 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         should_not be_success
       end
     end
+
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject { credit_card.card_number = '123456'; gateway.update_customer_credit_card(customer, credit_card) }
+      it_should_behave_like 'a failed connection attempt'
+    end
   end
 
   context 'remove_customer_credit_card' do
@@ -200,6 +243,16 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       it 'is unsuccessful' do
         should_not be_success
       end
+    end
+
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject do
+        gateway.remove_customer_credit_card(customer, credit_card)
+        gateway.remove_customer_credit_card(customer, credit_card)
+      end
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 
@@ -232,22 +285,13 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
     end
 
-    context 'with a connection exception' do
+    request_exception_context do
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
-
-      before(:each) do
-        WebMock.stub_request(:post, %r{^https://.*?\.authorize\.net/}).
-          to_raise(Errno::ECONNRESET)
-      end
-
       subject { gateway.authorize(customer, credit_card, 1.00) }
+      it_should_behave_like 'a failed connection attempt'
 
-      it 'is unsuccessful' do
-        should_not be_success
-      end
-
-      it 'reports an exception' do
+      it 'reports a transaction exception' do
         subject.message.should == 'There was a problem communicating with the card processor.'
       end
     end
@@ -286,19 +330,16 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
     end
 
-    context 'with a connection exception' do
-      before(:each) do
-        WebMock.stub_request(:post, %r{^https://.*?\.authorize\.net/}).
-          to_raise(Errno::ECONNRESET)
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject do
+        auth_transaction = gateway.authorize(customer, credit_card, 10.00)
+        gateway.capture(auth_transaction.id, 11.00)
       end
+      it_should_behave_like 'a failed connection attempt'
 
-      subject { gateway.capture('IDENTIFIER', 1.00) }
-
-      it 'is unsuccessful' do
-        should_not be_success
-      end
-
-      it 'reports an exception' do
+      it 'reports a transaction exception' do
         subject.message.should == 'There was a problem communicating with the card processor.'
       end
     end
@@ -340,7 +381,7 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         should be_success
       end
     end
-    
+
     cached_request_context 'with an unsuccessful result',
       :scope => 'authorize_net_cim_void_failure' do
       before(:each) { pending 'Need a settled transaction to test against' }
@@ -356,6 +397,20 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
 
       it 'is unsuccessful' do
         should_not be_success
+      end
+    end
+
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject do
+        auth_transaction = gateway.authorize(customer, credit_card, 10.00)
+        gateway.void(auth_transaction.id)
+      end
+      it_should_behave_like 'a failed connection attempt'
+
+      it 'reports a transaction exception' do
+        subject.message.should == 'There was a problem communicating with the card processor.'
       end
     end
   end

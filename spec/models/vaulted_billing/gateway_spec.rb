@@ -4,6 +4,10 @@ class TestGateway
   include VaultedBilling::Gateway
 end
 
+class TestResponseObject
+  include VaultedBilling::Gateway::Response
+end
+
 describe VaultedBilling::Gateway do
   let(:gateway) { TestGateway.new }
   let(:customer) { Factory.build(:customer) }
@@ -69,5 +73,37 @@ describe VaultedBilling::Gateway do
     it 'raises NotImplementedError' do
       expect { gateway.void('transactionid') }.to raise_error(NotImplementedError)
     end
+  end
+end
+
+describe VaultedBilling::Gateway::Response do
+  subject { TestResponseObject.new }
+
+  it 'returns the set response_message' do
+    expect {
+      subject.response_message = 'test'
+      subject.response_message.should == 'test'
+    }.to_not raise_error(NoMethodError)
+  end
+
+  it 'returns the set raw_response' do
+    expect {
+      subject.raw_response = 'test'
+      subject.raw_response.should == 'test'
+    }.to_not raise_error(NoMethodError)
+  end
+
+  it 'returns the set error_code' do
+    expect {
+      subject.error_code = 'test'
+      subject.error_code.should == 'test'
+    }.to_not raise_error(NoMethodError)
+  end
+
+  it 'sets the success state' do
+    expect {
+      subject.success = true
+      subject.should be_success
+    }.to_not raise_error(NoMethodError)
   end
 end

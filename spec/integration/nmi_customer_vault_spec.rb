@@ -76,6 +76,9 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it 'is successful' do
         subject.should be_success
       end
+
+      its(:response_message) { should == 'Customer Added' }
+      its(:error_code) { should be_nil }
     end
 
     cached_request_context 'with an unsuccessful result',
@@ -90,6 +93,15 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it 'is unsuccessful' do
         subject.should_not be_success
       end
+
+      its(:response_message) { should == 'Required Field cc_number is Missing or Empty REFID:109525605' }
+      its(:error_code) { should == '300' }
+    end
+
+    request_exception_context do
+      let(:credit_card) { Factory.build(:credit_card, :card_number => nil) }
+      subject { gateway.add_customer_credit_card(customer, credit_card) }
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 
@@ -119,6 +131,13 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
         should_not be_success
       end
     end
+
+    request_exception_context do
+      let(:customer) { VaultedBilling::Customer.new }
+      let(:credit_card) { VaultedBilling::CreditCard.new }
+      subject { gateway.update_customer_credit_card(customer, credit_card) }
+      it_should_behave_like 'a failed connection attempt'
+    end
   end
 
   context 'remove_customer_credit_card' do
@@ -145,17 +164,23 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
         should_not be_success
       end
     end
+
+    request_exception_context do
+      let(:credit_card) { Factory.build(:existing_credit_card, :vault_id => 'VERYBADIDENTIFIER!') }
+      subject { gateway.remove_customer_credit_card(customer, credit_card) }
+      it_should_behave_like 'a failed connection attempt'
+    end
   end
 
   context 'authorize' do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
-    
+
     cached_request_context 'with a successful result',
       :scope => 'nmi_customer_vault_authorize_success' do
       subject { gateway.authorize(customer, credit_card, 1.00) }
       it_should_behave_like 'a transaction request'
-      
+
       it 'is successful' do
         should be_success
       end
@@ -177,20 +202,9 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       end
     end
 
-    context 'with a communication exception' do
-      before(:each) do
-        WebMock.stub_request(:post, %r{^https://.*?\.nmi\.com/}).to_raise(Errno::ECONNRESET)
-      end
-
-      subject { gateway.authorize(customer, credit_card, 1.00) }
-
-      it 'is unsuccessful' do
-        should_not be_success
-      end
-
-      it 'reports the communication issue' do
-        pending
-      end
+    request_exception_context do
+      subject { gateway.authorize(customer, credit_card, 0.01) }
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 
@@ -219,6 +233,12 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it 'is unsuccessful' do
         should_not be_success
       end
+    end
+
+    request_exception_context do
+      let(:capture) { gateway.capture(authorization.id, 500.00) }
+      subject { capture }
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 
@@ -259,6 +279,12 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
         should_not be_success
       end
     end
+
+    request_exception_context do
+      let(:refund) { gateway.refund(capture.id, 300.00) }
+      subject { refund }
+      it_should_behave_like 'a failed connection attempt'
+    end
   end
 
   context 'void' do
@@ -293,6 +319,12 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it 'is unsuccessful' do
         should_not be_success
       end
+    end
+
+    request_exception_context do
+      let(:void) { gateway.void('INVALIDID') }
+      subject { void }
+      it_should_behave_like 'a failed connection attempt'
     end
   end
 end
