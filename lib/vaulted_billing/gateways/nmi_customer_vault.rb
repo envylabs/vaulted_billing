@@ -179,11 +179,13 @@ module VaultedBilling
 
       def respond_with(object, response = nil, options = {}, &block)
         super(object, options, &block).tap do |o|
-          o.raw_response = response.raw_response.try(:body) if response
-          o.response_message = (response.try(:body) || {})['responsetext']
-
-          if response && !response.success?
-            o.error_code = (response.try(:body) || {})['response_code']
+          if response
+            o.raw_response = response.raw_response.try(:body)
+            o.connection_error = response.connection_error
+            o.response_message = (response.body || {})['responsetext']
+            unless response.success?
+              o.error_code = (response.body || {})['response_code']
+            end
           end
         end
       end

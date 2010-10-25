@@ -23,6 +23,7 @@ module VaultedBilling
       attr_accessor :body
       attr_accessor :success
       attr_accessor :raw_response
+      attr_accessor :connection_error
 
       def initialize(http_response)
         if http_response
@@ -31,6 +32,7 @@ module VaultedBilling
           self.message = http_response.message
           self.body = http_response.body
           self.success = ((http_response.code =~ /^2\d{2}/) == 0)
+          self.connection_error = false
         end
       end
 
@@ -87,6 +89,7 @@ module VaultedBilling
         PostResponse.new(nil).tap do |post_response|
           post_response.success = false
           post_response.message = "%s - %s" % [$!.class.name, $!.message]
+          post_response.connection_error = true
           after_post_caller(post_response)
           after_post_on_exception(post_response, $!)
         end

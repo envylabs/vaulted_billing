@@ -4,8 +4,10 @@ module VaultedBilling
       attr_accessor :raw_response
       attr_accessor :response_message
       attr_accessor :error_code
+      attr_writer :connection_error
       attr_writer :success
       def success?; @success; end
+      def connection_error?; @connection_error; end
     end
 
     def add_customer(customer)

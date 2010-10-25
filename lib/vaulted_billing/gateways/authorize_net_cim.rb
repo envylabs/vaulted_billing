@@ -242,6 +242,7 @@ module VaultedBilling
       def respond_with(object, result, options = {}, &block)
         super(object, options, &block).tap do |o|
           o.raw_response = result.raw_response.try(:body)
+          o.connection_error = result.connection_error
           o.response_message = result.body[result.body.keys.first]['messages']['message']['text']
 
           unless result.success?

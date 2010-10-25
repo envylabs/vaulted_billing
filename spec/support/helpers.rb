@@ -40,6 +40,7 @@ module RSpecHelpers
       end
       its(:response_message) { should == 'A communication problem has occurred.' }
       its(:error_code) { should_not be_blank }
+      it { subject.should be_connection_error }
     end
   end
 end
