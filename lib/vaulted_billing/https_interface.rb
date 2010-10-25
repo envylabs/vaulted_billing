@@ -6,8 +6,11 @@ module VaultedBilling
 
     HTTP_ERRORS = [
       Timeout::Error,
+      Errno::ETIMEDOUT,
       Errno::EINVAL,
       Errno::ECONNRESET,
+      Errno::ECONNREFUSED,
+      Errno::EHOSTUNREACH,
       EOFError,
       Net::HTTPBadResponse,
       Net::HTTPHeaderSyntaxError,
