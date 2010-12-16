@@ -17,9 +17,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport', '>= 2.3'
   s.add_dependency 'builder', '>= 2.1.2'
 
-  s.add_development_dependency 'rspec', '>= 2.0.0.beta.19'
-  s.add_development_dependency 'vcr', '>= 1.0.3'
-  s.add_development_dependency 'webmock', '>= 1.3.4'
+  s.add_development_dependency 'rspec', '>= 2.3.0'
+  s.add_development_dependency 'fuubar', '>=0.0.3'
+  s.add_development_dependency 'vcr', '>= 1.4.0'
+  s.add_development_dependency 'webmock', '>= 1.6.1'
   s.add_development_dependency 'factory_girl', '>= 1.3.2'
   s.add_development_dependency 'faker', '>= 0.3.1'
 
