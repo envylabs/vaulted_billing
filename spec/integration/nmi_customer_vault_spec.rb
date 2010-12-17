@@ -172,6 +172,42 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     end
   end
 
+  context 'purchase' do
+    let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+    let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+
+    cached_request_context 'with a successful result',
+      :scope => 'nmi_customer_vault_purchase_success' do
+      subject { gateway.purchase(customer, credit_card, 1.00) }
+      it_should_behave_like 'a transaction request'
+
+      it 'is successful' do
+        should be_success
+      end
+
+      it('has an false AVS response') { subject.avs_response.should be_false }
+      it('has a false CVV response') { subject.cvv_response.should be_false }
+      it('has an authcode') { subject.authcode.should be_present }
+      it('has a message') { subject.message.should be_present }
+      it('has a response code') { subject.code.should be_present }
+    end
+
+    cached_request_context 'with an DECLINE result',
+      :scope => 'nmi_customer_vault_purchase_decline' do
+      subject { gateway.purchase(customer, credit_card, 0.01) }
+      it_should_behave_like 'a transaction request'
+
+      it 'is unsuccessful' do
+        should_not be_success
+      end
+    end
+
+    request_exception_context do
+      subject { gateway.purchase(customer, credit_card, 0.01) }
+      it_should_behave_like 'a failed connection attempt'
+    end
+  end
+
   context 'authorize' do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }

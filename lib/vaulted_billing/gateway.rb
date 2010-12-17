@@ -42,6 +42,10 @@ module VaultedBilling
       raise NotImplementedError
     end
 
+    def purchase(customer, credit_card, amount)
+      raise NotImplementedError
+    end
+
     def refund(transaction_id, amount)
       raise NotImplementedError
     end

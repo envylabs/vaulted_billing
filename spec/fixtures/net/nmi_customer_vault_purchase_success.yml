@@ -1,0 +1,47 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=683 Amani Manor&ccexp=1211&ccnumber=5459804026655480&city=Alejandraland&country=US&customer_vault=add_customer&email=jovan@cormier.biz&first_name=Amara&last_name=Jewess&method=creditcard&password=password&phone=092.959.6024 x292&state=New Mexico&username=demo&zip=01305-8165
+    headers: 
+      user-agent: 
+      - vaulted_billing/0.0.10
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      server: 
+      - Apache
+      date: 
+      - Fri, 17 Dec 2010 13:52:44 GMT
+      content-length: 
+      - "151"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1088584432
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=1.0&customer_vault_id=1088584432&password=password&type=sale&username=demo
+    headers: 
+      user-agent: 
+      - vaulted_billing/0.0.10
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-type: 
+      - text/html
+      server: 
+      - Apache
+      date: 
+      - Fri, 17 Dec 2010 13:52:45 GMT
+      content-length: 
+      - "165"
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1327311657&avsresponse=N&cvvresponse=&orderid=&type=sale&response_code=100&customer_vault_id=1088584432
+    http_version: "1.1"

@@ -63,6 +63,12 @@ describe VaultedBilling::Gateway do
     end
   end
 
+  context 'purchase' do
+    it 'raises NotImplementedError' do
+      expect { gateway.purchase(customer, credit_card, 1) }.to raise_error(NotImplementedError)
+    end
+  end
+
   context 'refund' do
     it 'raises NotImplementedError' do
       expect { gateway.refund('transactionid', 1) }.to raise_error(NotImplementedError)

@@ -94,6 +94,22 @@ module VaultedBilling
         respond_with(credit_card, result, :success => result.success?)
       end
 
+      def purchase(customer, credit_card, amount)
+        customer = customer.to_vaulted_billing
+        credit_card = credit_card.to_vaulted_billing
+        result = post_data(build_request('createCustomerProfileTransactionRequest') { |xml|
+          xml.transaction do
+            xml.profileTransAuthCapture do
+              xml.amount amount
+              xml.customerProfileId customer.vault_id
+              xml.customerPaymentProfileId credit_card.vault_id
+            end
+          end
+          xml.extraOptions 'x_duplicate_window=0'
+        })
+        respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
+      end
+
       def authorize(customer, credit_card, amount)
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing

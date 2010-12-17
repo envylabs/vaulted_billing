@@ -297,6 +297,47 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
     end
   end
 
+  context 'purchase' do
+    cached_request_context 'with a successful result',
+      :scope => 'authorize_net_cim_purchase_success' do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject { gateway.purchase(customer, credit_card, 5.00) }
+
+      it_should_behave_like 'a transaction request'
+
+      it 'is successful' do
+        should be_success
+      end
+    end
+
+    cached_request_context 'with an unsuccessful result',
+      :scope => 'authorize_net_cim_purchase_failure' do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject { gateway.purchase(customer, credit_card, 0.00) }
+
+      it 'returns a transaction' do
+        subject.should be_kind_of VaultedBilling::Transaction
+      end
+
+      it 'is unsuccessful' do
+        should_not be_success
+      end
+    end
+
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject { gateway.purchase(customer, credit_card, 1.00) }
+      it_should_behave_like 'a failed connection attempt'
+
+      it 'reports a transaction exception' do
+        subject.message.should == 'There was a problem communicating with the card processor.'
+      end
+    end
+  end
+
   context 'capture' do
     cached_request_context 'with a successful result',
       :scope => 'authorize_net_cim_capture_success' do

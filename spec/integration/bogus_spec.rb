@@ -89,6 +89,17 @@ describe VaultedBilling::Gateways::Bogus do
     end
   end
 
+  context 'purchase' do
+    let(:customer) { Factory.build(:existing_customer) }
+    let(:credit_card) { Factory.build(:existing_credit_card) }
+    subject { gateway.purchase(customer, credit_card, 1) }
+    it_should_behave_like 'a transaction request'
+
+    it 'is successful' do
+      should be_success
+    end
+  end
+
   context 'void' do
     subject { gateway.void('transaction_id') }
     it_should_behave_like 'a transaction request'

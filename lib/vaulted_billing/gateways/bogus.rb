@@ -36,6 +36,10 @@ module VaultedBilling
         transaction_response
       end
 
+      def purchase(customer, credit_card, amount)
+        transaction_response
+      end
+
       def void(transaction_id)
         transaction_response
       end

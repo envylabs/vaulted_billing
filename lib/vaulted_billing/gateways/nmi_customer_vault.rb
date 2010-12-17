@@ -72,6 +72,16 @@ module VaultedBilling
         respond_with(credit_card, response, :success => response.success?)
       end
 
+      def purchase(customer, credit_card, amount)
+        response = post_data(transaction_data('sale', {
+          :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
+          :amount => amount
+        }))
+        respond_with(new_transaction_from_response(response.body),
+                     response,
+                     :success => response.success?)
+      end
+
       def authorize(customer, credit_card, amount)
         response = post_data(transaction_data('auth', {
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
