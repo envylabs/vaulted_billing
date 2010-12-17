@@ -1,3 +1,9 @@
 .bundle
 *.gem
 vaulted_billing.log
+
+*~
+*.tmp
+*.swp
+*.DS_Store
+thumbs.db
