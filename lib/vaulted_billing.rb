@@ -16,8 +16,9 @@ module VaultedBilling
   ##
   # Return the matching gateway for the name provided.
   # 
-  # * <tt>bogus</tt>:: BogusGateway - always successful, does nothing.
-  # * <tt>nmi_customer_vault</tt>:: NMICustomerVaultGateway
+  # * <tt>:bogus</tt>:: Bogus - always successful, does nothing.
+  # * <tt>:nmi_customer_vault</tt>:: NmiCustomerVault
+  # * <tt>:authorize_net_cim</tt>:: AuthorizeNetCim
   #
   def self.gateway(name)
     Gateways.const_get(name.to_s.camelize)
