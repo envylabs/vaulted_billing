@@ -37,7 +37,7 @@ describe VaultedBilling::HttpsInterface do
     end
 
     after(:each) do
-      WebMock.reset_webmock
+      WebMock.reset!
     end
 
     it 'posts the given data' do
@@ -69,7 +69,7 @@ describe VaultedBilling::HttpsInterface do
       end
 
       after(:each) do
-        WebMock.reset_webmock
+        WebMock.reset!
       end
 
       it 'returns an PostResponse' do
