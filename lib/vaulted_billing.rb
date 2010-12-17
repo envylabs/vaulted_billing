@@ -9,7 +9,7 @@ module VaultedBilling
 
   mattr_accessor :logger
 
-  Dir[File.expand_path(File.join(File.dirname(__FILE__), 'vaulted_billing', 'core_ext', '**', '*.rb'))].each do |extension|
+  Dir[File.expand_path('../vaulted_billing/core_ext/**/*.rb', __FILE__)].each do |extension|
     require extension
   end
 
