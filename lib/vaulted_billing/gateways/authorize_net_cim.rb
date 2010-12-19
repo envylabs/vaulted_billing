@@ -16,8 +16,8 @@ module VaultedBilling
         self.ssl_pem = File.read(File.expand_path(File.join(File.dirname(__FILE__), '..', 'certificate_authorities', 'entrust.pem')))
 
         options = HashWithIndifferentAccess.new(options)
-        @login = options[:username] || VaultedBilling.config.authorize_net_cim.username.dup
-        @password = options[:password] || VaultedBilling.config.authorize_net_cim.password.dup
+        @login = options[:username] || VaultedBilling.config.authorize_net_cim.username
+        @password = options[:password] || VaultedBilling.config.authorize_net_cim.password
         self.use_test_uri = options.has_key?(:test) ? options[:test] : VaultedBilling.config.authorize_net_cim.test_mode
       end
 
