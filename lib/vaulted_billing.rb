@@ -1,5 +1,6 @@
 module VaultedBilling
   autoload :Version, 'vaulted_billing/version'
+  autoload :Configuration, 'vaulted_billing/configuration'
   autoload :Gateway, 'vaulted_billing/gateway'
   autoload :Gateways, 'vaulted_billing/gateways'
   autoload :Customer, 'vaulted_billing/customer'
@@ -7,7 +8,7 @@ module VaultedBilling
   autoload :Transaction, 'vaulted_billing/transaction'
   autoload :HttpsInterface, 'vaulted_billing/https_interface'
 
-  mattr_accessor :logger
+  mattr_accessor :config
 
   Dir[File.expand_path('../vaulted_billing/core_ext/**/*.rb', __FILE__)].each do |extension|
     require extension
@@ -24,8 +25,11 @@ module VaultedBilling
     Gateways.const_get(name.to_s.camelize)
   end
 
-  def self.logger?
-    @@logger.present?
+  def self.config
+    @@config ||= VaultedBilling::Configuration.new
   end
 
+  def self.logger; config.logger; end
+  def self.logger=(input); config.logger = input; end
+  def self.logger?; config.logger?; end
 end

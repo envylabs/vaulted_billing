@@ -20,9 +20,9 @@ module VaultedBilling
         self.ssl_pem = File.read(File.expand_path(File.join(File.dirname(__FILE__), '..', 'certificate_authorities', 'verisign.pem')))
 
         options = HashWithIndifferentAccess.new(options)
-        @username = options[:username]
-        @password = options[:password]
-        self.use_test_uri = options[:test]
+        @username = options[:username] || VaultedBilling.config.nmi_customer_vault.username.dup
+        @password = options[:password] || VaultedBilling.config.nmi_customer_vault.password.dup
+        self.use_test_uri = options.has_key?(:test) ? options[:test] : VaultedBilling.config.nmi_customer_vault.test_mode
       end
 
       ##
