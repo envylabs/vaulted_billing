@@ -29,6 +29,10 @@ module VaultedBilling
     @@config ||= VaultedBilling::Configuration.new
   end
 
+  def self.set_config(options = {})
+    @@config = VaultedBilling::Configuration.new(options)
+  end
+
   def self.logger; config.logger; end
   def self.logger=(input); config.logger = input; end
   def self.logger?; config.logger?; end
