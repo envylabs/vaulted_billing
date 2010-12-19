@@ -18,7 +18,7 @@ module VaultedBilling
         options = HashWithIndifferentAccess.new(options)
         @login = options[:username] || VaultedBilling.config.authorize_net_cim.username
         @password = options[:password] || VaultedBilling.config.authorize_net_cim.password
-        self.use_test_uri = options.has_key?(:test) ? options[:test] : VaultedBilling.config.authorize_net_cim.test_mode
+        self.use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.authorize_net_cim.test_mode || VaultedBilling.config.test_mode)
       end
 
       def add_customer(customer)

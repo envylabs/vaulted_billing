@@ -22,7 +22,7 @@ module VaultedBilling
         options = HashWithIndifferentAccess.new(options)
         @username = options[:username] || VaultedBilling.config.nmi_customer_vault.username
         @password = options[:password] || VaultedBilling.config.nmi_customer_vault.password
-        self.use_test_uri = options.has_key?(:test) ? options[:test] : VaultedBilling.config.nmi_customer_vault.test_mode
+        self.use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.nmi_customer_vault.test_mode || VaultedBilling.config.test_mode)
       end
 
       ##
