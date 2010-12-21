@@ -1,5 +1,5 @@
 VCR.config do |config|
-  config.cassette_library_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'net'))
+  config.cassette_library_dir = File.expand_path('../../fixtures/net', __FILE__)
   config.stub_with :webmock
   config.ignore_localhost = true
   config.default_cassette_options = {

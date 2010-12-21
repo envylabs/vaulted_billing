@@ -1,3 +1,3 @@
-Dir[File.expand_path(File.join(File.dirname(__FILE__), '..', 'factories', '**', '*.rb'))].each do |factory|
+Dir[File.expand_path('../../factories/**/*.rb', __FILE__)].each do |factory|
   require factory
 end
