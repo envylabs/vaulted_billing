@@ -6,6 +6,7 @@ module VaultedBilling
     attr_accessor :cvv_response
     attr_accessor :code
     attr_accessor :message
+    attr_accessor :masked_card_number
 
     def initialize(attributes = {})
       attributes.each_pair do |key, value|
