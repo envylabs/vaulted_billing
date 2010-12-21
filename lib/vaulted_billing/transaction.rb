@@ -27,7 +27,8 @@ module VaultedBilling
         :avs_response => avs_response,
         :cvv_response => cvv_response,
         :code => code,
-        :message => message
+        :message => message,
+        :masked_card_number => masked_card_number
       }
     end
   end
