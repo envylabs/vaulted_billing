@@ -48,7 +48,7 @@ module VaultedBilling
         transaction_response
       end
 
-      def refund(transaction_id, amount)
+      def refund(transaction_id, amount, options = {})
         transaction_response
       end
 
@@ -63,7 +63,8 @@ module VaultedBilling
       def transaction_response
         respond_with VaultedBilling::Transaction.new({
           :id => new_identifier,
-          :authcode => new_identifier[0..5]
+          :authcode => new_identifier[0..5],
+          :masked_card_number => "XXXX%04d" % [rand(9999)]
         })
       end
     end

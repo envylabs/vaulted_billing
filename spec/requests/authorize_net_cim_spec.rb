@@ -265,9 +265,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
 
       it_should_behave_like 'a transaction request'
 
-      it 'is successful' do
-        should be_success
-      end
+      it { should be_success }
+      its(:masked_card_number) { should be_present }
     end
 
     cached_request_context 'with an unsuccessful result',
@@ -280,9 +279,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         subject.should be_kind_of VaultedBilling::Transaction
       end
 
-      it 'is unsuccessful' do
-        should_not be_success
-      end
+      it { should_not be_success }
+      its(:masked_card_number) { should be_blank }
     end
 
     request_exception_context do
@@ -306,9 +304,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
 
       it_should_behave_like 'a transaction request'
 
-      it 'is successful' do
-        should be_success
-      end
+      it { should be_success }
+      its(:masked_card_number) { should be_present }
     end
 
     cached_request_context 'with an unsuccessful result',
@@ -321,9 +318,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         subject.should be_kind_of VaultedBilling::Transaction
       end
 
-      it 'is unsuccessful' do
-        should_not be_success
-      end
+      it { should_not be_success }
+      its(:masked_card_number) { should be_blank }
     end
 
     request_exception_context do
@@ -349,10 +345,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
 
       it_should_behave_like 'a transaction request'
-
-      it 'is successful' do
-        should be_success
-      end
+      it { should be_success }
+      its(:masked_card_number) { should be_present }
     end
 
     cached_request_context 'with an unsuccessful result',
@@ -365,10 +359,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
 
       it_should_behave_like 'a transaction request'
-
-      it 'is unsuccessful' do
-        should_not be_success
-      end
+      it { should_not be_success }
+      its(:masked_card_number) { should be_blank }
     end
 
     request_exception_context do
@@ -387,21 +379,56 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'refund' do
-    before(:each) { pending 'Need a settled transaction to test against' }
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_refund_success' do
-      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
-      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+    context 'with a successful result' do
       subject do
-        auth_transaction = gateway.authorize(customer, credit_card, 10.00)
-        capture_transaction = gateway.capture(auth_transaction.id, 10.00)
-        gateway.refund(capture_transaction.id, 3.00)
+        customer = credit_card = purchase_transaction = nil
+
+        use_cached_requests(:scope => 'authorize_net_cim_refund_success') do
+          customer = gateway.add_customer(Factory.build(:customer))
+          credit_card = gateway.add_customer_credit_card(customer, Factory.build(:credit_card))
+          purchase_transaction = gateway.purchase(customer, credit_card, 10.00)
+        end
+
+        use_cached_requests(:scope => 'authorize_net_cim_refund_success_2') do
+          gateway.refund(purchase_transaction.id, 3.00, :masked_card_number => purchase_transaction.masked_card_number)
+        end
       end
 
       it_should_behave_like 'a transaction request'
+      it { should be_success }
+      its(:masked_card_number) { should be_present }
+    end
 
-      it 'is successful' do
-        should be_success
+    context 'with an unsuccessful result' do
+      subject do
+        customer = credit_card = purchase_transaction = nil
+
+        use_cached_requests(:scope => 'authorize_net_cim_refund_failure', :record => :new_episodes) do
+          customer = gateway.add_customer(Factory.build(:customer))
+          credit_card = gateway.add_customer_credit_card(customer, Factory.build(:credit_card))
+          purchase_transaction = gateway.purchase(customer, credit_card, 10.00)
+        end
+
+        use_cached_requests(:scope => 'authorize_net_cim_refund_failure_2', :record => :new_episodes) do
+          gateway.refund(purchase_transaction.id, 12.00, :masked_card_number => purchase_transaction.masked_card_number)
+        end
+      end
+
+      it_should_behave_like 'a transaction request'
+      it { should_not be_success }
+      its(:masked_card_number) { should be_present }
+    end
+
+    request_exception_context do
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+      subject do
+        gateway.refund('123456', 10.00)
+      end
+      it_should_behave_like 'a failed connection attempt'
+
+      it 'reports a transaction exception' do
+        subject.message.should == 'There was a problem communicating with the card processor.'
       end
     end
   end
@@ -417,28 +444,22 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
 
       it_should_behave_like 'a transaction request'
-
-      it 'is successful' do
-        should be_success
-      end
+      it { should be_success }
+      its(:masked_card_number) { should be_present }
     end
 
     cached_request_context 'with an unsuccessful result',
       :scope => 'authorize_net_cim_void_failure' do
-      before(:each) { pending 'Need a settled transaction to test against' }
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject do
-        auth_transaction = gateway.authorize(customer, credit_card, 10.00)
-        capture_transaction = gateway.capture(auth_transaction.id, 10.00)
-        gateway.void(auth_transaction.id)
+        purchase_transaction = gateway.purchase(customer, credit_card, 10.00)
+        gateway.void(purchase_transaction.id)
       end
 
       it_should_behave_like 'a transaction request'
-
-      it 'is unsuccessful' do
-        should_not be_success
-      end
+      it { should_not be_success }
+      its(:masked_card_number) { should be_blank }
     end
 
     request_exception_context do

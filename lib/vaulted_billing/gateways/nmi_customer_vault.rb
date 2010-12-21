@@ -102,7 +102,7 @@ module VaultedBilling
                      :success => response.success?)
       end
 
-      def refund(transaction_id, amount)
+      def refund(transaction_id, amount, options = {})
         response = post_data(transaction_data('refund', {
           :transactionid => transaction_id,
           :amount => amount

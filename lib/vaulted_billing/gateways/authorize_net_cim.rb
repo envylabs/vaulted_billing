@@ -139,11 +139,14 @@ module VaultedBilling
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
-      def refund(transaction_id, amount)
+      def refund(transaction_id, amount, options = {})
         result = post_data(build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransRefund do
               xml.amount amount
+              xml.customerProfileId options[:customer_vault_id] if options[:customer_vault_id]
+              xml.customerPaymentProfileId options[:credit_card_vault_id] if options[:credit_card_vault_id]
+              xml.creditCardNumberMasked options[:masked_card_number] if options[:masked_card_number]
               xml.transId transaction_id
             end
           end
@@ -241,7 +244,8 @@ module VaultedBilling
           :cvv_response => direct_response['cvv_response'],
           :authcode => direct_response['approval_code'],
           :message => direct_response['message'] || response[root]['messages']['text'],
-          :code => response[root]['messages']['code']
+          :code => response[root]['messages']['code'],
+          :masked_card_number => direct_response['masked_card_number']
         })
       end
 
@@ -253,7 +257,8 @@ module VaultedBilling
           'approval_code' => fields[4],
           'avs_response' => fields[5],
           'transaction_id' => fields[6],
-          'cvv_response' => fields[39]
+          'cvv_response' => fields[39],
+          'masked_card_number' => fields[50]
         }
       end
 

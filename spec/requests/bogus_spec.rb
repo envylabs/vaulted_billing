@@ -71,22 +71,17 @@ describe VaultedBilling::Gateways::Bogus do
     subject { gateway.authorize(customer, credit_card, 1) }
     it_should_behave_like 'a transaction request'
 
-    it "is successful" do
-      subject.should be_success
-    end
-
-    it "returns an authcode" do
-      subject.authcode.should_not be_nil
-    end
+    it { should be_success }
+    its(:authcode) { should be_present }
+    its(:masked_card_number) { should be_present }
   end
 
   context 'capture' do
     subject { gateway.capture('transaction_id', 1) }
     it_should_behave_like 'a transaction request'
 
-    it "is successful" do
-      subject.should be_success
-    end
+    it { should be_success }
+    its(:masked_card_number) { should be_present }
   end
 
   context 'purchase' do
@@ -95,26 +90,23 @@ describe VaultedBilling::Gateways::Bogus do
     subject { gateway.purchase(customer, credit_card, 1) }
     it_should_behave_like 'a transaction request'
 
-    it 'is successful' do
-      should be_success
-    end
+    it { should be_success }
+    its(:masked_card_number) { should be_present }
   end
 
   context 'void' do
     subject { gateway.void('transaction_id') }
     it_should_behave_like 'a transaction request'
 
-    it "is successful" do
-      subject.should be_success
-    end
+    it { should be_success }
+    its(:masked_card_number) { should be_present }
   end
 
   context 'refund' do
     subject { gateway.refund('transaction_id', 1) }
     it_should_behave_like 'a transaction request'
 
-    it "is successful" do
-      subject.should be_success
-    end
+    it { should be_success }
+    its(:masked_card_number) { should be_present }
   end
 end

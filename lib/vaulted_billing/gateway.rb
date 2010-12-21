@@ -46,7 +46,7 @@ module VaultedBilling
       raise NotImplementedError
     end
 
-    def refund(transaction_id, amount)
+    def refund(transaction_id, amount, options = {})
       raise NotImplementedError
     end
 
