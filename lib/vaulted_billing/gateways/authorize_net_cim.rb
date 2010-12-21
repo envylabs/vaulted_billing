@@ -146,7 +146,7 @@ module VaultedBilling
               xml.amount amount
               xml.customerProfileId options[:customer_vault_id] if options[:customer_vault_id]
               xml.customerPaymentProfileId options[:credit_card_vault_id] if options[:credit_card_vault_id]
-              xml.creditCardNumberMasked options[:masked_card_number] if options[:masked_card_number]
+              xml.creditCardNumberMasked mask_card_number(options[:masked_card_number]) if options[:masked_card_number]
               xml.transId transaction_id
             end
           end
@@ -272,6 +272,10 @@ module VaultedBilling
             o.error_code = result.body[result.body.keys.first]['messages']['message']['code']
           end
         end
+      end
+
+      def mask_card_number(input)
+        "XXXX%04d" % [input.to_s[-4..-1].to_i]
       end
 
     end
