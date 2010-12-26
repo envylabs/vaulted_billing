@@ -1,4 +1,80 @@
 # VaultedBilling
 
-A generic interface to integrate with multiple vault-style Gateways (Authorize.net CIM, NMI Customer Vault, etc.)
+VaultedBilling is an abstraction library for use when working with "vaulted" payment processors.  These processors store your customer's data - being their credit card number, verification number, name, address, and more - on their systems to alleviate your need for expensive software auditing, hardware security, and more.  In nearly all cases, these processors provide you a unique customer and/or payment token in exchange for your actual customer payment information.  Then, all current and future interactions with the payment processor on behalf of the customer are made using their identifiers, rather than credit card details.
 
+Since you only store identifiers on your end, you are only responsible for: 1) the responsible reception, 2) responsible retransmission, and 3) no local storage of card details, when it comes to PCI compliance.  Those items are solved with the following:
+
+1. Get an SSL certificate from a trusted provider and use HTTPS when collecting card information,
+2. Use a verified SSL connection when contacting your payment processor for storage or queries, and
+3. Do not log a full credit card number or verification code (CVV) to your application or server log files, your database (even temporarily), or anywhere else.  Instead, collect and immediately re-transmit to your processor for storage.
+
+## Supported Services
+
+VaultedBilling supports the following payment providers:
+
+* [Authorize.net Customer Information Manager](http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/)
+* [Network Merchant Inc. Customer Vault](https://www.nmi.com/newsmedia/index.php?ann_id=14)
+
+VaultedBilling also supports the following fictitious payment provider for testing purposes:
+
+* Bogus
+
+## Installation
+
+VaultedBilling should be installed as a RubyGem dependency:
+
+    gem install vaulted_billing
+
+If your application uses [Bundler](http://gembundler.com/), then add the following to your Gemfile:
+
+    gem 'vaulted_billing'
+
+## Usage
+
+Simple (not particularly clean or recommended) example:
+
+    require 'vaulted_billing'
+    
+    bogus = VaultedBilling::Gateways::Bogus.new(:username => 'Foo', :password => 'Bar')
+    customer = VaultedBilling::Customer.new(:email => "foo@example.com")
+    credit_card = VaultedBilling::CreditCard.new({
+      :card_number => '4111111111111111',
+      :cvv_number => '123',
+      :expires_on => Date.today + 1.year,
+      :first_name => 'John',
+      :last_name => 'Doe',
+      :street_address => '123 That Way',
+      :locality => 'Orlando',
+      :region => 'FL',
+      :postal_code => '32801',
+      :country => 'US',
+      :phone => '555-555-5555'
+    })
+    
+    response = bogus.add_customer(customer)
+    
+    if response.success?
+      # normally, you'd store the vault_id on your local customer object,
+      # because you use this when referencing that customer in the future.
+      # But, for now, we'll just:
+      customer.vault_id = response.vault_id
+
+      response = bogus.add_customer_credit_card(customer, credit_card)
+
+      if response.success?
+        # Again, same as above, but for the credit card information:
+        credit_card.vault_id = response.vault_id
+
+        puts "Wow! We stored a the payment credentials successfully!"
+      end
+    end
+
+### Real world example
+
+TODO: Real world example coming soon.
+
+## Testing
+
+When you're manually testing your application - meaning Development mode - it is often best to actually have a "sandbox" or "test" account with your payment processor.  In this mode, you should use those credentials with VaultedBilling and indicate to VaultedBilling that the processor is in test mode, either by setting it in the VaultedBilling::Configuration (see Configuration) or when you instantiate your Gateway.  You should note that all gateways, except for the Bogus gateway, attempt to open network connections when in use.  So, if you are testing with them (which is suggested), you should look into an HTTP mocking library like [VCR](https://github.com/myronmarston/vcr) with [WebMock](https://github.com/bblimke/webmock).
+
+Strictly for testing interaction with the VaultedBilling library, there is a "Bogus" gateway provided.  This processor will always successfully store customer and credit card information and return their identifiers.  It will also always respond successfully to transaction (authorize, capture, refund, void, etc.) requests.  This processor does not attempt to make network requests to any 3rd parties.  It is not recommended that you solely test against this gateway, as you will find that your actual payment processor may have quirks which are unique and cannot be easily replicated.
