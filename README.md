@@ -43,21 +43,25 @@ Simple (not particularly clean or recommended) example:
       :expires_on => Date.today + 1.year
     })
     
-    response = bogus.add_customer(customer)
-    
-    if response.success?
-      # normally, you'd store the vault_id on your local customer object,
-      # because you use this when referencing that customer in the future.
-      # But, for now, we'll just:
-      customer.vault_id = response.vault_id
+    bogus.add_customer(customer).tap do |customer_response|
+      if customer_response.success?
+        # normally, you'd store the vault_id on your local customer object,
+        # because you use this when referencing that customer in the future.
+        # But, for now, we'll just:
+        customer.vault_id = customer_response.vault_id
 
-      response = bogus.add_customer_credit_card(customer, credit_card)
+        bogus.add_customer_credit_card(customer, credit_card).tap do |credit_response|
+          if response.success?
+            # Again, same as above, but for the credit card information:
+            credit_card.vault_id = credit_response.vault_id
 
-      if response.success?
-        # Again, same as above, but for the credit card information:
-        credit_card.vault_id = response.vault_id
+            puts "Wow! We stored a the payment credentials successfully!"
 
-        puts "Wow! We stored a the payment credentials successfully!"
+            if bogus.purchase(customer, credit_card, 10.00).success?
+              puts "OMG WE'RE RICH!"
+            end
+          end
+        end
       end
     end
 
