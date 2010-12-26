@@ -2,6 +2,16 @@ require 'digest/md5'
 
 module VaultedBilling
   module Gateways
+    ##
+    # The Bogus gateway should only be used for simple interface testing
+    # to the VaultedBilling library.  All customer and credit card requests
+    # will always return successfully.  All transaction requests (purchase,
+    # authorize, capture, etc.) will always return successfully.
+    #
+    # The primary purpose of this gateway is to provide you with an end
+    # point for testing your interface, as well as a fairly reasonable
+    # gateway for performing simple, non-network based tests against.
+    #
     class Bogus
       include VaultedBilling::Gateway
 
