@@ -1,7 +1,9 @@
 module VaultedBilling
   ##
   # This class encapsulates the data returned by the gateway / payment
-  # processor for transaction requests.
+  # processor for transaction requests.  An instance of this class will
+  # be returned from all transaction requests (authorize, capture, 
+  # refund, void, etc.) performed against a gateway.
   #
   class Transaction
     # The transaction identifier from the processor
