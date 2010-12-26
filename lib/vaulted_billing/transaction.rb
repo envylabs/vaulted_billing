@@ -1,11 +1,28 @@
 module VaultedBilling
+  ##
+  # This class encapsulates the data returned by the gateway / payment
+  # processor for transaction requests.
+  #
   class Transaction
+    # The transaction identifier from the processor
     attr_accessor :id
+
+    # The authorization code for the transaction
     attr_accessor :authcode
+
+    # The address verification service response
     attr_accessor :avs_response
+
+    # The card verification number response
     attr_accessor :cvv_response
+
+    # The response code from the processor
     attr_accessor :code
+
+    # The message from the processor
     attr_accessor :message
+
+    # The masked card number used in the transaction, if available
     attr_accessor :masked_card_number
 
     def initialize(attributes = {})
