@@ -40,15 +40,7 @@ Simple (not particularly clean or recommended) example:
     credit_card = VaultedBilling::CreditCard.new({
       :card_number => '4111111111111111',
       :cvv_number => '123',
-      :expires_on => Date.today + 1.year,
-      :first_name => 'John',
-      :last_name => 'Doe',
-      :street_address => '123 That Way',
-      :locality => 'Orlando',
-      :region => 'FL',
-      :postal_code => '32801',
-      :country => 'US',
-      :phone => '555-555-5555'
+      :expires_on => Date.today + 1.year
     })
     
     response = bogus.add_customer(customer)
