@@ -8,8 +8,6 @@ module VaultedBilling
   autoload :Transaction, 'vaulted_billing/transaction'
   autoload :HttpsInterface, 'vaulted_billing/https_interface'
 
-  mattr_accessor :config
-
   Dir[File.expand_path('../vaulted_billing/core_ext/**/*.rb', __FILE__)].each do |extension|
     require extension
   end
@@ -25,10 +23,27 @@ module VaultedBilling
     Gateways.const_get(name.to_s.camelize)
   end
 
+  ##
+  # Returns the VaultedBilling::Configuration.  This is primarily used to
+  # modify the default settings used when new gateways are instantiated.
+  #
   def self.config
     @@config ||= VaultedBilling::Configuration.new
   end
 
+  ##
+  # A helper method to allow you to set the configuration en mass via
+  # a properly formatted Hash of options:
+  #
+  #     VaultedBilling.set_config({
+  #       :test_mode => false,
+  #       :authorize_net_cim => {
+  #         :username => 'APIName',
+  #         :password => 'APIPassword',
+  #         :test_mode => false,
+  #       :nmi_customer_vault => { ... }
+  #     })
+  #
   def self.set_config(options = {})
     @@config = VaultedBilling::Configuration.new(options)
   end
