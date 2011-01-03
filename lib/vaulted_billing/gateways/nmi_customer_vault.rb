@@ -17,7 +17,6 @@ module VaultedBilling
 
       def initialize(options = {})
         self.live_uri = self.test_uri = "https://secure.nmi.com/api/transact.php"
-        self.ssl_pem = File.read(File.expand_path(File.join(File.dirname(__FILE__), '..', 'certificate_authorities', 'verisign.pem')))
 
         options = HashWithIndifferentAccess.new(options)
         @username = options[:username] || VaultedBilling.config.nmi_customer_vault.username

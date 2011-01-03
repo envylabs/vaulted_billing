@@ -13,7 +13,6 @@ module VaultedBilling
       def initialize(options = {})
         self.test_uri = 'https://apitest.authorize.net/xml/v1/request.api'
         self.live_uri = 'https://api.authorize.net/xml/v1/request.api'
-        self.ssl_pem = File.read(File.expand_path(File.join(File.dirname(__FILE__), '..', 'certificate_authorities', 'entrust.pem')))
 
         options = HashWithIndifferentAccess.new(options)
         @login = options[:username] || VaultedBilling.config.authorize_net_cim.username

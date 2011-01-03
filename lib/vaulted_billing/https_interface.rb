@@ -41,7 +41,6 @@ module VaultedBilling
     end
 
     attr_writer :use_test_uri
-    attr_writer :ssl_pem
 
     def live_uri=(input)
       @live_uri = input ? URI.parse(input) : nil
@@ -70,12 +69,8 @@ module VaultedBilling
       request.body = data
       response = Net::HTTP.new(uri.host, uri.port).tap do |https|
         https.use_ssl = true
-        if @ssl_pem
-          https.cert = OpenSSL::X509::Certificate.new(@ssl_pem)
-          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
-        else
-          https.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        end
+        https.ca_file = VaultedBilling.config.ca_file
+        https.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
 
       before_post_caller(data)

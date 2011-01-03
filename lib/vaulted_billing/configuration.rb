@@ -36,6 +36,8 @@ module VaultedBilling
     attr_accessor :logger
     alias :logger? :logger
 
+    attr_accessor :ca_file
+
     attr_accessor :test_mode
 
     ##
@@ -52,6 +54,7 @@ module VaultedBilling
       @_authorize_net_cim = GatewayConfiguration.new(options[:authorize_net_cim]) if options[:authorize_net_cim]
       @_nmi_customer_vault = GatewayConfiguration.new(options[:nmi_customer_vault]) if options[:nmi_customer_vault]
       @_bogus = GatewayConfiguration.new(options[:bogus]) if options[:bogus]
+      @ca_file = File.expand_path('../../ext/cacert.pem', __FILE__)
     end
 
     ##

@@ -14,6 +14,21 @@ describe VaultedBilling::Configuration do
     it { config.test_mode = false; should be_false }
   end
 
+  context 'ca_file' do
+    subject { config.ca_file }
+
+    context 'by default' do
+      it { should match %r{/ext/cacert\.pem$} }
+
+      it 'exists' do
+        puts config.ca_file.inspect
+        File.exist?(config.ca_file).should be_true
+      end
+    end
+
+    it { config.ca_file = 'foo.txt'; should == 'foo.txt' }
+  end
+
   [ 'authorize_net_cim',
     'nmi_customer_vault',
     'bogus' ].each do |gateway|
