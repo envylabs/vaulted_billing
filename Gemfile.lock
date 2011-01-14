@@ -8,7 +8,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (2.3.10)
+    activesupport (3.0.0)
     addressable (2.2.2)
     builder (3.0.0)
     crack (0.1.8)
