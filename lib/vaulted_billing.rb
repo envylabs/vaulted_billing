@@ -1,3 +1,14 @@
+begin
+  require 'active_support/core_ext/object/blank'
+  require 'active_support/core_ext/object/try'
+  require 'active_support/core_ext/hash/conversions'
+  require 'active_support/core_ext/hash/indifferent_access'
+  require 'active_support/core_ext/hash/reverse_merge'
+  require 'active_support/core_ext/string/inflections'
+rescue LoadError
+  require 'active_support'
+end
+
 module VaultedBilling
   autoload :Version, 'vaulted_billing/version'
   autoload :Configuration, 'vaulted_billing/configuration'
