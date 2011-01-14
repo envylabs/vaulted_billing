@@ -21,7 +21,6 @@ describe VaultedBilling::Configuration do
       it { should match %r{/ext/cacert\.pem$} }
 
       it 'exists' do
-        puts config.ca_file.inspect
         File.exist?(config.ca_file).should be_true
       end
     end
