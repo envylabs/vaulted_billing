@@ -21,6 +21,7 @@ module VaultedBilling
         options = HashWithIndifferentAccess.new(options)
         @username = options[:username] || VaultedBilling.config.nmi_customer_vault.username
         @password = options[:password] || VaultedBilling.config.nmi_customer_vault.password
+        @raw_options = options[:raw_options] || VaultedBilling.config.nmi_customer_vault.raw_options
         self.use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.nmi_customer_vault.test_mode || VaultedBilling.config.test_mode)
       end
 
@@ -152,7 +153,9 @@ module VaultedBilling
       def transaction_data(method, overrides = {})
         core_data.merge({
           :type => method.to_s
-        }).merge(overrides).to_querystring
+        }).merge(overrides).to_querystring.tap do |query|
+          query << "&" + @raw_options if @raw_options
+        end
       end
 
       def storage_data(method, customer, credit_card)

@@ -12,7 +12,7 @@ module VaultedBilling
     # gateway in the library.
     #
     class GatewayConfiguration
-      attr_accessor :username, :password, :test_mode
+      attr_accessor :username, :password, :test_mode, :raw_options
 
       ##
       # Possible options are:
@@ -27,6 +27,7 @@ module VaultedBilling
         options = options.with_indifferent_access
         self.username = options[:username]
         self.password = options[:password]
+        self.raw_options = options[:raw_options]
         self.test_mode = options.has_key?(:test_mode) ?
           options[:test_mode] : true
         yield(self) if block_given?

@@ -363,4 +363,23 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it_should_behave_like 'a failed connection attempt'
     end
   end
+
+  context 'with raw_options' do
+    cached_request_context 'with a successful result',
+      :scope => 'nmi_customer_vault_authorize_success' do
+      let(:gateway) { VaultedBilling.gateway(:nmi_customer_vault).new(:username => 'demo', :password => 'password', :raw_options => 'dup_seconds=1') }
+      let(:customer) { gateway.add_customer(Factory.build(:customer)) }
+      let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
+
+      it 'includes the options in the request' do
+        customer
+        credit_card
+        gateway.should_receive(:post_data).
+          with(%r{&dup_seconds=1}m).
+          and_raise(TestException)
+        expect { gateway.authorize(customer, credit_card, 10.00) }.
+          to raise_error(TestException)
+      end
+    end
+  end
 end

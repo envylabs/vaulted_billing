@@ -36,6 +36,7 @@ describe VaultedBilling::Configuration do
         subject { config.send(gateway) }
         its(:username) { should be_nil }
         its(:password) { should be_nil }
+        its(:raw_options) { should be_nil }
         its(:test_mode) { should be_true }
       end
 
@@ -44,6 +45,7 @@ describe VaultedBilling::Configuration do
           VaultedBilling::Configuration.new(gateway => {
             :username => 'username',
             :password => 'password',
+            :raw_options => 'x_duplicate_window=1',
             :test_mode => false
           })
         end
@@ -51,6 +53,7 @@ describe VaultedBilling::Configuration do
 
         its(:username) { should == 'username' }
         its(:password) { should == 'password' }
+        its(:raw_options) { should == 'x_duplicate_window=1' }
         its(:test_mode) { should be_false }
       end
     end

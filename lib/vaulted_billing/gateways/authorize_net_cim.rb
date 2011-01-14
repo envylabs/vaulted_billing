@@ -14,9 +14,10 @@ module VaultedBilling
         self.test_uri = 'https://apitest.authorize.net/xml/v1/request.api'
         self.live_uri = 'https://api.authorize.net/xml/v1/request.api'
 
-        options = HashWithIndifferentAccess.new(options)
+        options = options.symbolize_keys!
         @login = options[:username] || VaultedBilling.config.authorize_net_cim.username
         @password = options[:password] || VaultedBilling.config.authorize_net_cim.password
+        @raw_options = options[:raw_options] || VaultedBilling.config.authorize_net_cim.raw_options
         self.use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.authorize_net_cim.test_mode || VaultedBilling.config.test_mode)
       end
 
@@ -104,7 +105,7 @@ module VaultedBilling
               xml.customerPaymentProfileId credit_card.vault_id
             end
           end
-          xml.extraOptions 'x_duplicate_window=0'
+          xml.extraOptions @raw_options.presence
         })
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
@@ -120,7 +121,7 @@ module VaultedBilling
               xml.customerPaymentProfileId credit_card.vault_id
             end
           end
-          xml.extraOptions 'x_duplicate_window=0'
+          xml.extraOptions @raw_options.presence
         })
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
@@ -133,7 +134,7 @@ module VaultedBilling
               xml.transId transaction_id
             end
           end
-          xml.extraOptions 'x_duplicate_window=0'
+          xml.extraOptions @raw_options.presence
         })
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
@@ -149,7 +150,7 @@ module VaultedBilling
               xml.transId transaction_id
             end
           end
-          xml.extraOptions 'x_duplicate_window=0'
+          xml.extraOptions @raw_options.presence
         })
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
@@ -161,7 +162,7 @@ module VaultedBilling
               xml.transId transaction_id
             end
           end
-          xml.extraOptions 'x_duplicate_window=0'
+          xml.extraOptions @raw_options.presence
         })
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end

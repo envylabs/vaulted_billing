@@ -1,0 +1,1 @@
+class TestException < RuntimeError; end
