@@ -1,3 +1,3 @@
 module VaultedBilling
-  Version = '0.0.15'
+  Version = '1.0.0'
 end
