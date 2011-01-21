@@ -12,7 +12,8 @@ module VaultedBilling
           return {} if string.nil?
           ::Hash[*(string.split(/&/).
             collect { |i| i.split(/=/) }.
-            collect { |e| e.size == 1 ? (e << '') : e }.flatten)]
+            collect { |e| e.size == 1 ? (e << '') : e }.flatten.
+            collect { |e| CGI.unescape(e) })]
         end
       end
     end
