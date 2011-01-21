@@ -1,3 +1,5 @@
+require 'cgi'
+
 module VaultedBilling
   module CoreExt
     module Hash
