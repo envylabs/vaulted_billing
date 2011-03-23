@@ -110,7 +110,7 @@ module VaultedBilling
 
     def after_post_caller(response)
       if VaultedBilling.logger?
-        VaultedBilling.logger.info { "Response code %s (HTTP %d), %s" % [response.message, response.code, response.body.inspect] }
+        VaultedBilling.logger.info { "Response code %s (HTTP %s), %s" % [response.message, response.code.presence || '0', response.body.inspect] }
       end
       after_post(response)
     end
