@@ -243,8 +243,8 @@ module VaultedBilling
           :avs_response => direct_response['avs_response'],
           :cvv_response => direct_response['cvv_response'],
           :authcode => direct_response['approval_code'],
-          :message => direct_response['message'] || response[root]['messages']['text'],
-          :code => response[root]['messages']['code'],
+          :message => direct_response['message'] || response[root]['messages']['message']['text'],
+          :code => response[root]['messages']['message']['code'],
           :masked_card_number => direct_response['masked_card_number']
         })
       end

@@ -281,6 +281,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
 
       it { should_not be_success }
       its(:masked_card_number) { should be_blank }
+      its(:message) { should =~ /invalid according to its datatype/ }
+      its(:code) { should == 'E00003' }
     end
 
     request_exception_context do
