@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'builder', '>=2.1.2'
 
   s.add_development_dependency 'rspec', '~>2.4'
-  s.add_development_dependency 'fuubar', '~>0.0.0'
   s.add_development_dependency 'vcr', '~>1.5'
   s.add_development_dependency 'webmock', '~>1.6'
   s.add_development_dependency 'factory_girl', '~>1.3'
