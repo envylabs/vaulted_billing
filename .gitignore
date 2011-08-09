@@ -1,5 +1,8 @@
-.bundle
 *.gem
+.bundle
+Gemfile.lock
+pkg/*
+
 vaulted_billing.log
 
 *~
