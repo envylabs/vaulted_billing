@@ -1,4 +1,4 @@
-# VaultedBilling
+# VaultedBilling [![Build status][ci-image]][ci]
 
 VaultedBilling is an abstraction library for use when working with "vaulted" payment processors.  These processors store your customer's data - being their credit card number, verification number, name, address, and more - on their systems to alleviate your need for expensive software auditing, hardware security, and more.  In nearly all cases, these processors provide you a unique customer and/or payment token in exchange for your actual customer payment information.  Then, all current and future interactions with the payment processor on behalf of the customer are made using their identifiers, rather than credit card details.
 
@@ -12,8 +12,8 @@ Since you only store identifiers on your end, you are only responsible for: 1) t
 
 VaultedBilling supports the following payment providers:
 
-* [Authorize.net Customer Information Manager](http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/)
-* [Network Merchant Inc. Customer Vault](https://www.nmi.com/newsmedia/index.php?ann_id=14)
+* [Authorize.net Customer Information Manager][authorize-net-cim]
+* [Network Merchant Inc. Customer Vault][nmi-vault]
 
 VaultedBilling also supports the following fictitious payment provider for testing purposes:
 
@@ -25,7 +25,7 @@ VaultedBilling should be installed as a RubyGem dependency:
 
     gem install vaulted_billing
 
-If your application uses [Bundler](http://gembundler.com/), then add the following to your Gemfile:
+If your application uses [Bundler][bundler], then add the following to your Gemfile:
 
     gem 'vaulted_billing'
 
@@ -71,6 +71,14 @@ TODO: Real world example coming soon.
 
 ## Testing
 
-When you're manually testing your application - meaning Development mode - it is often best to actually have a "sandbox" or "test" account with your payment processor.  In this mode, you should use those credentials with VaultedBilling and indicate to VaultedBilling that the processor is in test mode, either by setting it in the VaultedBilling::Configuration (see Configuration) or when you instantiate your Gateway.  You should note that all gateways, except for the Bogus gateway, attempt to open network connections when in use.  So, if you are testing with them (which is suggested), you should look into an HTTP mocking library like [VCR](https://github.com/myronmarston/vcr) with [WebMock](https://github.com/bblimke/webmock).
+When you're manually testing your application - meaning Development mode - it is often best to actually have a "sandbox" or "test" account with your payment processor.  In this mode, you should use those credentials with VaultedBilling and indicate to VaultedBilling that the processor is in test mode, either by setting it in the VaultedBilling::Configuration (see Configuration) or when you instantiate your Gateway.  You should note that all gateways, except for the Bogus gateway, attempt to open network connections when in use.  So, if you are testing with them (which is suggested), you should look into an HTTP mocking library like [VCR][vcr] with [WebMock][webmock].
 
 Strictly for testing interaction with the VaultedBilling library, there is a "Bogus" gateway provided.  This processor will always successfully store customer and credit card information and return their identifiers.  It will also always respond successfully to transaction (authorize, capture, refund, void, etc.) requests.  This processor does not attempt to make network requests to any 3rd parties.  It is not recommended that you solely test against this gateway, as you will find that your actual payment processor may have quirks which are unique and cannot be easily replicated.
+
+[ci]: http://travis-ci.org/envylabs/vaulted_billing
+[ci-image]: https://secure.travis-ci.org/envylabs/vaulted_billing.png
+[authorize-net-cim]: http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/
+[nmi-vault]: https://www.nmi.com/newsmedia/index.php?ann_id=14
+[bundler]: http://gembundler.com/
+[vcr]: https://github.com/myronmarston/vcr
+[webmock]: https://github.com/bblimke/webmock
