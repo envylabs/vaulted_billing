@@ -8,3 +8,4 @@ branches:
     - develop
 notifications:
   disabled: true
+script: "cp spec/config.example.yml spec/config.yml; bundle exec rake"
