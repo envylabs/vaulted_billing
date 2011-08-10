@@ -110,7 +110,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
 
-    context 'with a successful result', do
+    context 'with a successful result' do
       use_vcr_cassette 'nmi_customer_vault/update_customer_credit_card/success'
       subject { gateway.update_customer_credit_card(customer, credit_card) }
       it_should_behave_like 'a credit card request'
