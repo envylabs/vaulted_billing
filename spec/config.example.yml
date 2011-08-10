@@ -1,7 +1,11 @@
+test_mode: true
+
 authorize_net_cim:
-  username: authorize-net
-  password: authorize-net
+  username: authorize-net-username
+  password: authorize-net-password
+  test_mode: true
 
 nmi_customer_vault:
-  username: nmi-vault
-  password: nmi-vault
+  username: nmi-vault-username
+  password: nmi-vault-password
+  test_mode: true
