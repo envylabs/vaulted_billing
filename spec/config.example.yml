@@ -1,0 +1,7 @@
+authorize_net_cim:
+  username: authorize-net
+  password: authorize-net
+
+nmi_customer_vault:
+  username: nmi-vault
+  password: nmi-vault

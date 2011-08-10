@@ -1,0 +1,49 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=680 Towne Island&ccexp=0812&ccnumber=4539482164563803&city=West
+      Tevinstad&country=US&customer_vault=add_customer&email=ed_nicolas@rohanboehm.info&first_name=Vance&last_name=Schulist&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=145-778-7486
+      x62048&state=North Dakota&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=01242
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:30:51 GMT
+      server:
+      - Apache
+      content-length:
+      - '150'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=586672847
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=1.0&customer_vault_id=586672847&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&type=sale&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:30:52 GMT
+      server:
+      - Apache
+      content-length:
+      - '164'
+      content-type:
+      - text/html
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1453229177&avsresponse=N&cvvresponse=&orderid=&type=sale&response_code=100&customer_vault_id=586672847
+    http_version: '1.1'

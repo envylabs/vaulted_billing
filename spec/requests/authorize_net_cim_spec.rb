@@ -1,7 +1,7 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
 describe VaultedBilling::Gateways::AuthorizeNetCim do
-  let(:gateway) { VaultedBilling.gateway(:authorize_net_cim).new(:username => 'LOGIN', :password => 'PASSWORD').tap { |g| g.use_test_uri = true } }
+  let(:gateway) { VaultedBilling.gateway(:authorize_net_cim).new }
 
   it 'uses the correct test uri' do
     gateway.use_test_uri = true
@@ -14,8 +14,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'add_customer' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_add_customer_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/add_customer/success'
       let(:customer) { Factory.build(:customer) }
       subject { gateway.add_customer(customer) }
       it_should_behave_like 'a customer request'
@@ -28,8 +28,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       its(:error_code) { should be_nil }
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_add_customer_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/add_customer/failure'
       let(:customer) { VaultedBilling::Customer.new }
       subject { gateway.add_customer(customer) }
 
@@ -41,7 +41,7 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         should_not be_success
       end
 
-      its(:response_message) { should == 'One or more fields in profile must contain a value.' }
+      its(:response_message) { should == 'One or more fields in the profile must contain a value.' }
       its(:error_code) { should == 'E00041' }
     end
 
@@ -55,8 +55,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   context 'update_customer' do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
 
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_update_customer_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/update_customer/success'
       subject { customer.email = 'updated@example.com'; gateway.update_customer(customer) }
 
       it_should_behave_like 'a customer request'
@@ -73,8 +73,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       its(:error_code) { should be_nil }
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_update_customer_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/update_customer/failure'
       subject { customer.vault_id = '1234567890'; gateway.update_customer(customer) }
 
       it 'returns a Customer' do
@@ -85,8 +85,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
         should_not be_success
       end
 
-      its(:response_message) { should == %|The element 'profile' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd' has invalid child element 'merchantCustomerId' in namespace 'AnetApi/xml/v1/schema/AnetApiSchema.xsd'.| }
-      its(:error_code) { should == 'E00003' }
+      its(:response_message) { should == %|The record cannot be found.| }
+      its(:error_code) { should == 'E00040' }
     end
 
     request_exception_context do
@@ -96,8 +96,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'remove_customer' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_remove_customer_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/remove_customer/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       subject { gateway.remove_customer(customer) }
 
@@ -112,8 +112,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_remove_customer_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/remove_customer/failure'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       subject { customer.vault_id = '1234567890'; gateway.remove_customer(customer) }
 
@@ -136,8 +136,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'add_customer_credit_card' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_add_customer_credit_card_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/add_customer_credit_card/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { Factory.build(:credit_card) }
       subject { gateway.add_customer_credit_card(customer, credit_card) }
@@ -149,8 +149,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_add_customer_credit_card_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/add_customer_credit_card/failure'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { Factory.build(:credit_card, :card_number => nil) }
       subject { gateway.add_customer_credit_card(customer, credit_card) }
@@ -173,8 +173,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'update_customer_credit_card' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_update_customer_credit_card_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/update_customer_credit_card/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject { credit_card.expires_on += 365; gateway.update_customer_credit_card(customer, credit_card) }
@@ -190,8 +190,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_update_customer_credit_card_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/update_customer_credit_card/failure'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject { credit_card.card_number = '123456'; gateway.update_customer_credit_card(customer, credit_card) }
@@ -216,8 +216,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'remove_customer_credit_card' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_remove_customer_credit_card_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/remove_customer_credit_card/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject { gateway.remove_customer_credit_card(customer, credit_card) }
@@ -229,8 +229,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       end
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_remove_customer_credit_card_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/remove_customer_credit_card/failure'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject do
@@ -257,8 +257,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'authorize' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_authorize_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/authorize/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject { gateway.authorize(customer, credit_card, 10.00) }
@@ -269,8 +269,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       its(:masked_card_number) { should be_present }
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_authorize_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/authorize/failure'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject { gateway.authorize(customer, credit_card, 0.00) }
@@ -298,8 +298,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'purchase' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_purchase_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/purchase/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject { gateway.purchase(customer, credit_card, 5.00) }
@@ -310,8 +310,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       its(:masked_card_number) { should be_present }
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_purchase_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/purchase/failure'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject { gateway.purchase(customer, credit_card, 0.00) }
@@ -337,8 +337,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'capture' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_capture_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/capture/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject do
@@ -351,8 +351,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       its(:masked_card_number) { should be_present }
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_capture_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/capture/failure'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject do
@@ -382,16 +382,17 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
 
   context 'refund' do
     context 'with a successful result' do
+      before(:each) { pending 'Refund requires a settled transaction to operate against.' }
       subject do
         customer = credit_card = purchase_transaction = nil
 
-        use_cached_requests(:scope => 'authorize_net_cim_refund_success') do
+        use_cached_requests(:scope => 'authorize_net_cim/refund/success') do
           customer = gateway.add_customer(Factory.build(:customer))
           credit_card = gateway.add_customer_credit_card(customer, Factory.build(:credit_card))
           purchase_transaction = gateway.purchase(customer, credit_card, 10.00)
         end
 
-        use_cached_requests(:scope => 'authorize_net_cim_refund_success_2') do
+        use_cached_requests(:scope => 'authorize_net_cim/refund/success_2') do
           gateway.refund(purchase_transaction.id, 3.00, :masked_card_number => purchase_transaction.masked_card_number)
         end
       end
@@ -405,13 +406,13 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       subject do
         customer = credit_card = purchase_transaction = nil
 
-        use_cached_requests(:scope => 'authorize_net_cim_refund_failure', :record => :new_episodes) do
+        use_cached_requests(:scope => 'authorize_net_cim/refund/failure') do
           customer = gateway.add_customer(Factory.build(:customer))
           credit_card = gateway.add_customer_credit_card(customer, Factory.build(:credit_card))
           purchase_transaction = gateway.purchase(customer, credit_card, 10.00)
         end
 
-        use_cached_requests(:scope => 'authorize_net_cim_refund_failure_2', :record => :new_episodes) do
+        use_cached_requests(:scope => 'authorize_net_cim/refund/failure_2') do
           gateway.refund(purchase_transaction.id, 12.00, :masked_card_number => purchase_transaction.masked_card_number)
         end
       end
@@ -436,8 +437,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'void' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_void_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/void/success'
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject do
@@ -450,8 +451,9 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
       its(:masked_card_number) { should be_present }
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'authorize_net_cim_void_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'authorize_net_cim/void/failure'
+      before(:each) { pending 'Figure out how to force an failing VOID request.' }
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
       subject do
@@ -480,8 +482,8 @@ describe VaultedBilling::Gateways::AuthorizeNetCim do
   end
 
   context 'with raw_options' do
-    cached_request_context 'with a successful result',
-      :scope => 'authorize_net_cim_authorize_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'authorize_net_cim/authorize/success'
       let(:gateway) { VaultedBilling.gateway(:authorize_net_cim).new(:username => 'LOGIN', :password => 'PASSWORD', :raw_options => 'x_duplicate_window=3').tap { |g| g.use_test_uri = true } }
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }

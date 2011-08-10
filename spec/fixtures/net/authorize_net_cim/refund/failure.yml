@@ -1,0 +1,123 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerProfileRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <profile>\n    <email>emmy.hills@schuppe.net</email>\n
+      \ </profile>\n</createCustomerProfileRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 18:05:24 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '504'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>4310188</customerProfileId><customerPaymentProfileIdList
+      /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerPaymentProfileRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <customerProfileId>4310188</customerProfileId>\n
+      \ <paymentProfile>\n    <billTo>\n      <firstName>Zackery</firstName>\n      <lastName>Sporer</lastName>\n
+      \     <address>93985 Bahringer Corner</address>\n      <city>Lake Raymondside</city>\n
+      \     <state>West Virginia</state>\n      <zip>71187</zip>\n      <country>US</country>\n
+      \     <phoneNumber>561-048-4418</phoneNumber>\n    </billTo>\n    <payment>\n
+      \     <creditCard>\n        <cardNumber>348690499380524</cardNumber>\n        <expirationDate>2012-08</expirationDate>\n
+      \     </creditCard>\n    </payment>\n  </paymentProfile>\n</createCustomerPaymentProfileRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 18:05:26 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '435'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerPaymentProfileResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerPaymentProfileId>3803001</customerPaymentProfileId></createCustomerPaymentProfileResponse>"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerProfileTransactionRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <transaction>\n    <profileTransAuthCapture>\n
+      \     <amount>10.0</amount>\n      <customerProfileId>4310188</customerProfileId>\n
+      \     <customerPaymentProfileId>3803001</customerPaymentProfileId>\n    </profileTransAuthCapture>\n
+      \ </transaction>\n  <extraOptions></extraOptions>\n</createCustomerProfileTransactionRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 18:05:27 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '719'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileTransactionResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><directResponse>1,1,1,This
+      transaction has been approved.,W5987O,Y,2162013263,,,10.00,CC,auth_capture,,Zackery,Sporer,,93985
+      Bahringer Corner,Lake Raymondside,West Virginia,71187,US,561-048-4418,,emmy.hills@schuppe.net,,,,,,,,,,,,,,85C8DB3A9D5FC03E418F5A4DB2652AEA,,2,,,,,,,,,,,XXXX0524,American
+      Express,,,,,,,,,,,,,,,,</directResponse></createCustomerProfileTransactionResponse>"
+    http_version: '1.1'

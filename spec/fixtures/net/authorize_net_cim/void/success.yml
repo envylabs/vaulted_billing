@@ -1,0 +1,159 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerProfileRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <profile>\n    <email>antonette.ebert@koelpinheidenreich.org</email>\n
+      \ </profile>\n</createCustomerProfileRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:57:19 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '504'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>4309942</customerProfileId><customerPaymentProfileIdList
+      /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerPaymentProfileRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <customerProfileId>4309942</customerProfileId>\n
+      \ <paymentProfile>\n    <billTo>\n      <firstName>Elvera</firstName>\n      <lastName>Olson</lastName>\n
+      \     <address>20387 Devonte Wall</address>\n      <city>North Laneland</city>\n
+      \     <state>New Jersey</state>\n      <zip>32165-1785</zip>\n      <country>US</country>\n
+      \     <phoneNumber>019.426.4799</phoneNumber>\n    </billTo>\n    <payment>\n
+      \     <creditCard>\n        <cardNumber>4024007191655199</cardNumber>\n        <expirationDate>2012-08</expirationDate>\n
+      \     </creditCard>\n    </payment>\n  </paymentProfile>\n</createCustomerPaymentProfileRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:57:21 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '435'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerPaymentProfileResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerPaymentProfileId>3802889</customerPaymentProfileId></createCustomerPaymentProfileResponse>"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerProfileTransactionRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <transaction>\n    <profileTransAuthOnly>\n      <amount>10.0</amount>\n
+      \     <customerProfileId>4309942</customerProfileId>\n      <customerPaymentProfileId>3802889</customerPaymentProfileId>\n
+      \   </profileTransAuthOnly>\n  </transaction>\n  <extraOptions></extraOptions>\n</createCustomerProfileTransactionRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:57:22 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '714'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileTransactionResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><directResponse>1,1,1,This
+      transaction has been approved.,KUG9BM,Y,2162011687,,,10.00,CC,auth_only,,Elvera,Olson,,20387
+      Devonte Wall,North Laneland,New Jersey,32165-1785,US,019.426.4799,,antonette.ebert@koelpinheidenreich.org,,,,,,,,,,,,,,5310FE43E3F657DAF5685956EE3AE13D,,2,,,,,,,,,,,XXXX5199,Visa,,,,,,,,,,,,,,,,</directResponse></createCustomerProfileTransactionResponse>"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerProfileTransactionRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <transaction>\n    <profileTransVoid>\n      <transId>2162011687</transId>\n
+      \   </profileTransVoid>\n  </transaction>\n  <extraOptions></extraOptions>\n</createCustomerProfileTransactionRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:57:24 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '602'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileTransactionResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><directResponse>1,1,1,This
+      transaction has been approved.,KUG9BM,P,2162011687,,,0.00,CC,void,,,,,,,,32165-1785,,,,,,,,,,,,,,,,,,4CC7F37B822AE287A06FAC1F648C5D6B,,,,,,,,,,,,,XXXX5199,Visa,,,,,,,,,,,,,,,,</directResponse></createCustomerProfileTransactionResponse>"
+    http_version: '1.1'

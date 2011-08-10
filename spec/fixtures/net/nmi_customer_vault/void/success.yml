@@ -1,0 +1,72 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=541 Bailee Fields&ccexp=0812&ccnumber=4716016665352277&city=Port
+      Jaredfort&country=US&customer_vault=add_customer&email=reyna_bechtelar@jenkins.biz&first_name=Pierce&last_name=Nikolaus&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=(612)829-2045
+      x8901&state=New Jersey&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=69776
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:23 GMT
+      server:
+      - Apache
+      content-length:
+      - '150'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=642960927
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=5.0&customer_vault_id=642960927&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&type=auth&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:24 GMT
+      server:
+      - Apache
+      content-length:
+      - '164'
+      content-type:
+      - text/html
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1453229576&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=642960927
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: ! '%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&transactionid=1453229576&type=void&username=%{NMI_CUSTOMER_VAULT_USERNAME}'
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:27 GMT
+      server:
+      - Apache
+      content-length:
+      - '155'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Transaction Void Successful&authcode=123456&transactionid=1453229576&avsresponse=&cvvresponse=&orderid=&type=void&response_code=100
+    http_version: '1.1'

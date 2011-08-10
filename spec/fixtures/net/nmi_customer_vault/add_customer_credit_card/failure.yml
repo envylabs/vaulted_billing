@@ -1,0 +1,25 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=49944 Crooks Spur&ccexp=0812&city=West Oceanemouth&country=US&customer_vault=add_customer&email=deven.ruecker@kossparisian.biz&first_name=Adeline&last_name=Kiehn&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=(930)214-0516
+      x96280&state=Florida&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=52461-2477
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:29:31 GMT
+      server:
+      - Apache
+      content-length:
+      - '168'
+      content-type:
+      - text/html
+    body: response=3&responsetext=Required Field cc_number is Missing or Empty REFID:317102207&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300
+    http_version: '1.1'

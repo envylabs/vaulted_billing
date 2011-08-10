@@ -1,0 +1,43 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerProfileTransactionRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <transaction>\n    <profileTransRefund>\n      <amount>12.0</amount>\n
+      \     <creditCardNumberMasked>XXXX0524</creditCardNumberMasked>\n      <transId>2162013263</transId>\n
+      \   </profileTransRefund>\n  </transaction>\n  <extraOptions></extraOptions>\n</createCustomerProfileTransactionRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 18:05:28 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '805'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileTransactionResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Error</resultCode><message><code>E00027</code><text>The
+      referenced transaction does not meet the criteria for issuing a credit.</text></message></messages><directResponse>3,2,54,The
+      referenced transaction does not meet the criteria for issuing a credit.,,P,0,,,12.00,CC,credit,,Zackery,Sporer,,93985
+      Bahringer Corner,Lake Raymondside,West Virginia,71187,US,561-048-4418,,emmy.hills@schuppe.net,,,,,,,,,,,,,,A6618D6A12AA1C7F12D82EE98EF3B139,,,,,,,,,,,,,XXXX0524,American
+      Express,,,,,,,,,,,,,,,,</directResponse></createCustomerProfileTransactionResponse>"
+    http_version: '1.1'

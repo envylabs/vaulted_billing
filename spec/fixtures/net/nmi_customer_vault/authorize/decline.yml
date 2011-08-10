@@ -1,0 +1,48 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=70502 Herzog Shore&ccexp=0812&ccnumber=5285948609760819&city=West
+      Lesterberg&country=US&customer_vault=add_customer&email=buford@hackett.name&first_name=Edwardo&last_name=Schneider&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=178.305.0059&state=Maine&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=08724-0390
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:01 GMT
+      server:
+      - Apache
+      content-length:
+      - '151'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1771062675
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=0.01&customer_vault_id=1771062675&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&type=auth&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:02 GMT
+      server:
+      - Apache
+      content-length:
+      - '159'
+      content-type:
+      - text/html
+    body: response=2&responsetext=DECLINE&authcode=&transactionid=1453229307&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=200&customer_vault_id=1771062675
+    http_version: '1.1'

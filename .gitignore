@@ -4,6 +4,7 @@ Gemfile.lock
 pkg/*
 
 vaulted_billing.log
+spec/config.yml
 
 *~
 *.tmp

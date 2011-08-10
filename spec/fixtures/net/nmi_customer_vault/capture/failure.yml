@@ -1,0 +1,71 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=73154 Mann Turnpike&ccexp=0812&ccnumber=375446305355283&city=Norrisville&country=US&customer_vault=add_customer&email=patrick.greenfelder@whitereinger.name&first_name=Alf&last_name=Heller&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=023-907-3992&state=Maine&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=29802-8409
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:12 GMT
+      server:
+      - Apache
+      content-length:
+      - '150'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=847257694
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=10.0&customer_vault_id=847257694&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&type=auth&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:13 GMT
+      server:
+      - Apache
+      content-length:
+      - '164'
+      content-type:
+      - text/html
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1453229427&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=847257694
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=500.0&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&transactionid=1453229427&type=capture&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:31:15 GMT
+      server:
+      - Apache
+      content-length:
+      - '212'
+      content-type:
+      - text/html
+    body: response=3&responsetext=The specified amount of 500.0 exceeds the authorization
+      amount of 10.00 REFID:317102367&authcode=&transactionid=1453229427&avsresponse=&cvvresponse=&orderid=&type=capture&response_code=300
+    http_version: '1.1'
