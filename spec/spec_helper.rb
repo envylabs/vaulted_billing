@@ -3,12 +3,7 @@ require 'rubygems'
 require 'bundler/setup'
 Bundler.require :default, :test
 
-require 'vaulted_billing'
-require 'rspec'
-
-Dir[File.join(File.dirname(__FILE__), 'support', '**', '*.rb')].each do |file|
-  require file
-end
+Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   config.mock_with :rspec
