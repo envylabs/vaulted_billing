@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_girl', '~>1.3'
   s.add_development_dependency 'faker', '~>0.9'
   s.add_development_dependency 'rake', '~>0.9'
+  s.add_development_dependency 'watchr'
 
   s.files = Dir.glob("lib/**/*") + %w(README.md)
   s.require_path = 'lib'
