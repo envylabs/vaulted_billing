@@ -29,6 +29,7 @@ describe VaultedBilling::Configuration do
   end
 
   [ 'authorize_net_cim',
+    'ipcommerce_wallet',
     'nmi_customer_vault',
     'bogus' ].each do |gateway|
     context gateway do

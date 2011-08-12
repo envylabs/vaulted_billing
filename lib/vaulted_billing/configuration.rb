@@ -53,13 +53,14 @@ module VaultedBilling
       options = options.with_indifferent_access
       self.test_mode = options.has_key?(:test_mode) ? options[:test_mode] : true
       @_authorize_net_cim = GatewayConfiguration.new(options[:authorize_net_cim]) if options[:authorize_net_cim]
+      @_ipcommerce_wallet = GatewayConfiguration.new(options[:ipcommerce_wallet]) if options[:ipcommerce_wallet]
       @_nmi_customer_vault = GatewayConfiguration.new(options[:nmi_customer_vault]) if options[:nmi_customer_vault]
       @_bogus = GatewayConfiguration.new(options[:bogus]) if options[:bogus]
       @ca_file = File.expand_path('../../ext/cacert.pem', __FILE__)
     end
 
     ##
-    # Returns a VaultedBilling::Configuration::GatewayConfiguration 
+    # Returns a VaultedBilling::Configuration::GatewayConfiguration
     # instance to be used for defining default settings for the
     # Authorize.net CIM gateway.
     #
@@ -68,7 +69,16 @@ module VaultedBilling
     end
 
     ##
-    # Returns a VaultedBilling::Configuration::GatewayConfiguration 
+    # Returns a VaultedBilling::Configuration::GatewayConfiguration
+    # instance to be used for defining default settings for the
+    # IP Commerce gateway.
+    #
+    def ipcommerce_wallet
+      @_ipcommerce_wallet ||= GatewayConfiguration.new
+    end
+
+    ##
+    # Returns a VaultedBilling::Configuration::GatewayConfiguration
     # instance to be used for defining default settings for the
     # NMI Customer Vault gateway.
     #
@@ -77,7 +87,7 @@ module VaultedBilling
     end
 
     ##
-    # Returns a VaultedBilling::Configuration::GatewayConfiguration 
+    # Returns a VaultedBilling::Configuration::GatewayConfiguration
     # instance to be used for defining default settings for the
     # Bogus gateway.
     #
