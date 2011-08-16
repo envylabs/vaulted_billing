@@ -29,7 +29,7 @@ module VaultedBilling
             xml.email customer.email if customer.email
           end
         end
-        result = post_data(data)
+        result = http.post(data)
         respond_with(customer, result, :success => result.success?) do |c|
           c.vault_id = result.body['createCustomerProfileResponse']['customerProfileId'] if c.success?
         end
@@ -278,7 +278,13 @@ module VaultedBilling
         "XXXX%04d" % [input.to_s[-4..-1].to_i]
       end
 
+      def http
+        VaultedBilling::HTTP.new(self, uri, {
+          :headers => {'Content-Type' => 'text/xml'},
+          :on_success => :after_post_on_success,
+          :on_error => :after_post_on_exception
+        })
+      end
     end
-
   end
 end

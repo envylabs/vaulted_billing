@@ -18,6 +18,7 @@ module VaultedBilling
   autoload :CreditCard, 'vaulted_billing/credit_card'
   autoload :Transaction, 'vaulted_billing/transaction'
   autoload :HttpsInterface, 'vaulted_billing/https_interface'
+  autoload :HTTP, 'vaulted_billing/http'
 
   Dir[File.expand_path('../vaulted_billing/core_ext/**/*.rb', __FILE__)].each do |extension|
     require extension
