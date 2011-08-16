@@ -9,6 +9,7 @@ VCR.config do |config|
   config.filter_sensitive_data('%{NMI_CUSTOMER_VAULT_PASSWORD}') { VaultedBilling.config.nmi_customer_vault.password }
   config.filter_sensitive_data('%{AUTHORIZE_NET_CIM_USERNAME}') { VaultedBilling.config.authorize_net_cim.username }
   config.filter_sensitive_data('%{AUTHORIZE_NET_CIM_PASSWORD}') { VaultedBilling.config.authorize_net_cim.username }
+  config.filter_sensitive_data('%{IPCOMMERCE_CIM_PASSWORD}') { VaultedBilling.config.ipcommerce.username }
 end
 
 module VCRHelpers
