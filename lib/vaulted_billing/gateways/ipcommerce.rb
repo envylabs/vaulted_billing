@@ -127,7 +127,7 @@ module VaultedBilling
           }
         }
         
-        response = post("Txn/#{options[:service_id]}", data)
+        response = post("Txn/#{options[:workflow_id]}", data)
         transaction = new_transaction_from_response(response.body) 
         respond_with(transaction,
                      response,
@@ -146,7 +146,7 @@ module VaultedBilling
           }
         }
         
-        response = put("Txn/#{options[:service_id]}/#{transaction_id}", data)
+        response = put("Txn/#{options[:workflow_id]}/#{transaction_id}", data)
         transaction = new_transaction_from_response(response.body) 
         respond_with(transaction,
                      response,
@@ -182,7 +182,7 @@ module VaultedBilling
             }
           }
         }
-        response = post("Txn/#{options[:service_id]}", data)
+        response = post("Txn/#{options[:workflow_id]}", data)
         transaction = new_transaction_from_response(response.body) 
         respond_with(transaction,
                      response,
@@ -201,7 +201,7 @@ module VaultedBilling
           }
         }
         
-        response = post("Txn/#{options[:service_id]}", data)
+        response = post("Txn/#{options[:workflow_id]}", data)
         transaction = new_transaction_from_response(response.body) 
         respond_with(transaction,
                      response,
@@ -247,11 +247,20 @@ module VaultedBilling
           DifferenceData: {
             "__type" => "BankcardUndo:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
             TransactionId: transaction_id,
-            Addendum: nil
+            Addendum: nil,
+            # PINDebitReason: options[:reason],
+            TenderData: {
+              CardData: {
+                CardholderName: nil,
+                CardType: 'Visa',
+                Expire: options[:credit_card].expires_on.try(:strftime, "%m%y"),
+                PAN: options[:credit_card].card_number
+              }
+            }
           }
         }
-        
-        response = put("Txn/#{options[:service_id]}/#{transaction_id}", data)
+
+        response = put("Txn/#{options[:workflow_id]}/#{transaction_id}", data)
         transaction = new_transaction_from_response(response.body) 
         respond_with(transaction,
                      response,
@@ -273,6 +282,11 @@ module VaultedBilling
       def put(path, data = {})
         uri = uri_for(path)
         request(uri, Net::HTTP::Put.new(uri.path), data)
+      end
+
+      def delete(path, data = {})
+        uri = uri_for(path)
+        request(uri, Net::HTTP::Delete.new(uri.path), data)
       end
 
       def uri_for(path)

@@ -58,7 +58,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
     subject { gateway.authorize(customer, credit_card, 11.00, {
       merchant_profile_id: 'AutoTest_E4FB800001',
-      service_id: 'E4FB800001',
+      workflow_id: 'E4FB800001',
       employee_id: '12345',
       order_id: '3232',
       card_type_id: '1'
@@ -97,14 +97,14 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
     let(:authorization) { gateway.authorize(customer, credit_card, 11.00, {
       merchant_profile_id: 'AutoTest_E4FB800001',
-      service_id: 'E4FB800001',
+      workflow_id: 'E4FB800001',
       employee_id: '12345',
       order_id: '3232',
       card_type_id: '1'
     }) }
 
     context 'when successful' do
-      subject { gateway.capture(authorization.id, amount, { service_id: 'E4FB800001' })}
+      subject { gateway.capture(authorization.id, amount, { workflow_id: 'E4FB800001' })}
       use_vcr_cassette 'ipcommerce/capture/success', :record => :new_episodes
       
       it_should_behave_like 'a transaction request'
@@ -119,7 +119,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     end
 
     context 'with an invalid request' do
-      subject { gateway.capture(authorization.id + "t", amount, { service_id: 'E4FB800001' })}
+      subject { gateway.capture(authorization.id + "t", amount, { workflow_id: 'E4FB800001' })}
       use_vcr_cassette 'ipcommerce/capture/invalid', :record => :new_episodes
       
       it 'returns a Transaction' do
@@ -139,7 +139,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
     subject { gateway.purchase(customer, credit_card, 10.00, {
       merchant_profile_id: 'AutoTest_E4FB800001',
-      service_id: 'E4FB800001',
+      workflow_id: 'E4FB800001',
       employee_id: '12345',
       order_id: '3232',
       card_type_id: '1'
@@ -177,13 +177,13 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card)) }
     let(:purchase) { gateway.purchase(customer, credit_card, 5.00, {
       merchant_profile_id: 'AutoTest_E4FB800001',
-      service_id: 'E4FB800001',
+      workflow_id: 'E4FB800001',
       employee_id: '12345',
       order_id: '3232',
       card_type_id: '1'
     }) }
 
-    subject { gateway.refund(purchase.id, 5.00, { service_id: 'E4FB800001' }) }
+    subject { gateway.refund(purchase.id, 5.00, { workflow_id: 'E4FB800001' }) }
     
     context 'with a successful result' do
       use_vcr_cassette 'ipcommerce/refund/success', :record => :new_episodes
@@ -206,17 +206,18 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card)) }
     let(:authorization) { gateway.authorize(customer, credit_card, 5.00, {
       merchant_profile_id: 'AutoTest_E4FB800001',
-      service_id: 'E4FB800001',
+      workflow_id: 'E4FB800001',
       employee_id: '12345',
       order_id: '3232',
       card_type_id: '1'
     }) }
 
-    subject { gateway.void(authorization.id, { service_id: 'E4FB800001' }) }
+    subject { gateway.void(authorization.id, { workflow_id: 'E4FB800001', merchant_profile_id: 'AutoTest_E4FB800001', :credit_card => credit_card, :card_type_id => 1  }) }
 
-    context 'with a successful result' do
+    context 'with a successful result', :focus => true do
       use_vcr_cassette 'ipcommerce/void/success', :record => :new_episodes
-      pending
+      
+      it_should_behave_like 'a transaction request'
     end
     
     context 'with a failure' do
