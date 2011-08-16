@@ -57,11 +57,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
   context '#authorize' do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
     subject { gateway.authorize(customer, credit_card, 11.00, {
-      merchant_profile_id: 'AutoTest_E4FB800001',
-      workflow_id: 'E4FB800001',
-      employee_id: '12345',
-      order_id: '3232',
-      card_type_id: '1'
+      merchant_profile_id: 'AutoTest_E4FB800001'
     }) }
 
     context 'when successful' do
@@ -78,10 +74,10 @@ describe VaultedBilling::Gateways::Ipcommerce do
       its(:authcode) { should_not be_nil }
       its(:message) { should == "APPROVED" }
       its(:code) { should == 1 }
-    end
+    end 
 
     context 'with a failure' do
-      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:credit_card) }
+      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:invalid_credit_card) }
       use_vcr_cassette 'ipcommerce/authorize/failure', :record => :new_episodes
       
       it_should_behave_like 'a transaction request'
@@ -96,15 +92,11 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
     let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
     let(:authorization) { gateway.authorize(customer, credit_card, 11.00, {
-      merchant_profile_id: 'AutoTest_E4FB800001',
-      workflow_id: 'E4FB800001',
-      employee_id: '12345',
-      order_id: '3232',
-      card_type_id: '1'
+      merchant_profile_id: 'AutoTest_E4FB800001'
     }) }
 
     context 'when successful' do
-      subject { gateway.capture(authorization.id, amount, { workflow_id: 'E4FB800001' })}
+      subject { gateway.capture(authorization.id, amount)}
       use_vcr_cassette 'ipcommerce/capture/success', :record => :new_episodes
       
       it_should_behave_like 'a transaction request'
@@ -119,7 +111,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     end
 
     context 'with an invalid request' do
-      subject { gateway.capture(authorization.id + "t", amount, { workflow_id: 'E4FB800001' })}
+      subject { gateway.capture(authorization.id + "t", amount)}
       use_vcr_cassette 'ipcommerce/capture/invalid', :record => :new_episodes
       
       it 'returns a Transaction' do
@@ -138,11 +130,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
   context '#purchase' do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
     subject { gateway.purchase(customer, credit_card, 10.00, {
-      merchant_profile_id: 'AutoTest_E4FB800001',
-      workflow_id: 'E4FB800001',
-      employee_id: '12345',
-      order_id: '3232',
-      card_type_id: '1'
+      merchant_profile_id: 'AutoTest_E4FB800001'
     }) }
     
     context 'when successful' do
@@ -173,19 +161,16 @@ describe VaultedBilling::Gateways::Ipcommerce do
   
   # Returning funds from a captured transaction
   context '#refund' do
+    let(:amount) { 5.00 }
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card)) }
-    let(:purchase) { gateway.purchase(customer, credit_card, 5.00, {
-      merchant_profile_id: 'AutoTest_E4FB800001',
-      workflow_id: 'E4FB800001',
-      employee_id: '12345',
-      order_id: '3232',
-      card_type_id: '1'
+    let(:purchase) { gateway.purchase(customer, credit_card, amount, {
+      merchant_profile_id: 'AutoTest_E4FB800001'
     }) }
 
-    subject { gateway.refund(purchase.id, 5.00, { workflow_id: 'E4FB800001' }) }
     
     context 'with a successful result' do
+      subject { gateway.refund(purchase.id, amount) }
       use_vcr_cassette 'ipcommerce/refund/success', :record => :new_episodes
       
       it_should_behave_like 'a transaction request'
@@ -198,6 +183,19 @@ describe VaultedBilling::Gateways::Ipcommerce do
       its(:message) { should == "APPROVED" }
       its(:code) { should == 1 }
     end
+    
+    context 'with a failure' do
+      subject { gateway.refund(purchase.id, amount + 1) }
+      use_vcr_cassette 'ipcommerce/refund/failure', :record => :new_episodes
+      
+      it 'returns a Transaction' do
+        subject.should be_kind_of(VaultedBilling::Transaction)
+      end
+      
+      it { should_not be_success }
+      its(:message) { should == "Attempt to return more than original authorization." }
+      its(:code) { should eql '326' }
+    end
   end
 
   # Releasing funds from an authorized but uncaptured transaction
@@ -205,24 +203,33 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card)) }
     let(:authorization) { gateway.authorize(customer, credit_card, 5.00, {
-      merchant_profile_id: 'AutoTest_E4FB800001',
-      workflow_id: 'E4FB800001',
-      employee_id: '12345',
-      order_id: '3232',
-      card_type_id: '1'
+      merchant_profile_id: 'AutoTest_E4FB800001'
     }) }
 
-    subject { gateway.void(authorization.id, { workflow_id: 'E4FB800001', merchant_profile_id: 'AutoTest_E4FB800001', :credit_card => credit_card, :card_type_id => 1  }) }
+    context 'with a successful result' do
+      subject { gateway.void(authorization.id, { merchant_profile_id: 'AutoTest_E4FB800001', :credit_card => credit_card, :card_type_id => 1  }) }
 
-    context 'with a successful result', :focus => true do
       use_vcr_cassette 'ipcommerce/void/success', :record => :new_episodes
-      
       it_should_behave_like 'a transaction request'
+      
+      it { should be_success }
+      its(:id) { should_not be_nil }
+      its(:authcode) { should_not be_nil }
+      its(:message) { should == "APPROVED" }
+      its(:code) { should == 1 }
     end
     
     context 'with a failure' do
+      subject { gateway.void(authorization.id + "_bad", { merchant_profile_id: 'AutoTest_E4FB800001', :credit_card => credit_card, :card_type_id => 1  }) }
+
       use_vcr_cassette 'ipcommerce/void/failure', :record => :new_episodes
-      pending
+
+      it 'returns a Transaction' do
+        subject.should be_kind_of(VaultedBilling::Transaction)
+      end
+      
+      it { should_not be_success }
+      its(:message) { should =~ /^Unable to retrieve serialized transaction for transactionId: .+/ }
     end
   end
 end

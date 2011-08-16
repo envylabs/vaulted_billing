@@ -17,3 +17,5 @@ Factory.sequence :credit_card_number do |c|
   )
   cards[rand(cards.size)]
 end
+
+Factory.sequence(:invalid_credit_card_number) { |c| '4111111111111112' }
