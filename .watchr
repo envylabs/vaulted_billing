@@ -50,6 +50,10 @@ watch("lib/(.*)\.rb") do |match|
   run_spec %{spec/models/#{match[1]}_spec.rb}
 end
 
+watch("lib/vaulted_billing/gateways/(.+)\.rb") do |match|
+  run_spec %{spec/requests/#{match[1]}_spec.rb}
+end
+
 watch("spec/(spec_helper|support/.*)\.rb$") do |match|
   run_all_specs
 end
