@@ -9,8 +9,11 @@ rescue LoadError
   require 'active_support'
 end
 
+require 'vaulted_billing/errors'
+
 module VaultedBilling
   autoload :Version, 'vaulted_billing/version'
+  autoload :ChainableHash, 'vaulted_billing/chainable_hash'
   autoload :Configuration, 'vaulted_billing/configuration'
   autoload :Gateway, 'vaulted_billing/gateway'
   autoload :Gateways, 'vaulted_billing/gateways'
