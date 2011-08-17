@@ -1,7 +1,7 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
 describe VaultedBilling::Gateways::NmiCustomerVault do
-  let(:gateway) { VaultedBilling.gateway(:nmi_customer_vault).new(:username => 'demo', :password => 'password') }
+  let(:gateway) { VaultedBilling.gateway(:nmi_customer_vault).new }
 
   it 'uses the correct URI in test mode' do
     gateway.use_test_uri = true
@@ -68,8 +68,9 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { Factory.build(:credit_card) }
 
-    cached_request_context 'with a successful result',
-      :scope => 'nmi_customer_vault_add_customer_credit_card_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/add_customer_credit_card/success'
+
       subject { gateway.add_customer_credit_card(customer, credit_card) }
       it_should_behave_like 'a credit card request'
 
@@ -81,8 +82,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       its(:error_code) { should be_nil }
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'nmi_customer_vault_add_customer_credit_card_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'nmi_customer_vault/add_customer_credit_card/failure'
       let(:credit_card) { Factory.build(:credit_card, :card_number => nil) }
       subject { gateway.add_customer_credit_card(customer, credit_card) }
 
@@ -94,7 +95,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
         subject.should_not be_success
       end
 
-      its(:response_message) { should == 'Required Field cc_number is Missing or Empty REFID:109525605' }
+      its(:response_message) { should =~ /Required Field cc_number is Missing or Empty REFID:.+/ }
       its(:error_code) { should == '300' }
     end
 
@@ -109,8 +110,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
 
-    cached_request_context 'with a successful result', 
-      :scope => 'nmi_customer_vault_update_customer_credit_card_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/update_customer_credit_card/success'
       subject { gateway.update_customer_credit_card(customer, credit_card) }
       it_should_behave_like 'a credit card request'
 
@@ -119,8 +120,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       end
     end
 
-    cached_request_context 'with an unsuccessful result',
-      :scope => 'nmi_customer_vault_update_customer_credit_card_failure' do
+    context 'with an unsuccessful result' do
+      use_vcr_cassette 'nmi_customer_vault/update_customer_credit_card/failure'
       before(:each) { pending "The NMI Customer Vault currently *always* returns a successful response, even with obviously invalid data." }
       let(:customer) { VaultedBilling::Customer.new }
       let(:credit_card) { VaultedBilling::CreditCard.new }
@@ -144,8 +145,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
 
-    cached_request_context 'with a successful result',
-     :scope => 'nmi_customer_vault_remove_customer_credit_card_success' do
+    context 'with a successful result' do
+     use_vcr_cassette 'nmi_customer_vault/remove_customer_credit_card/success'
       subject { gateway.remove_customer_credit_card(customer, credit_card) }
       it_should_behave_like 'a credit card request'
 
@@ -154,8 +155,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       end
     end
 
-    cached_request_context 'with an unsuccessful result',
-     :scope => 'nmi_customer_vault_remove_customer_credit_card_failure' do
+    context 'with an unsuccessful result' do
+     use_vcr_cassette 'nmi_customer_vault/remove_customer_credit_card/failure'
       let(:credit_card) { Factory.build(:existing_credit_card, :vault_id => 'VERYBADIDENTIFIER!') }
       subject { gateway.remove_customer_credit_card(customer, credit_card) }
       it_should_behave_like 'a credit card request'
@@ -176,8 +177,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
 
-    cached_request_context 'with a successful result',
-      :scope => 'nmi_customer_vault_purchase_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/purchase/success'
       subject { gateway.purchase(customer, credit_card, 1.00) }
       it_should_behave_like 'a transaction request'
 
@@ -192,8 +193,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it('has a response code') { subject.code.should be_present }
     end
 
-    cached_request_context 'with an DECLINE result',
-      :scope => 'nmi_customer_vault_purchase_decline' do
+    context 'with an DECLINE result' do
+      use_vcr_cassette 'nmi_customer_vault/purchase/decline'
       subject { gateway.purchase(customer, credit_card, 0.01) }
       it_should_behave_like 'a transaction request'
 
@@ -212,8 +213,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
 
-    cached_request_context 'with a successful result',
-      :scope => 'nmi_customer_vault_authorize_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/authorize/success'
       subject { gateway.authorize(customer, credit_card, 1.00) }
       it_should_behave_like 'a transaction request'
 
@@ -228,8 +229,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it('has a response code') { subject.code.should be_present }
     end
 
-    cached_request_context 'with an DECLINE result',
-      :scope => 'nmi_customer_vault_authorize_decline' do
+    context 'with an DECLINE result' do
+      use_vcr_cassette 'nmi_customer_vault/authorize/decline'
       subject { gateway.authorize(customer, credit_card, 0.01) }
       it_should_behave_like 'a transaction request'
 
@@ -249,8 +250,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
     let(:authorization) { gateway.authorize(customer, credit_card, 10.00) }
 
-    cached_request_context 'with a successful result',
-      :scope => 'nmi_customer_vault_capture_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/capture/success'
       let(:capture) { gateway.capture(authorization.id, 5.00) }
       subject { capture }
       it_should_behave_like 'a transaction request'
@@ -260,8 +261,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       end
     end
 
-    cached_request_context 'with a DECLINE result',
-      :scope => 'nmi_customer_vault_capture_failure' do
+    context 'with a DECLINE result' do
+      use_vcr_cassette 'nmi_customer_vault/capture/failure'
       let(:capture) { gateway.capture(authorization.id, 500.00) }
       subject { capture }
       it_should_behave_like 'a transaction request'
@@ -284,8 +285,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:authorization) { gateway.authorize(customer, credit_card, 5.00) }
     let(:capture) { gateway.capture(authorization.id, 3.00) }
 
-    cached_request_context 'with a successful result',
-      :scope => 'nmi_customer_vault_refund_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/refund/success'
       let(:refund) { gateway.refund(capture.id, 3.00) }
       before(:each) do
         pending 'Does not appear to allow me to immediately refund a capture'
@@ -298,8 +299,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       end
     end
 
-    cached_request_context 'with a DECLINE result',
-      :scope => 'nmi_customer_vault_refund_failure' do
+    context 'with a DECLINE result' do
+      use_vcr_cassette 'nmi_customer_vault/refund/failure'
       let(:refund) { gateway.refund(capture.id, 300.00) }
       subject { refund }
 
@@ -328,8 +329,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
     let(:authorization) { gateway.authorize(customer, credit_card, 5.00) }
 
-    cached_request_context 'with a successful result',
-      :scope => 'nmi_customer_vault_void_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/void/success'
       let(:void) { gateway.void(authorization.id) }
       subject { void }
       it_should_behave_like 'a transaction request'
@@ -339,8 +340,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       end
     end
 
-    cached_request_context 'with a DECLINE result',
-      :scope => 'nmi_customer_vault_void_failure' do
+    context 'with a DECLINE result' do
+      use_vcr_cassette 'nmi_customer_vault/void/failure'
       let(:void) { gateway.void('INVALIDID') }
       subject { void }
 
@@ -365,8 +366,8 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
   end
 
   context 'with raw_options' do
-    cached_request_context 'with a successful result',
-      :scope => 'nmi_customer_vault_authorize_success' do
+    context 'with a successful result' do
+      use_vcr_cassette 'nmi_customer_vault/authorize/success'
       let(:gateway) { VaultedBilling.gateway(:nmi_customer_vault).new(:username => 'demo', :password => 'password', :raw_options => 'dup_seconds=1') }
       let(:customer) { gateway.add_customer(Factory.build(:customer)) }
       let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:credit_card)) }
@@ -374,9 +375,13 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it 'includes the options in the request' do
         customer
         credit_card
-        gateway.should_receive(:post_data).
+
+        http = stub("http")
+        http.should_receive(:post).
           with(%r{&dup_seconds=1}m).
           and_raise(TestException)
+        gateway.should_receive(:http).
+          and_return(http)
         expect { gateway.authorize(customer, credit_card, 10.00) }.
           to raise_error(TestException)
       end

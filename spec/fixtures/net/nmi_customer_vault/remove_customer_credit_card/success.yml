@@ -1,0 +1,47 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=039 Strosin Haven&ccexp=0812&ccnumber=5439365422152873&city=Baumbachfurt&country=US&customer_vault=add_customer&email=darryl@gloverkub.biz&first_name=Yasmin&last_name=Macejkovic&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=1-870-361-9930&state=Colorado&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=41389-8787
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:30:48 GMT
+      server:
+      - Apache
+      content-length:
+      - '151'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1261229403
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: customer_vault=delete_customer&customer_vault_id=1261229403&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:30:49 GMT
+      server:
+      - Apache
+      content-length:
+      - '153'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Customer Deleted&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1261229403
+    http_version: '1.1'

@@ -1,0 +1,47 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: address1=796 Rosendo Mountain&ccexp=0812&ccnumber=348690499380524&city=Deckowton&country=US&customer_vault=add_customer&email=chyna.koepp@mcglynnrenner.org&first_name=Jacky&last_name=Lindgren&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=(905)806-6629&state=Arkansas&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=57863-6104
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:30:58 GMT
+      server:
+      - Apache
+      content-length:
+      - '150'
+      content-type:
+      - text/html
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=220737256
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: amount=1.0&customer_vault_id=220737256&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&type=auth&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:30:59 GMT
+      server:
+      - Apache
+      content-length:
+      - '164'
+      content-type:
+      - text/html
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1453229260&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=220737256
+    http_version: '1.1'

@@ -1,0 +1,14 @@
+rvm:
+  - ree
+  - 1.8.7
+  - 1.9.2
+gemfile:
+  - gemfiles/2.3.gemfile
+  - gemfiles/3.0.gemfile
+branches:
+  only:
+    - production
+    - develop
+notifications:
+  disabled: true
+script: "cp spec/config.example.yml spec/config.yml; bundle exec rake"

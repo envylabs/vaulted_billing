@@ -1,14 +1,12 @@
 require 'rubygems'
-require 'bundler'
-Bundler.setup
+require 'bundler/setup'
+require 'appraisal'
 
-task :spec do
-  system "rspec -cfs spec"
-end
+require 'bundler/gem_tasks'
 
-task :gem do
-  system "bundle exec gem build artifice.gemspec"
-end
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
+task :default => :spec
 
 namespace :ci do
   desc 'Run the tests on the CI server'

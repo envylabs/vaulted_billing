@@ -13,16 +13,16 @@ module VaultedBilling
     # 
     class NmiCustomerVault
       include VaultedBilling::Gateway
-      include VaultedBilling::HttpsInterface
+      attr_accessor :use_test_uri
 
       def initialize(options = {})
-        self.live_uri = self.test_uri = "https://secure.nmi.com/api/transact.php"
+        @live_uri = "https://secure.nmi.com/api/transact.php"
 
         options = HashWithIndifferentAccess.new(options)
         @username = options[:username] || VaultedBilling.config.nmi_customer_vault.username
         @password = options[:password] || VaultedBilling.config.nmi_customer_vault.password
         @raw_options = options[:raw_options] || VaultedBilling.config.nmi_customer_vault.raw_options
-        self.use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.nmi_customer_vault.test_mode || VaultedBilling.config.test_mode)
+        @use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.nmi_customer_vault.test_mode || VaultedBilling.config.test_mode)
       end
 
       ##
@@ -53,79 +53,91 @@ module VaultedBilling
       end
 
       def add_customer_credit_card(customer, credit_card)
-        response = post_data(storage_data('add_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing))
+        data = storage_data('add_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing)
+        response = http.post(data)
         respond_with(credit_card, response, :success => response.success?) do |c|
           c.vault_id = response.body['customer_vault_id']
         end
       end
 
       def update_customer_credit_card(customer, credit_card)
-        response = post_data(storage_data('update_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing))
+        data = storage_data('update_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing)
+        response = http.post(data)
         respond_with(credit_card, response, :success => response.success?)
       end
 
       def remove_customer_credit_card(customer, credit_card)
-        response = post_data(core_data.merge({
+        data = core_data.merge({
           :customer_vault => 'delete_customer',
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id
-        }).to_querystring)
+        }).to_querystring
+        response = http.post(data)
         respond_with(credit_card, response, :success => response.success?)
       end
 
-      def purchase(customer, credit_card, amount)
-        response = post_data(transaction_data('sale', {
+      def purchase(customer, credit_card, amount, options = {})
+        data = transaction_data('sale', {
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
-        }))
+        })
+        response = http.post(data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
       end
 
-      def authorize(customer, credit_card, amount)
-        response = post_data(transaction_data('auth', {
+      def authorize(customer, credit_card, amount, options = {})
+        data = transaction_data('auth', {
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
-        }))
+        })
+        response = http.post(data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
       end
 
-      def capture(transaction_id, amount)
-        response = post_data(transaction_data('capture', {
+      def capture(transaction_id, amount, options = {})
+        data = transaction_data('capture', {
           :transactionid => transaction_id,
           :amount => amount
-        }))
+        })
+        response = http.post(data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
       end
 
       def refund(transaction_id, amount, options = {})
-        response = post_data(transaction_data('refund', {
+        data = transaction_data('refund', {
           :transactionid => transaction_id,
           :amount => amount
-        }))
+        })
+        response = http.post(data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
       end
 
-      def void(transaction_id)
-        response = post_data(transaction_data('void', {
+      def void(transaction_id, options = {})
+        data = transaction_data('void', {
           :transactionid => transaction_id
-        }))
+        })
+        response = http.post(data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
+      end
+
+      def uri
+        @live_uri
       end
 
 
       protected
 
 
-      def after_post_on_exception(response, exception)
+      def on_error(response, exception)
         response.body = {
           'response' => '3',
           'responsetext' => 'A communication problem has occurred.',
@@ -134,14 +146,21 @@ module VaultedBilling
         response.success = false
       end
 
-      def after_post(response)
-        response.body = Hash.from_querystring(response.body)
+      def on_complete(response)
+        response.body = Hash.from_querystring(response.body.to_s) unless response.body.is_a?(Hash)
         response.success = response.body['response'] == '1'
       end
 
 
       private
 
+      def http
+        VaultedBilling::HTTP.new(self, uri, {
+          :headers => {'Content-Type' => 'text/xml'},
+          :on_complete => :on_complete,
+          :on_error => :on_error
+        })
+      end
 
       def core_data
         {

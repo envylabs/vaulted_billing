@@ -1,4 +1,5 @@
 require 'builder'
+require 'multi_xml'
 
 module VaultedBilling
   module Gateways
@@ -8,17 +9,17 @@ module VaultedBilling
     #
     class AuthorizeNetCim
       include VaultedBilling::Gateway
-      include VaultedBilling::HttpsInterface
+      attr_accessor :use_test_uri
 
       def initialize(options = {})
-        self.test_uri = 'https://apitest.authorize.net/xml/v1/request.api'
-        self.live_uri = 'https://api.authorize.net/xml/v1/request.api'
+        @test_uri = 'https://apitest.authorize.net/xml/v1/request.api'
+        @live_uri = 'https://api.authorize.net/xml/v1/request.api'
 
         options = options.symbolize_keys!
         @login = options[:username] || VaultedBilling.config.authorize_net_cim.username
         @password = options[:password] || VaultedBilling.config.authorize_net_cim.password
         @raw_options = options[:raw_options] || VaultedBilling.config.authorize_net_cim.raw_options
-        self.use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.authorize_net_cim.test_mode || VaultedBilling.config.test_mode)
+        @use_test_uri = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.authorize_net_cim.test_mode || VaultedBilling.config.test_mode)
       end
 
       def add_customer(customer)
@@ -29,7 +30,7 @@ module VaultedBilling
             xml.email customer.email if customer.email
           end
         end
-        result = post_data(data)
+        result = http.post(data)
         respond_with(customer, result, :success => result.success?) do |c|
           c.vault_id = result.body['createCustomerProfileResponse']['customerProfileId'] if c.success?
         end
@@ -37,34 +38,38 @@ module VaultedBilling
 
       def update_customer(customer)
         customer = customer.to_vaulted_billing
-        result = post_data(build_request('updateCustomerProfileRequest') { |xml|
+        data = build_request('updateCustomerProfileRequest') { |xml|
           xml.tag!('profile') {
             xml.email customer.email
             xml.customerProfileId customer.vault_id
           }
-        })
+        }
+        result = http.post(data)
         respond_with(customer, result, :success => result.success?)
       end
 
       def remove_customer(customer)
         customer = customer.to_vaulted_billing
-        result = post_data(build_request('deleteCustomerProfileRequest') { |xml|
+        data = build_request('deleteCustomerProfileRequest') { |xml|
           xml.customerProfileId customer.vault_id
-        })
+        }
 
+        result = http.post(data)
         respond_with(customer, result, :success => result.success?)
       end
 
       def add_customer_credit_card(customer, credit_card)
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
-        result = post_data(build_request('createCustomerPaymentProfileRequest') { |xml|
+        data = build_request('createCustomerPaymentProfileRequest') { |xml|
           xml.customerProfileId customer.vault_id
           xml.paymentProfile do
             billing_info!(xml, customer, credit_card)
             credit_card_info!(xml, customer, credit_card)
           end
-        })
+        }
+
+        result = http.post(data)
         respond_with(credit_card, result, :success => result.success?) do |c|
           c.vault_id = result.body['createCustomerPaymentProfileResponse']['customerPaymentProfileId'] if c.success?
         end
@@ -73,31 +78,35 @@ module VaultedBilling
       def update_customer_credit_card(customer, credit_card)
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
-        result = post_data(build_request('updateCustomerPaymentProfileRequest') { |xml|
+        data = build_request('updateCustomerPaymentProfileRequest') { |xml|
           xml.customerProfileId customer.vault_id
           xml.paymentProfile do
             billing_info!(xml, customer, credit_card)
             credit_card_info!(xml, customer, credit_card)
             xml.customerPaymentProfileId credit_card.vault_id
           end
-        })
+        }
+
+        result = http.post(data)
         respond_with(credit_card, result, :success => result.success?)
       end
 
       def remove_customer_credit_card(customer, credit_card)
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
-        result = post_data(build_request('deleteCustomerPaymentProfileRequest') { |xml|
+        data = build_request('deleteCustomerPaymentProfileRequest') { |xml|
           xml.customerProfileId customer.vault_id
           xml.customerPaymentProfileId credit_card.vault_id
-        })
+        }
+
+        result = http.post(data)
         respond_with(credit_card, result, :success => result.success?)
       end
 
-      def purchase(customer, credit_card, amount)
+      def purchase(customer, credit_card, amount, options = {})
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
-        result = post_data(build_request('createCustomerProfileTransactionRequest') { |xml|
+        data = build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransAuthCapture do
               xml.amount amount
@@ -106,14 +115,16 @@ module VaultedBilling
             end
           end
           xml.extraOptions @raw_options.presence
-        })
+        }
+
+        result = http.post(data)
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
-      def authorize(customer, credit_card, amount)
+      def authorize(customer, credit_card, amount, options = {})
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
-        result = post_data(build_request('createCustomerProfileTransactionRequest') { |xml|
+        data = build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransAuthOnly do
               xml.amount amount
@@ -122,12 +133,14 @@ module VaultedBilling
             end
           end
           xml.extraOptions @raw_options.presence
-        })
+        }
+
+        result = http.post(data)
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
-      def capture(transaction_id, amount)
-        result = post_data(build_request('createCustomerProfileTransactionRequest') { |xml|
+      def capture(transaction_id, amount, options = {})
+        data = build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransPriorAuthCapture do
               xml.amount amount
@@ -135,12 +148,14 @@ module VaultedBilling
             end
           end
           xml.extraOptions @raw_options.presence
-        })
+        }
+
+        result = http.post(data)
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
       def refund(transaction_id, amount, options = {})
-        result = post_data(build_request('createCustomerProfileTransactionRequest') { |xml|
+        data = build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransRefund do
               xml.amount amount
@@ -151,29 +166,32 @@ module VaultedBilling
             end
           end
           xml.extraOptions @raw_options.presence
-        })
+        }
+
+        result = http.post(data)
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
-      def void(transaction_id)
-        result = post_data(build_request('createCustomerProfileTransactionRequest') { |xml|
+      def void(transaction_id, options = {})
+        data = build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransVoid do
               xml.transId transaction_id
             end
           end
           xml.extraOptions @raw_options.presence
-        })
+        }
+        
+        result = http.post(data)
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
+      def uri
+        @use_test_uri ? @test_uri : @live_uri
+      end
 
       protected
 
-
-      def post_data(data, headers = {})
-        super(data, {'Content-Type' => 'text/xml'}.merge(headers))
-      end
 
       def after_post_on_exception(response, exception)
         response.body = {
@@ -192,7 +210,7 @@ module VaultedBilling
       end
 
       def after_post_on_success(response)
-        response.body = Hash.from_xml(response.body)
+        response.body = MultiXml.parse(response.body)
         response.success = response.body[response.body.keys.first]['messages']['resultCode'] == 'Ok'
       end
 
@@ -208,7 +226,7 @@ module VaultedBilling
         xml.target!
       end
 
-
+      
       private
 
 
@@ -278,7 +296,13 @@ module VaultedBilling
         "XXXX%04d" % [input.to_s[-4..-1].to_i]
       end
 
+      def http
+        VaultedBilling::HTTP.new(self, uri, {
+          :headers => {'Content-Type' => 'text/xml'},
+          :on_success => :after_post_on_success,
+          :on_error => :after_post_on_exception
+        })
+      end      
     end
-
   end
 end

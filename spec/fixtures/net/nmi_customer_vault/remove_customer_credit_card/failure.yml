@@ -1,0 +1,24 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://secure.nmi.com:443/api/transact.php
+    body: customer_vault=delete_customer&customer_vault_id=VERYBADIDENTIFIER!&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers:
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:30:50 GMT
+      server:
+      - Apache
+      content-length:
+      - '188'
+      content-type:
+      - text/html
+    body: response=3&responsetext=Invalid Customer Vault Id REFID:317102329&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300&customer_vault_id=VERYBADIDENTIFIER%21
+    http_version: '1.1'

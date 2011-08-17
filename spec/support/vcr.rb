@@ -1,12 +1,17 @@
 require 'vcr'
+require 'cgi'
 
 VCR.config do |config|
   config.cassette_library_dir = File.expand_path('../../fixtures/net', __FILE__)
   config.stub_with :webmock
   config.ignore_localhost = true
-  config.default_cassette_options = {
-    :record => :none
-  }
+  config.default_cassette_options = { :record => :none }
+  config.filter_sensitive_data('%{NMI_CUSTOMER_VAULT_USERNAME}') { VaultedBilling.config.nmi_customer_vault.username }
+  config.filter_sensitive_data('%{NMI_CUSTOMER_VAULT_PASSWORD}') { VaultedBilling.config.nmi_customer_vault.password }
+  config.filter_sensitive_data('%{AUTHORIZE_NET_CIM_USERNAME}') { VaultedBilling.config.authorize_net_cim.username }
+  config.filter_sensitive_data('%{AUTHORIZE_NET_CIM_PASSWORD}') { VaultedBilling.config.authorize_net_cim.username }
+  config.filter_sensitive_data('%{IPCOMMERCE_USERNAME}') { VaultedBilling.config.ipcommerce.username }
+  config.filter_sensitive_data('%{IPCOMMERCE_ESCAPED_USERNAME}') { CGI.escape(VaultedBilling.config.ipcommerce.username) }
 end
 
 module VCRHelpers
@@ -28,27 +33,6 @@ module VCRHelpers
   end
 
   module ClassMethods
-    def cached_request_context(description, options = {}, &block)
-      context(description) do
-        before(:each) do
-          scope = options[:scope] || description
-
-          if mode = options[:record]
-            mode_aliases = { :new => :new_episodes }
-            options[:record] = mode_aliases[mode] || mode
-          end
-
-          VCR.insert_cassette(scope, options.except(:scope))
-        end
-
-        after(:each) do
-          VCR.eject_cassette
-        end
-
-        context(&block)
-      end
-    end
-
     def request_exception_context(description = 'with a connection exception', exception = Timeout::Error, &block)
       context(description) do
         before(:each) { WebMock.stub_request(:any, //).to_raise(exception) }
@@ -59,6 +43,7 @@ module VCRHelpers
 end
 
 RSpec.configure do |config|
+  config.extend VCR::RSpec::Macros
   config.include VCRHelpers::InstanceMethods
   config.extend VCRHelpers::ClassMethods
 end

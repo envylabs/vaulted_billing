@@ -34,15 +34,15 @@ module VaultedBilling
       raise NotImplementedError
     end
 
-    def authorize(customer, credit_card, amount)
+    def authorize(customer, credit_card, amount, options = {})
       raise NotImplementedError
     end
 
-    def capture(transaction_id, amount)
+    def capture(transaction_id, amount, options = {})
       raise NotImplementedError
     end
 
-    def purchase(customer, credit_card, amount)
+    def purchase(customer, credit_card, amount, options = {})
       raise NotImplementedError
     end
 
@@ -50,7 +50,7 @@ module VaultedBilling
       raise NotImplementedError
     end
 
-    def void(transaction_id)
+    def void(transaction_id, options = {})
       raise NotImplementedError
     end
 

@@ -1,0 +1,125 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerProfileRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <profile>\n    <email>bernice@metzrath.com</email>\n
+      \ </profile>\n</createCustomerProfileRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:56:38 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '504'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerProfileResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerProfileId>4309806</customerProfileId><customerPaymentProfileIdList
+      /><customerShippingAddressIdList /><validationDirectResponseList /></createCustomerProfileResponse>"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<createCustomerPaymentProfileRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <customerProfileId>4309806</customerProfileId>\n
+      \ <paymentProfile>\n    <billTo>\n      <firstName>Remington</firstName>\n      <lastName>Runolfsdottir</lastName>\n
+      \     <address>9807 Fritsch Route</address>\n      <city>New Thereseville</city>\n
+      \     <state>Hawaii</state>\n      <zip>74514-1364</zip>\n      <country>US</country>\n
+      \     <phoneNumber>774-393-5486 x4075</phoneNumber>\n    </billTo>\n    <payment>\n
+      \     <creditCard>\n        <cardNumber>5288407810509231</cardNumber>\n        <expirationDate>2012-08</expirationDate>\n
+      \     </creditCard>\n    </payment>\n  </paymentProfile>\n</createCustomerPaymentProfileRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:56:39 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '435'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><createCustomerPaymentProfileResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Ok</resultCode><message><code>I00001</code><text>Successful.</text></message></messages><customerPaymentProfileId>3802863</customerPaymentProfileId></createCustomerPaymentProfileResponse>"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: https://apitest.authorize.net:443/xml/v1/request.api
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<updateCustomerPaymentProfileRequest
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">\n  <merchantAuthentication>\n
+      \   <name>%{AUTHORIZE_NET_CIM_USERNAME}</name>\n    <transactionKey>2Rsb3965z97ZgAWa</transactionKey>\n
+      \ </merchantAuthentication>\n  <customerProfileId>4309806</customerProfileId>\n
+      \ <paymentProfile>\n    <billTo>\n      <firstName>Remington</firstName>\n      <lastName>Runolfsdottir</lastName>\n
+      \     <address>9807 Fritsch Route</address>\n      <city>New Thereseville</city>\n
+      \     <state>Hawaii</state>\n      <zip>74514-1364</zip>\n      <country>US</country>\n
+      \     <phoneNumber>774-393-5486 x4075</phoneNumber>\n    </billTo>\n    <payment>\n
+      \     <creditCard>\n        <cardNumber>123456</cardNumber>\n        <expirationDate>2012-08</expirationDate>\n
+      \     </creditCard>\n    </payment>\n    <customerPaymentProfileId>3802863</customerPaymentProfileId>\n
+      \ </paymentProfile>\n</updateCustomerPaymentProfileRequest>\n"
+    headers:
+      content-type:
+      - text/xml
+      user-agent:
+      - vaulted_billing/1.0.2
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Aug 2011 17:56:40 GMT
+      server:
+      - Microsoft-IIS/6.0
+      x-powered-by:
+      - ASP.NET
+      x-aspnet-version:
+      - 2.0.50727
+      cache-control:
+      - private
+      content-type:
+      - text/xml; charset=utf-8
+      content-length:
+      - '411'
+    body: ! "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><updateCustomerPaymentProfileResponse
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\"><messages><resultCode>Error</resultCode><message><code>E00015</code><text>The
+      field length is invalid for Card Number.</text></message></messages></updateCustomerPaymentProfileResponse>"
+    http_version: '1.1'

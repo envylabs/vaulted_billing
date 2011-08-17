@@ -1,23 +1,26 @@
 begin
   require 'active_support/core_ext/object/blank'
   require 'active_support/core_ext/object/try'
-  require 'active_support/core_ext/hash/conversions'
   require 'active_support/core_ext/hash/indifferent_access'
   require 'active_support/core_ext/hash/reverse_merge'
   require 'active_support/core_ext/string/inflections'
+  require 'active_support/time'
 rescue LoadError
   require 'active_support'
 end
 
+require 'vaulted_billing/errors'
+
 module VaultedBilling
   autoload :Version, 'vaulted_billing/version'
+  autoload :ChainableHash, 'vaulted_billing/chainable_hash'
   autoload :Configuration, 'vaulted_billing/configuration'
   autoload :Gateway, 'vaulted_billing/gateway'
   autoload :Gateways, 'vaulted_billing/gateways'
   autoload :Customer, 'vaulted_billing/customer'
   autoload :CreditCard, 'vaulted_billing/credit_card'
   autoload :Transaction, 'vaulted_billing/transaction'
-  autoload :HttpsInterface, 'vaulted_billing/https_interface'
+  autoload :HTTP, 'vaulted_billing/http'
 
   Dir[File.expand_path('../vaulted_billing/core_ext/**/*.rb', __FILE__)].each do |extension|
     require extension

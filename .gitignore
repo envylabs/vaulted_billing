@@ -1,6 +1,11 @@
-.bundle
 *.gem
+.bundle
+Gemfile.lock
+gemfiles/*.lock
+pkg/*
+
 vaulted_billing.log
+spec/config.yml
 
 *~
 *.tmp
