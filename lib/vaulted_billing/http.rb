@@ -43,7 +43,7 @@ module VaultedBilling
     
     def initialize(caller, uri, options = {})
       @uri = URI.parse(uri.to_s) if uri
-      @headers = options[:headers]
+      @headers = options[:headers] || {}
       @basic_auth = options[:basic_auth]
       @content_type = options[:content_type]
       @caller = caller
@@ -57,6 +57,13 @@ module VaultedBilling
       request(Net::HTTP::Post.new(uri.path), body, options)
     end
     
+    def get(options = {})
+      request(Net::HTTP::Get.new(uri.path), nil, options)
+    end
+
+    def put(body, options = {})
+      request(Net::HTTP::Put.new(uri.path), body, options)
+    end
     
     private
     
@@ -70,21 +77,22 @@ module VaultedBilling
     def request(request, body = nil, options = {})
       request.initialize_http_header(@headers.reverse_merge({
          'User-Agent' => "vaulted_billing/#{VaultedBilling::Version}"
-       }))
-       request.body = body if body
-       set_basic_auth request, options[:basic_auth] || @basic_auth
-       set_content_type request, options[:content_type] || @content_type
-       
-       response = Net::HTTP.new(uri.host, uri.port).tap do |https|
-         https.use_ssl = true
-         https.ca_file = VaultedBilling.config.ca_file
-         https.verify_mode = OpenSSL::SSL::VERIFY_PEER
-       end
-       
-       run_callback(:before_request, options[:before_request] || @before_request, request)
-       http_response = run_request(request, response, options)
-       run_callback(:on_complete, options[:on_complete] || @on_complete, http_response)
-       http_response
+      }))
+      
+      request.body = body if body
+      set_basic_auth request, options[:basic_auth] || @basic_auth
+      set_content_type request, options[:content_type] || @content_type
+      
+      response = Net::HTTP.new(uri.host, uri.port).tap do |https|
+        https.use_ssl = true
+        https.ca_file = VaultedBilling.config.ca_file
+        https.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      end
+      
+      run_callback(:before_request, options[:before_request] || @before_request, request)
+      http_response = run_request(request, response, options)
+      run_callback(:on_complete, options[:on_complete] || @on_complete, http_response)
+      http_response
     end
     
     def run_callback(type, callback, *payload)
@@ -98,12 +106,13 @@ module VaultedBilling
     
     def run_request(request, response, options)
       log :debug, "%s %s to %s" % [request.class.name.split('::').last, request.body.inspect, uri.to_s]
+      
       http_response = Response.new(response.request(request))
       log :info, "Response code %s (HTTP %s), %s" % [http_response.message, http_response.code.presence || '0', http_response.body.inspect]
       run_callback(:on_success, options[:on_success] || @on_success, http_response)
       http_response
     rescue *HTTP_ERRORS
-      http_response = Response.new(nil).tap do |request_response|
+      Response.new(nil).tap do |request_response|
         request_response.success = false
         request_response.message = "%s - %s" % [$!.class.name, $!.message]
         request_response.connection_error = true

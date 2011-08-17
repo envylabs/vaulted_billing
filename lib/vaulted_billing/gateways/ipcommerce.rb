@@ -52,30 +52,23 @@ module VaultedBilling
           @expires_at && (@expires_at > Time.now + 5.minutes)
         end
 
-        def renew!
-          # contact ipcommerce sign on for new keys.
-          uri = URI.parse("https://cws-01.cert.ipcommerce.com/REST/2.0.15/SvcInfo/token")
-          request = Net::HTTP::Get.new(uri.path)
-          
-          request.initialize_http_header({
-            'User-Agent' => "vaulted_billing/#{VaultedBilling::Version}"
-          })
-          request.set_content_type "application/json"
+        def before_request(request)
           request.delete "accept"
-          request.basic_auth(@identity_token, "")
-          response = Net::HTTP.new(uri.host, uri.port).tap do |https|
-            https.use_ssl = true
-            https.ca_file = VaultedBilling.config.ca_file
-            https.verify_mode = OpenSSL::SSL::VERIFY_PEER
-          end
-          result = response.request(request)
-          body = result.body
-          
-          @key = body[1, body.length-2]
+        end
 
+        def renew!
+          body = http.get.body
           @expires_at = Time.now + 30.minutes
-          @key
-          return result, body
+          @key = body[1, body.length-2]
+        end
+        
+        private
+        def http
+          @request ||= VaultedBilling::HTTP.new(self, "https://cws-01.cert.ipcommerce.com/REST/2.0.15/SvcInfo/token", {
+            :headers => {'Content-Type' => 'application/json'},
+            :before_request => :before_request,
+            :basic_auth => [@identity_token, ""]
+          })
         end
       end
 
@@ -139,7 +132,7 @@ module VaultedBilling
           }
         }
         
-        response = post("Txn/#{options[:workflow_id] || @service_id}", data)
+        response = http(options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response) 
         respond_with(transaction,
                      response,
@@ -159,7 +152,7 @@ module VaultedBilling
           }
         }
         
-        response = put("Txn/#{options[:workflow_id] || @service_id}/#{transaction_id}", data)
+        response = http(options[:workflow_id] || @service_id, transaction_id).put(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -195,7 +188,7 @@ module VaultedBilling
             }
           }
         }
-        response = post("Txn/#{options[:workflow_id] || @service_id}", data)
+        response = http(options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -215,7 +208,7 @@ module VaultedBilling
           }
         }
         
-        response = post("Txn/#{options[:workflow_id] || @service_id}", data)
+        response = http(options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -265,7 +258,7 @@ module VaultedBilling
           }
         }
 
-        response = put("Txn/#{options[:workflow_id] || @service_id}/#{transaction_id}", data)
+        response = http(options[:workflow_id] || @service_id, transaction_id).put(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -292,60 +285,22 @@ module VaultedBilling
         (Time.now.to_f * 100000).to_i.to_s(36) + rand(60000000).to_s(36)
       end
 
-      def post(path, data = {})
-        uri = uri_for(path)
-        request(uri, Net::HTTP::Post.new(uri.path), data)
-      end
-      
-      def get(path, data = {})
-        uri = uri_for(path)
-        request(uri, Net::HTTP::Get.new(uri.path), data)
-      end
-
-      def put(path, data = {})
-        uri = uri_for(path)
-        request(uri, Net::HTTP::Put.new(uri.path), data)
-      end
-
-      def uri_for(path)
-        URI.parse("https://cws-01.cert.ipcommerce.com/REST/2.0.15/#{path}")
-      end
-  
-      def request(uri, request, data)
-        encoded_data = MultiJson.encode(data)
-        request.initialize_http_header({
-          'User-Agent' => "vaulted_billing/#{VaultedBilling::Version}"
+      def http(*params)
+        VaultedBilling::HTTP.new(self, "https://cws-01.cert.ipcommerce.com/REST/2.0.15/Txn/#{params.join('/')}", {
+          :headers => { 'Content-Type' => 'application/json' },
+          :before_request => :before_request,
+          :basic_auth => [@service_key_store.key, ""],
+          :on_success => :on_success
         })
-        request.body = encoded_data if encoded_data
-        request.basic_auth(@service_key_store.key, "")
-        request.set_content_type "application/json"
-        request.delete "accept"
-        response = Net::HTTP.new(uri.host, uri.port).tap do |https|
-          https.use_ssl = true
-          https.ca_file = VaultedBilling.config.ca_file
-          https.verify_mode = OpenSSL::SSL::VERIFY_PEER
-        end
-        
-        begin
-          VaultedBilling::HttpsInterface::PostResponse.new(response.request(request)).tap do |post_response|
-            after_request_on_success(post_response)
-          end
-        rescue *VaultedBilling::HttpsInterface::HTTP_ERRORS
-          VaultedBilling::HttpsInterface::PostResponse.new(nil).tap do |post_response|
-            post_response.success = false
-            post_response.message = "%s - %s" % [$!.class.name, $!.message]
-            post_response.connection_error = true
-            after_request_on_exception(post_response, $!)
-          end
-        end
       end
       
-      def after_request_on_success(response)
+      def before_request(request)
+        request.delete "accept"
+      end
+      
+      def on_success(response)
         response.body = decode_body(response.body) || {}
         response.success = [1, 2].include?(response.body['Status'])
-      end
-      
-      def after_request_on_exception(response)
       end
       
       def decode_body(string)

@@ -16,7 +16,8 @@ credit_card = VaultedBilling::CreditCard.new({
 g = VaultedBilling.gateway(:ipcommerce).new({
   username: identity_token,
   # service_key_store: store,
-  application_id: '66817'
+  application_id: '66817',
+  service_id: 'E4FB800001'
 })
 
 auth = g.authorize(customer, credit_card, '15.00', {

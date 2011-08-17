@@ -56,9 +56,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
   context '#authorize' do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
-    subject { gateway.authorize(customer, credit_card, 11.00, {
-      merchant_profile_id: 'AutoTest_E4FB800001'
-    }) }
+    subject { gateway.authorize(customer, credit_card, 11.00, { merchant_profile_id: 'AutoTest_E4FB800001' }) }
 
     context 'when successful' do
       let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
@@ -67,9 +65,6 @@ describe VaultedBilling::Gateways::Ipcommerce do
       it_should_behave_like 'a transaction request'
       it { should be_success }
       its(:id) { should_not be_nil }
-      it "returns a 32 character id" do
-        subject.id.length.should == 32
-      end
       its(:masked_card_number) { should be_present }
       its(:authcode) { should_not be_nil }
       its(:message) { should == "APPROVED" }
@@ -102,9 +97,6 @@ describe VaultedBilling::Gateways::Ipcommerce do
       it_should_behave_like 'a transaction request'
       it { should be_success }
       its(:id) { should_not be_nil }
-      it "returns a 32 character id" do
-        subject.id.length.should == 32
-      end
       its(:authcode) { should be_nil }
       its(:message) { should == "APPROVED" }
       its(:code) { should == 1 }
@@ -140,9 +132,6 @@ describe VaultedBilling::Gateways::Ipcommerce do
       it_should_behave_like 'a transaction request'
       it { should be_success }
       its(:id) { should_not be_nil }
-      it "returns a 32 character id" do
-        subject.id.length.should == 32
-      end
       its(:authcode) { should_not be_nil }
       its(:message) { should == "APPROVED" }
       its(:code) { should == 1 }
@@ -176,9 +165,6 @@ describe VaultedBilling::Gateways::Ipcommerce do
       it_should_behave_like 'a transaction request'
       it { should be_success }
       its(:id) { should_not be_nil }
-      it "returns a 32 character id" do
-        subject.id.length.should == 32
-      end
       its(:authcode) { should_not be_nil }
       its(:message) { should == "APPROVED" }
       its(:code) { should == 1 }
