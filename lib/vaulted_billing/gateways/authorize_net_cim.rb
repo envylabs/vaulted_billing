@@ -1,4 +1,5 @@
 require 'builder'
+require 'multi_xml'
 
 module VaultedBilling
   module Gateways
@@ -209,7 +210,7 @@ module VaultedBilling
       end
 
       def after_post_on_success(response)
-        response.body = Hash.from_xml(response.body)
+        response.body = MultiXml.parse(response.body)
         response.success = response.body[response.body.keys.first]['messages']['resultCode'] == 'Ok'
       end
 

@@ -1,10 +1,10 @@
 begin
   require 'active_support/core_ext/object/blank'
   require 'active_support/core_ext/object/try'
-  require 'active_support/core_ext/hash/conversions'
   require 'active_support/core_ext/hash/indifferent_access'
   require 'active_support/core_ext/hash/reverse_merge'
   require 'active_support/core_ext/string/inflections'
+  require 'active_support/time'
 rescue LoadError
   require 'active_support'
 end
