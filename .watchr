@@ -1,10 +1,11 @@
 ENV['WATCHR'] = '1'
 
+require 'open4'
+
 system 'clear'
 
 def growl(message)
   message = message.gsub(/\e\[(\d+)m/, '').split("\n").detect { |l| l =~ /\d+ examples?, \d+ failures?/ } # strip bash color codes
-puts message.inspect
   growlnotify = `which growlnotify`.chomp
   title = "Watchr Test Results"
   passed = message =~ /\b0 failure/
@@ -16,7 +17,12 @@ end
 
 def run(cmd)
   puts cmd
-  `#{cmd}`
+  Open4::popen4(cmd) do |pid, stdin, stdout, stderr|
+    while line = stdout.gets
+      $stdout.write line
+      growl line if line =~ /\b\d+ failure/
+    end
+  end
 end
 
 def run_spec(file)
@@ -28,17 +34,13 @@ def run_spec(file)
   end
 
   puts "Running #{file}"
-  result = run "bundle exec rspec --format documentation #{file}"
-  growl result rescue nil
-  puts result
+  run "bundle exec rspec --format documentation #{file}"
 end
 
 def run_all_specs
   system 'clear'
   puts "Running all specs"
-  result = run "bundle exec rspec spec/"
-  growl result rescue nil
-  puts result
+  run "bundle exec rspec --format documentation spec/"
 end
 
 
