@@ -106,27 +106,27 @@ module VaultedBilling
       def authorize(customer, credit_card, amount, options = {})
         data = {
           "__type" => "AuthorizeTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
-          ApplicationProfileId: @application_id,
-          MerchantProfileId: options[:merchant_profile_id],
-          Transaction: {
-            "__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
-            TransactionData: {
-              Amount: "%.2f" % amount,
-              CurrencyCode: 4,
-              TransactionDateTime: Time.now.xmlschema,
-              CustomerPresent: 0,
-              EntryMode: 1,
-              GoodsType: 0,
-              IndustryType: 2,
-              SignatureCaptured: false,
-              OrderNumber: options[:order_id] || generate_order_number
+          :ApplicationProfileId => @application_id,
+          :MerchantProfileId => options[:merchant_profile_id],
+          :Transaction => {
+            :"__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
+            :TransactionData => {
+              :Amount => "%.2f" % amount,
+              :CurrencyCode => 4,
+              :TransactionDateTime => Time.now.xmlschema,
+              :CustomerPresent => 0,
+              :EntryMode => 1,
+              :GoodsType => 0,
+              :IndustryType => 2,
+              :SignatureCaptured => false,
+              :OrderNumber => options[:order_id] || generate_order_number
             },
-            TenderData: {
-              CardData: {
-                CardholderName: nil,
-                CardType: self.class.credit_card_type_id(credit_card.card_number),
-                Expire: credit_card.expires_on.try(:strftime, "%m%y"),
-                PAN: credit_card.card_number
+            :TenderData => {
+              :CardData => {
+                :CardholderName => nil,
+                :CardType => self.class.credit_card_type_id(credit_card.card_number),
+                :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
+                :PAN => credit_card.card_number
               }
             }
           }
@@ -142,13 +142,13 @@ module VaultedBilling
 
       def capture(transaction_id, amount, options = {})
         data = {
-          "__type" => "Capture:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
-          ApplicationProfileId: @application_id,
-          DifferenceData: {
-            "__type" => "BankcardCapture:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
-            TransactionId: transaction_id,
-            Addendum: nil,
-            Amount: "%.2f" % amount
+          :"__type" => "Capture:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
+          :ApplicationProfileId => @application_id,
+          :DifferenceData => {
+            :"__type" => "BankcardCapture:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
+            :TransactionId => transaction_id,
+            :Addendum => nil,
+            :Amount => "%.2f" % amount
           }
         }
         
@@ -162,28 +162,28 @@ module VaultedBilling
       def purchase(customer, credit_card, amount, options = {})
         data = {
           "__type" => "AuthorizeAndCaptureTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
-          ApplicationProfileId: @application_id,
-          MerchantProfileId: options[:merchant_profile_id],
-          Transaction: {
-            "__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
-            TransactionData: {
-              Amount: "%.2f" % amount,
-              CurrencyCode: 4,
-              TransactionDateTime: Time.now.xmlschema,
-              CustomerPresent: 0,
-              EmployeeId: options[:employee_id],
-              EntryMode: 1,
-              GoodsType: 0,
-              IndustryType: 2,
-              OrderNumber: options[:order_id] || generate_order_number,
-              SignatureCaptured: false
+          :ApplicationProfileId => @application_id,
+          :MerchantProfileId => options[:merchant_profile_id],
+          :Transaction => {
+            :"__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
+            :TransactionData => {
+              :Amount => "%.2f" % amount,
+              :CurrencyCode => 4,
+              :TransactionDateTime => Time.now.xmlschema,
+              :CustomerPresent => 0,
+              :EmployeeId => options[:employee_id],
+              :EntryMode => 1,
+              :GoodsType => 0,
+              :IndustryType => 2,
+              :OrderNumber => options[:order_id] || generate_order_number,
+              :SignatureCaptured => false
             },
-            TenderData: {
-              CardData: {
-                CardholderName: nil,
-                CardType: self.class.credit_card_type_id(credit_card.card_number),
-                Expire: credit_card.expires_on.try(:strftime, "%m%y"),
-                PAN: credit_card.card_number
+            :TenderData => {
+              :CardData => {
+                :CardholderName => nil,
+                :CardType => self.class.credit_card_type_id(credit_card.card_number),
+                :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
+                :PAN => credit_card.card_number
               }
             }
           }
@@ -197,14 +197,14 @@ module VaultedBilling
 
       def refund(transaction_id, amount, options = {})
         data = {
-          "__type" => "ReturnById:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
-          ApplicationProfileId: @application_id,
-          MerchantProfileId: options[:merchant_profile_id],
-          DifferenceData: {
-            "__type" => "BankcardReturn:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
-            TransactionId: transaction_id,
-            Addendum: nil,
-            Amount: "%.2f" % amount
+          :"__type" => "ReturnById:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
+          :ApplicationProfileId => @application_id,
+          :MerchantProfileId => options[:merchant_profile_id],
+          :DifferenceData => {
+            :"__type" => "BankcardReturn:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
+            :TransactionId => transaction_id,
+            :Addendum => nil,
+            :Amount => "%.2f" % amount
           }
         }
         
@@ -249,12 +249,12 @@ module VaultedBilling
     
       def void(transaction_id, options = {})
         data = {
-          "__type" => "Undo:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
-          ApplicationProfileId: @application_id,
-          DifferenceData: {
-            "__type" => "BankcardUndo:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
-            TransactionId: transaction_id,
-            Addendum: nil
+          :"__type" => "Undo:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
+          :ApplicationProfileId => @application_id,
+          :DifferenceData => {
+            :"__type" => "BankcardUndo:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
+            :TransactionId => transaction_id,
+            :Addendum => nil
           }
         }
 
