@@ -9,3 +9,10 @@ nmi_customer_vault:
   username: nmi-vault-username
   password: nmi-vault-password
   test_mode: true
+
+ipcommerce:
+  username: ipcommerce-username
+  test_mode: true
+  raw_options:
+    application_id: application-id
+    service_id: E4FB800001
