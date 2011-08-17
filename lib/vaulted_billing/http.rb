@@ -23,6 +23,7 @@ module VaultedBilling
         attr_accessor :success
         attr_accessor :raw_response
         attr_accessor :connection_error
+        alias :connection_error? :connection_error
 
         def initialize(http_response)
           if http_response
@@ -42,7 +43,7 @@ module VaultedBilling
     attr_reader :uri
     
     def initialize(caller, uri, options = {})
-      @uri = URI.parse(uri.to_s) if uri
+      @uri = [uri].flatten.compact.collect { |u| URI.parse(u.to_s).normalize }
       @headers = options[:headers] || {}
       @basic_auth = options[:basic_auth]
       @content_type = options[:content_type]
@@ -54,15 +55,15 @@ module VaultedBilling
     end
     
     def post(body, options = {})
-      request(Net::HTTP::Post.new(uri.path), body, options)
+      request(:post, uri.dup, body, options)
     end
     
     def get(options = {})
-      request(Net::HTTP::Get.new(uri.path), nil, options)
+      request(:get, uri.dup, nil, options)
     end
 
     def put(body, options = {})
-      request(Net::HTTP::Put.new(uri.path), body, options)
+      request(:put, uri.dup, body, options)
     end
     
     private
@@ -74,25 +75,45 @@ module VaultedBilling
       end
     end
     
-    def request(request, body = nil, options = {})
-      request.initialize_http_header(@headers.reverse_merge({
-         'User-Agent' => "vaulted_billing/#{VaultedBilling::Version}"
+    def request(method, uris, body = nil, options = {})
+      uri = uris.shift || raise(ArgumentError, "URI is empty")
+
+      request = case method
+      when :get
+        Net::HTTP::Get
+      when :put
+        Net::HTTP::Put
+      when :post
+        Net::HTTP::Post
+      else
+        raise ArugmentError
+      end.new(uri.path)
+
+      request.initialize_http_header(@headers.merge(options[:headers] || {}).reverse_merge({
+         'User-Agent' => user_agent_string
       }))
-      
+
       request.body = body if body
       set_basic_auth request, options[:basic_auth] || @basic_auth
       set_content_type request, options[:content_type] || @content_type
-      
+
       response = Net::HTTP.new(uri.host, uri.port).tap do |https|
+        https.read_timeout = options[:read_timeout] || 60
+        https.open_timeout = options[:open_timeout] || 60
         https.use_ssl = true
         https.ca_file = VaultedBilling.config.ca_file
         https.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
-      
+
       run_callback(:before_request, options[:before_request] || @before_request, request)
       http_response = run_request(request, response, options)
-      run_callback(:on_complete, options[:on_complete] || @on_complete, http_response)
-      http_response
+
+      if http_response.connection_error && uris.present?
+        request(method, uris, body, options)
+      else
+        run_callback(:on_complete, options[:on_complete] || @on_complete, http_response)
+        http_response
+      end
     end
     
     def run_callback(type, callback, *payload)
@@ -112,6 +133,7 @@ module VaultedBilling
       run_callback(:on_success, options[:on_success] || @on_success, http_response)
       http_response
     rescue *HTTP_ERRORS
+      log :info, "HTTP Error: %s - %s" % [$!.class.name, $!.message]
       Response.new(nil).tap do |request_response|
         request_response.success = false
         request_response.message = "%s - %s" % [$!.class.name, $!.message]
@@ -126,6 +148,10 @@ module VaultedBilling
     
     def set_basic_auth(request, auth)
       request.basic_auth(auth.first, auth.last) if auth
+    end
+
+    def user_agent_string
+      "vaulted_billing/%s (Rubygems; Ruby %s %s)" % [VaultedBilling::Version, RUBY_VERSION, RUBY_PLATFORM]
     end
   end
 end
