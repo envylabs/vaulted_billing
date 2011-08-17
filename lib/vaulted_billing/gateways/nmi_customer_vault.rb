@@ -75,7 +75,7 @@ module VaultedBilling
         respond_with(credit_card, response, :success => response.success?)
       end
 
-      def purchase(customer, credit_card, amount)
+      def purchase(customer, credit_card, amount, options = {})
         data = transaction_data('sale', {
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
@@ -86,7 +86,7 @@ module VaultedBilling
                      :success => response.success?)
       end
 
-      def authorize(customer, credit_card, amount)
+      def authorize(customer, credit_card, amount, options = {})
         data = transaction_data('auth', {
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
@@ -97,7 +97,7 @@ module VaultedBilling
                      :success => response.success?)
       end
 
-      def capture(transaction_id, amount)
+      def capture(transaction_id, amount, options = {})
         data = transaction_data('capture', {
           :transactionid => transaction_id,
           :amount => amount
@@ -119,7 +119,7 @@ module VaultedBilling
                      :success => response.success?)
       end
 
-      def void(transaction_id)
+      def void(transaction_id, options = {})
         data = transaction_data('void', {
           :transactionid => transaction_id
         })

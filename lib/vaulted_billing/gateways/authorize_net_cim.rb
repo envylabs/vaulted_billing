@@ -102,7 +102,7 @@ module VaultedBilling
         respond_with(credit_card, result, :success => result.success?)
       end
 
-      def purchase(customer, credit_card, amount)
+      def purchase(customer, credit_card, amount, options = {})
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
         data = build_request('createCustomerProfileTransactionRequest') { |xml|
@@ -120,7 +120,7 @@ module VaultedBilling
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
-      def authorize(customer, credit_card, amount)
+      def authorize(customer, credit_card, amount, options = {})
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
         data = build_request('createCustomerProfileTransactionRequest') { |xml|
@@ -138,7 +138,7 @@ module VaultedBilling
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
-      def capture(transaction_id, amount)
+      def capture(transaction_id, amount, options = {})
         data = build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransPriorAuthCapture do
@@ -171,7 +171,7 @@ module VaultedBilling
         respond_with(new_transaction_from_response(result.body), result, :success => result.success?)
       end
 
-      def void(transaction_id)
+      def void(transaction_id, options = {})
         data = build_request('createCustomerProfileTransactionRequest') { |xml|
           xml.transaction do
             xml.profileTransVoid do

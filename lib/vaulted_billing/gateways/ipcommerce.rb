@@ -145,7 +145,6 @@ module VaultedBilling
                      :success => (transaction.code == 1))
       end
 
-
       def capture(transaction_id, amount, options = {})
         data = {
           :"__type" => "Capture:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
@@ -272,6 +271,9 @@ module VaultedBilling
       end
 
 
+      private
+
+
       ##
       # Returns the name of the card company based on the given number, or
       # nil if it is unrecognized.
@@ -284,8 +286,7 @@ module VaultedBilling
         end
         return 1
       end
-      
-      private
+
 
       def generate_order_number
         (Time.now.to_f * 100000).to_i.to_s(36) + rand(60000000).to_s(36)
