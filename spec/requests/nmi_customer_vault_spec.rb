@@ -375,9 +375,13 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
       it 'includes the options in the request' do
         customer
         credit_card
-        gateway.should_receive(:post_data).
+
+        http = stub("http")
+        http.should_receive(:post).
           with(%r{&dup_seconds=1}m).
           and_raise(TestException)
+        gateway.should_receive(:http).
+          and_return(http)
         expect { gateway.authorize(customer, credit_card, 10.00) }.
           to raise_error(TestException)
       end

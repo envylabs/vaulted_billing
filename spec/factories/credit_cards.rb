@@ -14,3 +14,13 @@ end
 Factory.define :existing_credit_card, :parent => :credit_card do |c|
   c.vault_id { Factory.next :identifier }
 end
+
+Factory.define :ipcommerce_credit_card, :parent => :credit_card do |c|
+  c.card_number '5454545454545454'
+  c.cvv_number '123'
+  c.expires_on Date.new(2010, 12, 31)
+end
+
+Factory.define :invalid_credit_card, :parent => :credit_card do |c|
+  c.card_number { Factory.next :invalid_credit_card_number }
+end
