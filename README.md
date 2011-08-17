@@ -33,37 +33,39 @@ If your application uses [Bundler][bundler], then add the following to your Gemf
 
 Simple (not particularly clean or recommended) example:
 
-    require 'vaulted_billing'
-    
-    bogus = VaultedBilling::Gateways::Bogus.new(:username => 'Foo', :password => 'Bar')
-    customer = VaultedBilling::Customer.new(:email => "foo@example.com")
-    credit_card = VaultedBilling::CreditCard.new({
-      :card_number => '4111111111111111',
-      :cvv_number => '123',
-      :expires_on => Date.today + 1.year
-    })
-    
-    bogus.add_customer(customer).tap do |customer_response|
-      if customer_response.success?
-        # normally, you'd store the vault_id on your local customer object,
-        # because you use this when referencing that customer in the future.
-        # But, for now, we'll just:
-        customer.vault_id = customer_response.vault_id
+```ruby
+require 'vaulted_billing'
 
-        bogus.add_customer_credit_card(customer, credit_card).tap do |credit_response|
-          if response.success?
-            # Again, same as above, but for the credit card information:
-            credit_card.vault_id = credit_response.vault_id
+bogus = VaultedBilling::Gateways::Bogus.new(:username => 'Foo', :password => 'Bar')
+customer = VaultedBilling::Customer.new(:email => "foo@example.com")
+credit_card = VaultedBilling::CreditCard.new({
+  :card_number => '4111111111111111',
+  :cvv_number => '123',
+  :expires_on => Date.today + 1.year
+})
 
-            puts "Wow! We stored a the payment credentials successfully!"
+bogus.add_customer(customer).tap do |customer_response|
+  if customer_response.success?
+    # normally, you'd store the vault_id on your local customer object,
+    # because you use this when referencing that customer in the future.
+    # But, for now, we'll just:
+    customer.vault_id = customer_response.vault_id
 
-            if bogus.purchase(customer, credit_card, 10.00).success?
-              puts "OMG WE'RE RICH!"
-            end
-          end
+    bogus.add_customer_credit_card(customer, credit_card).tap do |credit_response|
+      if response.success?
+        # Again, same as above, but for the credit card information:
+        credit_card.vault_id = credit_response.vault_id
+
+        puts "Wow! We stored a the payment credentials successfully!"
+
+        if bogus.purchase(customer, credit_card, 10.00).success?
+          puts "OMG WE'RE RICH!"
         end
       end
     end
+  end
+end
+```
 
 ### Real world example
 

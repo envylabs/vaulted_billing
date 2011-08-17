@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake', '~>0.9'
   s.add_development_dependency 'watchr'
   s.add_development_dependency 'open4'
+  s.add_development_dependency 'appraisal'
 
   s.files = Dir.glob("lib/**/*") + %w(README.md)
   s.require_path = 'lib'
