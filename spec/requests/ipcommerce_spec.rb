@@ -5,7 +5,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
   let(:merchant_profile_id) { 'AutoTest_E4FB800001' }
 
   it { should be_a VaultedBilling::Gateway }
-
+  
   shared_examples_for 'a no-op' do |expected_return_class|
     it { should be_success }
     it { should be_a expected_return_class }
@@ -60,8 +60,8 @@ describe VaultedBilling::Gateways::Ipcommerce do
     subject { gateway.authorize(customer, credit_card, 11.00, { :merchant_profile_id => merchant_profile_id }) }
 
     context 'when successful' do
+      use_vcr_cassette 'ipcommerce/authorize/success'
       let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
-      use_vcr_cassette 'ipcommerce/authorize/success', :record => :new_episodes
       
       it_should_behave_like 'a transaction request'
       it { should be_success }
@@ -77,7 +77,6 @@ describe VaultedBilling::Gateways::Ipcommerce do
       use_vcr_cassette 'ipcommerce/authorize/failure'
       
       it_should_behave_like 'a transaction request'
-      
       it { should_not be_success }
       its(:message) { should_not == "APPROVED" }
     end
@@ -105,16 +104,18 @@ describe VaultedBilling::Gateways::Ipcommerce do
       subject { gateway.capture(authorization.id + "t", amount)}
       use_vcr_cassette 'ipcommerce/capture/invalid'
       
-      it 'returns a Transaction' do
-        subject.should be_kind_of(VaultedBilling::Transaction)
-      end
-      
+      it { should be_a VaultedBilling::Transaction }
       it { should_not be_success }
-      its(:message) { should_not == "APPROVED" }
+      its(:message) { should =~ /^Unable to retrieve serialized transaction for transactionId: .+/ }
     end
     
     context 'with a failure' do
-      pending
+      subject { gateway.capture(authorization.id, amount * -1)}
+      use_vcr_cassette 'ipcommerce/capture/failure'
+      
+      it { should be_a VaultedBilling::Transaction }
+      it { should_not be_success }
+      its(:message) { should =~ /^Amount must be a minimum of 1 and a maximum of 10 numbers followed by a decimal point and exactly 2 decimal places/mi }
     end
   end
   
@@ -123,8 +124,8 @@ describe VaultedBilling::Gateways::Ipcommerce do
     subject { gateway.purchase(customer, credit_card, 10.00, { :merchant_profile_id => merchant_profile_id }) }
     
     context 'when successful' do
-      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
       use_vcr_cassette 'ipcommerce/purchase/success'
+      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
       
       it_should_behave_like 'a transaction request'
       it { should be_success }
@@ -135,11 +136,10 @@ describe VaultedBilling::Gateways::Ipcommerce do
     end
     
     context 'with a failure' do
-      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:credit_card) }
       use_vcr_cassette 'ipcommerce/purchase/failure'
+      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:invalid_credit_card) }
       
       it_should_behave_like 'a transaction request'
-      
       it { should_not be_success }
       its(:message) { should_not == "APPROVED" }
     end
@@ -152,7 +152,6 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card)) }
     let(:purchase) { gateway.purchase(customer, credit_card, amount, { :merchant_profile_id => merchant_profile_id }) }
 
-    
     context 'with a successful result' do
       subject { gateway.refund(purchase.id, amount) }
       use_vcr_cassette 'ipcommerce/refund/success'
@@ -169,10 +168,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
       subject { gateway.refund(purchase.id, amount + 1) }
       use_vcr_cassette 'ipcommerce/refund/failure'
       
-      it 'returns a Transaction' do
-        subject.should be_kind_of(VaultedBilling::Transaction)
-      end
-      
+      it { should be_a VaultedBilling::Transaction }
       it { should_not be_success }
       its(:message) { should == "Attempt to return more than original authorization." }
       its(:code) { should eql '326' }
@@ -186,11 +182,10 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:authorization) { gateway.authorize(customer, credit_card, 5.00, { :merchant_profile_id => merchant_profile_id }) }
 
     context 'with a successful result' do
-      subject { gateway.void(authorization.id, { :merchant_profile_id => merchant_profile_id, :credit_card => credit_card, :card_type_id => 1 }) }
-
+      subject { gateway.void(authorization.id, { :merchant_profile_id => merchant_profile_id, :credit_card => credit_card }) }
       use_vcr_cassette 'ipcommerce/void/success'
+
       it_should_behave_like 'a transaction request'
-      
       it { should be_success }
       its(:id) { should_not be_nil }
       its(:authcode) { should_not be_nil }
@@ -199,16 +194,32 @@ describe VaultedBilling::Gateways::Ipcommerce do
     end
     
     context 'with a failure' do
-      subject { gateway.void(authorization.id + "_bad", { :merchant_profile_id => merchant_profile_id, :credit_card => credit_card, :card_type_id => 1 }) }
-
+      subject { gateway.void(authorization.id + "_bad", { :merchant_profile_id => merchant_profile_id, :credit_card => credit_card }) }
       use_vcr_cassette 'ipcommerce/void/failure'
 
-      it 'returns a Transaction' do
-        subject.should be_kind_of(VaultedBilling::Transaction)
-      end
-      
+      it { should be_a VaultedBilling::Transaction }
       it { should_not be_success }
       its(:message) { should =~ /^Unable to retrieve serialized transaction for transactionId: .+/ }
     end
+  end
+
+  it 'fails over to secondary end point with a connection error on the first' do
+    VCR.use_cassette('ipcommerce/failover') do
+      WebMock.stub_request(:any, %r{^https://.*?@cws-01\.cert\.ipcommerce\.com/}).to_timeout
+      customer = gateway.add_customer Factory.build(:customer)
+      credit_card = gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card)
+      result = gateway.authorize(customer, credit_card, 11.00, { :merchant_profile_id => merchant_profile_id })
+      result.should be_success
+    end
+    WebMock.should have_requested(:get, %r{^https://.*?@cws-02\.cert\.ipcommerce\.com/})
+  end
+
+  it 'raises an UnavailableKeyError when a session key cannot be acquired' do
+    WebMock.stub_request(:any, /.*/).to_timeout
+    expect {
+      customer = gateway.add_customer Factory.build(:customer)
+      credit_card = gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card)
+      result = gateway.authorize(customer, credit_card, 11.00, { :merchant_profile_id => merchant_profile_id })
+    }.to raise_error(VaultedBilling::Gateways::Ipcommerce::ServiceKeyStore::UnavailableKeyError)
   end
 end

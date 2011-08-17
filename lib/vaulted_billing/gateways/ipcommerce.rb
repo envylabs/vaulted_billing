@@ -28,6 +28,8 @@ module VaultedBilling
       }.freeze
 
       class ServiceKeyStore
+        UnavailableKeyError = Class.new(VaultedBilling::CredentialError)
+        
         attr_reader :identity_token
 
         def initialize(identity_token)
@@ -37,7 +39,7 @@ module VaultedBilling
 
         def key
           renew! unless valid?
-          read_key
+          read_key || raise(UnavailableKeyError, 'A service key could not be retrieved for this session.')
         end
 
         def read_key
@@ -57,21 +59,25 @@ module VaultedBilling
         end
 
         def renew!
-          body = http.get.body
           @expires_at = Time.now + 30.minutes
-          @key = body[1, body.length-2]
+          @key = http.get.body.try(:[], 1...-1)
         end
         
         private
         def http
-          @request ||= VaultedBilling::HTTP.new(self, "https://cws-01.cert.ipcommerce.com/REST/2.0.15/SvcInfo/token", {
-            :headers => {'Content-Type' => 'application/json'},
-            :before_request => :before_request,
-            :basic_auth => [@identity_token, ""]
-          })
+          @request ||= begin
+            urls = ["https://cws-01.cert.ipcommerce.com/REST/2.0.15/SvcInfo/token",
+                    "https://cws-02.cert.ipcommerce.com/REST/2.0.15/SvcInfo/token"]
+            VaultedBilling::HTTP.new(self, urls, {
+              :headers => {'Content-Type' => 'application/json'},
+              :before_request => :before_request,
+              :basic_auth => [@identity_token, ""]
+            })
+          end
         end
       end
 
+      attr_reader :service_key_store
 
       def initialize(options = {})
         @identity_token = options[:username] || VaultedBilling.config.ipcommerce.username
@@ -286,7 +292,11 @@ module VaultedBilling
       end
 
       def http(*params)
-        VaultedBilling::HTTP.new(self, "https://cws-01.cert.ipcommerce.com/REST/2.0.15/Txn/#{params.join('/')}", {
+        urls = %W(
+          https://cws-01.cert.ipcommerce.com/REST/2.0.15/Txn/#{params.join('/')}
+          https://cws-02.cert.ipcommerce.com/REST/2.0.15/Txn/#{params.join('/')}
+        )
+        VaultedBilling::HTTP.new(self, urls, {
           :headers => { 'Content-Type' => 'application/json' },
           :before_request => :before_request,
           :basic_auth => [@service_key_store.key, ""],
@@ -295,7 +305,8 @@ module VaultedBilling
       end
       
       def before_request(request)
-        request.delete "accept"
+        request.body = MultiJson.encode(request.body)
+        # request.delete "accept"
       end
       
       def on_success(response)
@@ -321,10 +332,24 @@ module VaultedBilling
             :masked_card_number => response.body['MaskedPAN']
           })
         else
-          Transaction.new({
-            :message => (response.body['ErrorResponse'] || {})['Reason'],
-            :code => (response.body['ErrorResponse'] || {})['ErrorId']
-          })
+          if errors = parse_validation_errors(response)
+            Transaction.new({
+              :message => errors.join("\n"),
+              :code => (response.body['ErrorResponse'] || {})['ErrorId']
+            })
+          else
+            Transaction.new({
+              :message => response.body ? (response.body['ErrorResponse'] || {})['Reason'] : nil,
+              :code => response.body ? (response.body['ErrorResponse'] || {})['ErrorId'] : nil
+            })
+          end
+        end
+      end
+      
+      def parse_validation_errors(response)
+        errors = ChainableHash.new.merge(response.body || {})
+        if errors['ErrorResponse']['ValidationErrors'].present?
+          [errors['ErrorResponse']['ValidationErrors']['ValidationError']].flatten.collect { |e| e['RuleMessage'] }
         end
       end
       
@@ -336,7 +361,7 @@ module VaultedBilling
       def respond_with(object, response = nil, options = {}, &block)
         super(object, options, &block).tap do |o|
           if response
-            o.raw_response = response.raw_response.body
+            o.raw_response = response.raw_response.try(:body)
             o.connection_error = response.connection_error
           end
         end
