@@ -13,6 +13,7 @@ Since you only store identifiers on your end, you are only responsible for: 1) t
 VaultedBilling supports the following payment providers:
 
 * [Authorize.net Customer Information Manager][authorize-net-cim]
+* [IP Commerce Tokenization][ipcommerce-tokenization]
 * [Network Merchant Inc. Customer Vault][nmi-vault]
 
 VaultedBilling also supports the following fictitious payment provider for testing purposes:
@@ -67,10 +68,6 @@ bogus.add_customer(customer).tap do |customer_response|
 end
 ```
 
-### Real world example
-
-TODO: Real world example coming soon.
-
 ## Testing
 
 When you're manually testing your application - meaning Development mode - it is often best to actually have a "sandbox" or "test" account with your payment processor.  In this mode, you should use those credentials with VaultedBilling and indicate to VaultedBilling that the processor is in test mode, either by setting it in the VaultedBilling::Configuration (see Configuration) or when you instantiate your Gateway.  You should note that all gateways, except for the Bogus gateway, attempt to open network connections when in use.  So, if you are testing with them (which is suggested), you should look into an HTTP mocking library like [VCR][vcr] with [WebMock][webmock].
@@ -80,6 +77,7 @@ Strictly for testing interaction with the VaultedBilling library, there is a "Bo
 [ci]: http://travis-ci.org/envylabs/vaulted_billing
 [ci-image]: https://secure.travis-ci.org/envylabs/vaulted_billing.png
 [authorize-net-cim]: http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/
+[ipcommerce-tokenization]: http://developer.ipcommerce.com/developer/integration/value_added_capabilities.aspx
 [nmi-vault]: https://www.nmi.com/newsmedia/index.php?ann_id=14
 [bundler]: http://gembundler.com/
 [vcr]: https://github.com/myronmarston/vcr
