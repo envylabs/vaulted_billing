@@ -52,7 +52,7 @@ module VaultedBilling
         respond_with customer.to_vaulted_billing
       end
 
-      def add_customer_credit_card(customer, credit_card)
+      def add_customer_credit_card(customer, credit_card, options = {})
         data = storage_data('add_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing)
         response = http.post(data)
         respond_with(credit_card, response, :success => response.success?) do |c|
@@ -60,7 +60,7 @@ module VaultedBilling
         end
       end
 
-      def update_customer_credit_card(customer, credit_card)
+      def update_customer_credit_card(customer, credit_card, options = {})
         data = storage_data('update_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing)
         response = http.post(data)
         respond_with(credit_card, response, :success => response.success?)

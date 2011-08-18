@@ -30,11 +30,11 @@ module VaultedBilling
         respond_with customer.to_vaulted_billing
       end
 
-      def add_customer_credit_card(customer, credit_card)
+      def add_customer_credit_card(customer, credit_card, options = {})
         respond_with(credit_card.to_vaulted_billing) { |c| c.vault_id = new_identifier }
       end
 
-      def update_customer_credit_card(customer, credit_card)
+      def update_customer_credit_card(customer, credit_card, options = {})
         respond_with credit_card.to_vaulted_billing
       end
 
@@ -42,19 +42,19 @@ module VaultedBilling
         respond_with credit_card.to_vaulted_billing
       end
 
-      def authorize(customer, credit_card, amount)
+      def authorize(customer, credit_card, amount, options = {})
         transaction_response
       end
 
-      def purchase(customer, credit_card, amount)
+      def purchase(customer, credit_card, amount, options = {})
         transaction_response
       end
 
-      def void(transaction_id)
+      def void(transaction_id, options = {})
         transaction_response
       end
 
-      def capture(transaction_id, amount)
+      def capture(transaction_id, amount, options = {})
         transaction_response
       end
 

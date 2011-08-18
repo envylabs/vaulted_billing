@@ -23,11 +23,11 @@ module VaultedBilling
       raise NotImplementedError
     end
 
-    def add_customer_credit_card(customer, credit_card)
+    def add_customer_credit_card(customer, credit_card, options = {})
       raise NotImplementedError
     end
 
-    def update_customer_credit_card(customer, credit_card)
+    def update_customer_credit_card(customer, credit_card, options = {})
       raise NotImplementedError
     end
 
