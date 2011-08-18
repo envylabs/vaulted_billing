@@ -102,13 +102,16 @@ module VaultedBilling
       ##
       # A stub, since the IP Commerce only generates tokens during
       # successful authorization transactions.
-      #
-      #--
-      # TODO: If necessary, this may be implemented by Authorizing the given card for $1.00, then voiding immediately.
-      #++
       # 
-      def add_customer_credit_card(customer, credit_card)
-        respond_with credit_card.to_vaulted_billing
+      def add_customer_credit_card(customer, credit_card, options = {})
+        credit_card = credit_card.to_vaulted_billing
+
+        authorization = authorize(customer, credit_card, 1.00, options)
+        void(authorization.id, options) if authorization.success?
+
+        respond_with(credit_card, authorization.response, :success => authorization.success?) do |cc|
+          cc.vault_id = authorization.response.body['PaymentAccountDataToken'].presence
+        end
       end
 
       def authorize(customer, credit_card, amount, options = {})
@@ -250,8 +253,8 @@ module VaultedBilling
       # A stub, since the IP Commerce only generates tokens during
       # successful authorization transactions.
       #
-      def update_customer_credit_card(customer, credit_card)
-        respond_with credit_card.to_vaulted_billing
+      def update_customer_credit_card(customer, credit_card, options = {})
+        add_customer_credit_card(customer, credit_card, options)
       end
     
       def void(transaction_id, options = {})
@@ -364,6 +367,7 @@ module VaultedBilling
       def respond_with(object, response = nil, options = {}, &block)
         super(object, options, &block).tap do |o|
           if response
+            o.response = response
             o.raw_response = response.raw_response.try(:body)
             o.connection_error = response.connection_error
           end

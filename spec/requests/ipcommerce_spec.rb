@@ -24,9 +24,24 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
   context '#add_customer_credit_card' do
     let(:customer) { Factory.build(:customer) }
-    let(:credit_card) { Factory.build(:credit_card) }
-    subject { gateway.add_customer_credit_card(customer, credit_card) }
-    it_should_behave_like 'a no-op', VaultedBilling::CreditCard
+    subject { gateway.add_customer_credit_card(customer, credit_card, { :merchant_profile_id => merchant_profile_id }) }
+    
+    context 'when successful' do
+      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
+      use_vcr_cassette 'ipcommerce/add_customer_credit_card/success'
+
+      it_should_behave_like 'a credit card request'
+      it { should be_success }
+    end
+    
+    context 'with a failure' do
+      let(:credit_card) { Factory.build(:invalid_credit_card) }
+      use_vcr_cassette 'ipcommerce/add_customer_credit_card/failure'
+
+      it { should be_a VaultedBilling::CreditCard }
+      it { should_not be_success }
+      its(:vault_id) { should be_nil }
+    end
   end
 
   context '#remove_customer' do
@@ -52,40 +67,73 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:customer) { Factory.build(:customer) }
     let(:credit_card) { Factory.build(:credit_card) }
     subject { gateway.update_customer_credit_card(customer, credit_card) }
-    it_should_behave_like 'a no-op', VaultedBilling::CreditCard
+    
+    let(:customer) { Factory.build(:customer) }
+    subject { gateway.add_customer_credit_card(customer, credit_card, { :merchant_profile_id => merchant_profile_id }) }
+    
+    context 'when successful' do
+      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
+      use_vcr_cassette 'ipcommerce/update_customer_credit_card/success'
+
+      it_should_behave_like 'a credit card request'
+      it { should be_success }
+    end
+    
+    context 'with a failure' do
+      let(:credit_card) { Factory.build(:invalid_credit_card) }
+      use_vcr_cassette 'ipcommerce/update_customer_credit_card/failure'
+
+      it { should be_a VaultedBilling::CreditCard }
+      it { should_not be_success }
+      its(:vault_id) { should be_nil }
+    end
   end
 
   context '#authorize' do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
     subject { gateway.authorize(customer, credit_card, 11.00, { :merchant_profile_id => merchant_profile_id }) }
 
-    context 'when successful' do
-      use_vcr_cassette 'ipcommerce/authorize/success'
+    context 'with a new credit card' do
+      context 'when successful' do
+        use_vcr_cassette 'ipcommerce/authorize/success'
+        let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
+      
+        it_should_behave_like 'a transaction request'
+        it { should be_success }
+        its(:id) { should_not be_nil }
+        its(:masked_card_number) { should be_present }
+        its(:authcode) { should_not be_nil }
+        its(:message) { should == "APPROVED" }
+        its(:code) { should == 1 }
+      end 
+    
+      context 'with a failure' do
+        let(:credit_card) { Factory.build(:invalid_credit_card) }
+        use_vcr_cassette 'ipcommerce/authorize/failure'
+      
+        it_should_behave_like 'a transaction request'
+        it { should_not be_success }
+        its(:message) { should_not == "APPROVED" }
+      end
+    end
+    
+    context 'with a credit card on file' do
       let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
       
-      it_should_behave_like 'a transaction request'
-      it { should be_success }
-      its(:id) { should_not be_nil }
-      its(:masked_card_number) { should be_present }
-      its(:authcode) { should_not be_nil }
-      its(:message) { should == "APPROVED" }
-      its(:code) { should == 1 }
-    end 
-    
-    context 'with a failure' do
-      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:invalid_credit_card) }
-      use_vcr_cassette 'ipcommerce/authorize/failure'
+      context 'when successful' do
+        pending
+      end
       
-      it_should_behave_like 'a transaction request'
-      it { should_not be_success }
-      its(:message) { should_not == "APPROVED" }
+      context 'with a failure' do
+        pending
+      end
     end
   end
   
   context '#capture' do
     let(:amount) { 11.00 }
-    let(:customer) { gateway.add_customer Factory.build(:customer) }
-    let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
+    let(:customer) { Factory.build(:customer) }
+    let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
     let(:authorization) { gateway.authorize(customer, credit_card, 11.00, { :merchant_profile_id => merchant_profile_id }) }
 
     context 'when successful' do
@@ -123,33 +171,45 @@ describe VaultedBilling::Gateways::Ipcommerce do
     let(:customer) { gateway.add_customer Factory.build(:customer) }
     subject { gateway.purchase(customer, credit_card, 10.00, { :merchant_profile_id => merchant_profile_id }) }
     
-    context 'when successful' do
-      use_vcr_cassette 'ipcommerce/purchase/success'
-      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card) }
+    context 'with a new credit card' do
+      context 'when successful' do
+        use_vcr_cassette 'ipcommerce/purchase/success'
+        let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
       
-      it_should_behave_like 'a transaction request'
-      it { should be_success }
-      its(:id) { should_not be_nil }
-      its(:authcode) { should_not be_nil }
-      its(:message) { should == "APPROVED" }
-      its(:code) { should == 1 }
+        it_should_behave_like 'a transaction request'
+        it { should be_success }
+        its(:id) { should_not be_nil }
+        its(:authcode) { should_not be_nil }
+        its(:message) { should == "APPROVED" }
+        its(:code) { should == 1 }
+      end
+    
+      context 'with a failure' do
+        use_vcr_cassette 'ipcommerce/purchase/failure'
+        let(:credit_card) { Factory.build(:invalid_credit_card) }
+      
+        it_should_behave_like 'a transaction request'
+        it { should_not be_success }
+        its(:message) { should_not == "APPROVED" }
+      end
     end
     
-    context 'with a failure' do
-      use_vcr_cassette 'ipcommerce/purchase/failure'
-      let(:credit_card) { gateway.add_customer_credit_card customer, Factory.build(:invalid_credit_card) }
+    context 'with a credit card on file' do
+      context 'when successful' do
+        pending
+      end
       
-      it_should_behave_like 'a transaction request'
-      it { should_not be_success }
-      its(:message) { should_not == "APPROVED" }
+      context 'with a failure' do
+        pending
+      end
     end
   end
   
   # Returning funds from a captured transaction
   context '#refund' do
     let(:amount) { 5.00 }
-    let(:customer) { gateway.add_customer(Factory.build(:customer)) }
-    let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card)) }
+    let(:customer) { Factory.build(:customer) }
+    let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
     let(:purchase) { gateway.purchase(customer, credit_card, amount, { :merchant_profile_id => merchant_profile_id }) }
 
     context 'with a successful result' do
@@ -178,7 +238,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
   # Releasing funds from an authorized but uncaptured transaction
   context '#void' do
     let(:customer) { gateway.add_customer(Factory.build(:customer)) }
-    let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card)) }
+    let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
     let(:authorization) { gateway.authorize(customer, credit_card, 5.00, { :merchant_profile_id => merchant_profile_id }) }
 
     context 'with a successful result' do
@@ -206,8 +266,8 @@ describe VaultedBilling::Gateways::Ipcommerce do
   it 'fails over to secondary end point with a connection error on the first' do
     VCR.use_cassette('ipcommerce/failover') do
       WebMock.stub_request(:any, %r{^https://.*?@cws-01\.cert\.ipcommerce\.com/}).to_timeout
-      customer = gateway.add_customer Factory.build(:customer)
-      credit_card = gateway.add_customer_credit_card customer, Factory.build(:ipcommerce_credit_card)
+      customer = Factory.build(:customer)
+      credit_card = Factory.build(:ipcommerce_credit_card)
       result = gateway.authorize(customer, credit_card, 11.00, { :merchant_profile_id => merchant_profile_id })
       result.should be_success
     end

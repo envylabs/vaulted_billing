@@ -1,6 +1,7 @@
 module VaultedBilling
   module Gateway
     module Response
+      attr_accessor :response
       attr_accessor :raw_response
       attr_accessor :response_message
       attr_accessor :error_code

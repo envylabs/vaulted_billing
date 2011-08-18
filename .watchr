@@ -22,6 +22,7 @@ def run(cmd)
       $stdout.write line
       growl line if line =~ /\b\d+ failure/
     end
+    $stderr.write stderr.read
   end
 end
 
