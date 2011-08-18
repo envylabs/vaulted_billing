@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'builder', '>=2.1.2'
   s.add_dependency 'multi_json', '~>1.0'
   s.add_dependency 'multi_xml', '~>0.3.0'
+  s.add_dependency 'countries'
 
   s.add_development_dependency 'rspec', '~>2.4'
   s.add_development_dependency 'vcr', '~>1.7'
