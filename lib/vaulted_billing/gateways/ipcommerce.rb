@@ -59,8 +59,10 @@ module VaultedBilling
         end
 
         def renew!
+          response = http.get
+          raise(UnavailableKeyError, 'Unable to renew service keys.') unless response.success?
           @expires_at = Time.now + 30.minutes
-          @key = http.get.body.try(:[], 1...-1)
+          @key = response.body.try(:[], 1...-1)
         end
         
         private
