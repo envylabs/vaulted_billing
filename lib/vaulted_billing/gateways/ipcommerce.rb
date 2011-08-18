@@ -29,7 +29,7 @@ module VaultedBilling
 
       class ServiceKeyStore
         UnavailableKeyError = Class.new(VaultedBilling::CredentialError)
-        
+
         attr_reader :identity_token
 
         def initialize(identity_token)
@@ -64,7 +64,7 @@ module VaultedBilling
           @expires_at = Time.now + 30.minutes
           @key = response.body.try(:[], 1...-1)
         end
-        
+
         private
         def http
           @request ||= begin
@@ -102,7 +102,7 @@ module VaultedBilling
       ##
       # A stub, since the IP Commerce only generates tokens during
       # successful authorization transactions.
-      # 
+      #
       def add_customer_credit_card(customer, credit_card, options = {})
         credit_card = credit_card.to_vaulted_billing
 
@@ -293,10 +293,10 @@ module VaultedBilling
             :CardSecurityData => {
               :AVSData => {
                 :CardholderName => credit_card.name_on_card,
-                :Street => credit_card.street_address,
+                :Street => credit_card.street_address.try(:[], (0...20)),
                 :City => credit_card.locality,
                 :StateProvince => credit_card.region,
-                :PostalCode => credit_card.postal_code[0...5],
+                :PostalCode => credit_card.postal_code.try(:[], (0...5)),
                 #:Country => credit_card.country.to_iso_3166 # FIXME: using Country with any value is returning HTTP 500 from IP Commerce servers.
                 :Phone => credit_card.phone
               },
