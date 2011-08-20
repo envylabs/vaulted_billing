@@ -1,3 +1,11 @@
+
+### develop / 2011-08-20
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.0...develop)
+
+* Enhancements
+  * Added country to AVS data sent with IP Commerce credit cards.
+  
 ### 1.1.0 / 2011-08-17
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.0.2...v1.1.0)

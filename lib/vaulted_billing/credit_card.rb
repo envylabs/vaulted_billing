@@ -22,6 +22,10 @@ module VaultedBilling
         country.number.to_i if country.data
       end
       
+      def to_ipcommerce_id
+        country.data ? (VaultedBilling::Gateways::Ipcommerce::Countries.index(country.alpha3) || 0) : 0
+      end
+
       private
       
       def country

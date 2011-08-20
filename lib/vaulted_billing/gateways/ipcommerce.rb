@@ -18,6 +18,34 @@ module VaultedBilling
     class Ipcommerce
       include VaultedBilling::Gateway
 
+      Countries = %w(
+        !!! AFG ALA ALB DZA ASM AND AGO AIA ATA
+        ATG ARG ARM ABW AUS AUT AZE BHS BHR BGD 
+        BRB BLR BEL BLZ BEN BMU BTN BOL BIH BWA
+        BVT BRA IOT BRN BGR BFA BDI KHM CMR CAN
+        CPV CYM CAF TCD CHL CHN CXR CCK COL COM
+        COG COD COK CRI CIV HRV CUB CYP CZE DNK
+        DJI DMA DOM ECU EGY SLV GNQ ERI EST ETH
+        FLK FRO FJI FIN FRA FXX GUF PYF ATF GAB
+        GMB GEO DEU GHA GIB GRC GRL GRD GLP GUM
+        GTM GGY GIN GNB GUY HTI HMD VAT HND HKG
+        HUN ISL IND IDN IRN IRQ IRL IMN ISR ITA
+        JAM JPN JEY JOR KAZ KEN KIR PRK KOR KWT
+        KGZ LAO LVA LBN LSO LBR LBY LIE LTU LUX
+        MAC MKD MDG MWI MYS MDV MLI MLT MHL MTQ
+        MRT MUS MYT MEX FSM MDA MCO MNG MNE MSR
+        MAR MOZ MMR NAM NRU NPL NLD ANT NCL NZL
+        NIC NER NGA NIU NFK MNP NOR OMN PAK PLW
+        PSE PAN PNG PRY PER PHL PCN POL PRT PRI
+        QAT REU ROU RUS RWA SHN KNA LCA SPM VCT
+        WSM SMR STP SAU SEN SRB SCG SYC SLE SGP 
+        SVK SVN SLB SOM ZAF SGS ESP LKA SDN SUR 
+        SJM SWZ SWE CHE SYR TWN TJK TZA THA TLS
+        TGO TKL TMP TON TTO TUN TUR TKM TCA TUV
+        UGA UKR ARE GBR USA UMI URY UZB VUT VEN
+        VNM VGB VIR WLF ESH YEM YUG ZMB ZWE
+      )
+      
       Companies = {
         2 => /^4\d{12}(\d{3})?$/, # Visa
         3 => /^(5[1-5]\d{4}|677189)\d{10}$/, # MasterCard
@@ -278,7 +306,7 @@ module VaultedBilling
         end
         return 1
       end
-
+      
       def card_data(credit_card)
         if credit_card.vault_id.present?
           { :PaymentAccountDataToken => credit_card.vault_id }
@@ -297,7 +325,7 @@ module VaultedBilling
                 :City => credit_card.locality,
                 :StateProvince => credit_card.region,
                 :PostalCode => credit_card.postal_code.try(:[], (0...5)),
-                #:Country => credit_card.country.to_iso_3166 # FIXME: using Country with any value is returning HTTP 500 from IP Commerce servers.
+                :Country => credit_card.country.to_ipcommerce_id,
                 :Phone => credit_card.phone
               },
               :CVDataProvided => 2,
