@@ -23,7 +23,7 @@ module VaultedBilling
       end
       
       def to_ipcommerce_id
-        country.data ? (VaultedBilling::Gateways::Ipcommerce::Countries.index(country.alpha3) || 0) : 0
+        VaultedBilling::Gateways::Ipcommerce::Countries.index(self) || 0
       end
 
       private
