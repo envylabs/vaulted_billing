@@ -25,3 +25,10 @@ end
 Factory.define :invalid_credit_card, :parent => :credit_card do |c|
   c.card_number { Factory.next :invalid_credit_card_number }
 end
+
+Factory.define :blank_credit_card, :class => VaultedBilling::CreditCard do |c|
+end
+
+Factory.define :terminal_credit_card, :class => VaultedBilling::CreditCard do |c|
+  c.expires_on { Date.today + 365 }
+end

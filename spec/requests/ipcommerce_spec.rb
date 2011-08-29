@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe VaultedBilling::Gateways::Ipcommerce do
   let(:gateway) { VaultedBilling.gateway(:ipcommerce).new }
-  let(:merchant_profile_id) { 'AutoTest_E4FB800001' }
+  let(:merchant_profile_id) { 'TicketTest_E4FB800001' }
 
   it { should be_a VaultedBilling::Gateway }
 

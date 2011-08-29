@@ -5,6 +5,7 @@ module VaultedBilling
       attr_accessor :raw_response
       attr_accessor :response_message
       attr_accessor :error_code
+      attr_accessor :transactions
       attr_writer :connection_error
       attr_writer :success
       def success?; @success; end
@@ -66,6 +67,7 @@ module VaultedBilling
         o.raw_response = options[:raw_response] || ''
         o.response_message = options[:response_message]
         o.error_code = options[:error_code]
+        o.transactions = options[:transactions] || nil
         yield(o) if block_given?
       end
     end

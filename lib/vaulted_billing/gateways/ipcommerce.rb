@@ -135,9 +135,12 @@ module VaultedBilling
         credit_card = credit_card.to_vaulted_billing
 
         authorization = authorize(customer, credit_card, 1.00, options)
-        void(authorization.id, options) if authorization.success?
+        void = void(authorization.id, options) if authorization.success?
 
-        respond_with(credit_card, authorization.response, :success => authorization.success?) do |cc|
+        respond_with(credit_card, authorization.response, { 
+            :success => authorization.success?, 
+            :transactions => { :void => void, :authorization => authorization }
+        }) do |cc|
           cc.vault_id = authorization.response.body['PaymentAccountDataToken'].presence
         end
       end
@@ -152,10 +155,11 @@ module VaultedBilling
             :"__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
             :TransactionData => {
               :Amount => "%.2f" % amount,
+              :ApprovalCode => options[:approval_code],
               :CurrencyCode => 4,
               :TransactionDateTime => Time.now.xmlschema,
               :CustomerPresent => 0,
-              :EntryMode => 1,
+              :EntryMode => options[:entry_mode] || 1, # 1 => keyed
               :GoodsType => 0,
               :IndustryType => 2,
               :SignatureCaptured => false,
@@ -169,7 +173,7 @@ module VaultedBilling
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
       def capture(transaction_id, amount, options = {})
@@ -188,10 +192,11 @@ module VaultedBilling
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
       def purchase(customer, credit_card, amount, options = {})
+        credit_card = credit_card.try(:to_vaulted_billing)
         data = {
           "__type" => "AuthorizeAndCaptureTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
           :ApplicationProfileId => @application_id,
@@ -200,11 +205,12 @@ module VaultedBilling
             :"__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
             :TransactionData => {
               :Amount => "%.2f" % amount,
+              :ApprovalCode => options[:approval_code],
               :CurrencyCode => 4,
               :TransactionDateTime => Time.now.xmlschema,
               :CustomerPresent => 0,
               :EmployeeId => options[:employee_id],
-              :EntryMode => 1,
+              :EntryMode => options[:entry_mode] || 1, # 1 => keyed
               :GoodsType => 0,
               :IndustryType => 2,
               :OrderNumber => options[:order_id] || generate_order_number,
@@ -217,7 +223,7 @@ module VaultedBilling
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
       def refund(transaction_id, amount, options = {})
@@ -237,7 +243,7 @@ module VaultedBilling
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
       ##
@@ -287,9 +293,45 @@ module VaultedBilling
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
+
+      protected
+      
+      def valid_code?(code)
+        [0,1].include?(code)
+      end
+
+      def card_data(credit_card)
+        return nil if credit_card.nil?
+        
+        if credit_card.vault_id.present?
+          { :PaymentAccountDataToken => credit_card.vault_id }
+        else
+          {
+            :CardData => { 
+              :CardholderName => credit_card.name_on_card,
+              :CardType => self.class.credit_card_type_id(credit_card.card_number),
+              :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
+              :PAN => credit_card.card_number
+            },
+            :CardSecurityData => {
+              :AVSData => {
+                :CardholderName => credit_card.name_on_card,
+                :Street => credit_card.street_address.try(:[], (0...20)),
+                :City => credit_card.locality,
+                :StateProvince => credit_card.region,
+                :PostalCode => credit_card.postal_code.try(:[], (0...5)),
+                :Country => credit_card.country.try(:to_ipcommerce_id),
+                :Phone => credit_card.phone
+              }.select { |k, v| !v.nil? },
+              :CVDataProvided => credit_card.cvv_number.nil? ? 1 : 2,
+              :CVData => credit_card.cvv_number
+            }
+          }
+        end
+      end
 
       private
 
@@ -307,34 +349,6 @@ module VaultedBilling
         return 1
       end
       
-      def card_data(credit_card)
-        if credit_card.vault_id.present?
-          { :PaymentAccountDataToken => credit_card.vault_id }
-        else
-          {
-            :CardData => {
-              :CardholderName => credit_card.name_on_card,
-              :CardType => self.class.credit_card_type_id(credit_card.card_number),
-              :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
-              :PAN => credit_card.card_number
-            },
-            :CardSecurityData => {
-              :AVSData => {
-                :CardholderName => credit_card.name_on_card,
-                :Street => credit_card.street_address.try(:[], (0...20)),
-                :City => credit_card.locality,
-                :StateProvince => credit_card.region,
-                :PostalCode => credit_card.postal_code.try(:[], (0...5)),
-                :Country => credit_card.country.to_ipcommerce_id,
-                :Phone => credit_card.phone
-              },
-              :CVDataProvided => 2,
-              :CVData => credit_card.cvv_number
-            }
-          }
-        end
-      end
-
       def generate_order_number
         (Time.now.to_f * 100000).to_i.to_s(36) + rand(60000000).to_s(36)
       end
