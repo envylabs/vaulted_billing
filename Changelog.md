@@ -1,3 +1,11 @@
+### 1.1.2 / 2011-08-30
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.1...v1.1.2)
+
+* Bug Fixes
+  * IP Commerce
+    * Fix certification test issues
+
 ### 1.1.1 / 2011-08-30
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.0...v1.1.1)
