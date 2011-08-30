@@ -1,9 +1,11 @@
 module VaultedBilling
   module Gateway
     module Response
+      attr_accessor :response
       attr_accessor :raw_response
       attr_accessor :response_message
       attr_accessor :error_code
+      attr_accessor :transactions
       attr_writer :connection_error
       attr_writer :success
       def success?; @success; end
@@ -22,11 +24,11 @@ module VaultedBilling
       raise NotImplementedError
     end
 
-    def add_customer_credit_card(customer, credit_card)
+    def add_customer_credit_card(customer, credit_card, options = {})
       raise NotImplementedError
     end
 
-    def update_customer_credit_card(customer, credit_card)
+    def update_customer_credit_card(customer, credit_card, options = {})
       raise NotImplementedError
     end
 
@@ -65,6 +67,7 @@ module VaultedBilling
         o.raw_response = options[:raw_response] || ''
         o.response_message = options[:response_message]
         o.error_code = options[:error_code]
+        o.transactions = options[:transactions] || nil
         yield(o) if block_given?
       end
     end

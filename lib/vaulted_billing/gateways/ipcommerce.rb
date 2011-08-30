@@ -18,6 +18,34 @@ module VaultedBilling
     class Ipcommerce
       include VaultedBilling::Gateway
 
+      Countries = %w(
+        !! AF AX AL DZ AS AD AO AI AQ
+        AG AR AM AW AU AT AZ BS BH BD
+        BB BY BE BZ BJ BM BT BO BA BW
+        BV BR IO BN BG BF BI KH CM CA
+        CV KY CF TD CL CN CX CC CO KM
+        CG CD CK CR CI HR CU CY CZ DK
+        DJ DM DO EC EG SV GQ ER EE ET
+        FK FO FJ FI FR FX GF PF TF GA
+        GM GE DE GH GI GR GL GD GP GU
+        GT GG GN GW GY HT HM VA HN HK
+        HU IS IN ID IR IQ IE IM IL IT
+        JM JP JE JO KZ KE KI KP KR KW
+        KG LA LV LB LS LR LY LI LT LU
+        MO MK MG MW MY MV ML MT MH MQ
+        MR MU YT MX FM MD MC MN ME MS
+        MA MZ MM NA NR NP NL AN NC NZ
+        NI NE NG NU NF MP NO OM PK PW
+        PS PA PG PY PE PH PN PL PT PR
+        QA RE RO RU RW SH KN LC PM VC
+        WS SM ST SA SN RS CS SC SL SG
+        SK SI SB SO ZA GS ES LK SD SR
+        SJ SZ SE CH SY TW TJ TZ TH TL
+        TG TK TP TO TT TN TR TM TC TV
+        UG UA AE GB US UM UY UZ VU VE
+        VN VG VI WF EH YE YU ZM ZW
+      )
+       
       Companies = {
         2 => /^4\d{12}(\d{3})?$/, # Visa
         3 => /^(5[1-5]\d{4}|677189)\d{10}$/, # MasterCard
@@ -29,7 +57,7 @@ module VaultedBilling
 
       class ServiceKeyStore
         UnavailableKeyError = Class.new(VaultedBilling::CredentialError)
-        
+
         attr_reader :identity_token
 
         def initialize(identity_token)
@@ -59,10 +87,12 @@ module VaultedBilling
         end
 
         def renew!
+          response = http.get
+          raise(UnavailableKeyError, 'Unable to renew service keys.') unless response.success?
           @expires_at = Time.now + 30.minutes
-          @key = http.get.body.try(:[], 1...-1)
+          @key = response.body.try(:[], 1...-1)
         end
-        
+
         private
         def http
           @request ||= begin
@@ -101,15 +131,22 @@ module VaultedBilling
       # A stub, since the IP Commerce only generates tokens during
       # successful authorization transactions.
       #
-      #--
-      # TODO: If necessary, this may be implemented by Authorizing the given card for $1.00, then voiding immediately.
-      #++
-      # 
-      def add_customer_credit_card(customer, credit_card)
-        respond_with credit_card.to_vaulted_billing
+      def add_customer_credit_card(customer, credit_card, options = {})
+        credit_card = credit_card.to_vaulted_billing
+
+        authorization = authorize(customer, credit_card, 1.00, options)
+        void = void(authorization.id, options) if authorization.success?
+
+        respond_with(credit_card, authorization.response, { 
+            :success => authorization.success?, 
+            :transactions => { :void => void, :authorization => authorization }
+        }) do |cc|
+          cc.vault_id = authorization.response.body['PaymentAccountDataToken'].presence
+        end
       end
 
       def authorize(customer, credit_card, amount, options = {})
+        credit_card = credit_card.to_vaulted_billing
         data = {
           "__type" => "AuthorizeTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
           :ApplicationProfileId => @application_id,
@@ -118,31 +155,25 @@ module VaultedBilling
             :"__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
             :TransactionData => {
               :Amount => "%.2f" % amount,
+              :ApprovalCode => options[:approval_code],
               :CurrencyCode => 4,
               :TransactionDateTime => Time.now.xmlschema,
               :CustomerPresent => 0,
-              :EntryMode => 1,
+              :EntryMode => options[:entry_mode] || 1, # 1 => keyed
               :GoodsType => 0,
               :IndustryType => 2,
               :SignatureCaptured => false,
               :OrderNumber => options[:order_id] || generate_order_number
             },
-            :TenderData => {
-              :CardData => {
-                :CardholderName => nil,
-                :CardType => self.class.credit_card_type_id(credit_card.card_number),
-                :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
-                :PAN => credit_card.card_number
-              }
-            }
+            :TenderData => card_data(credit_card)
           }
         }
-        
+
         response = http(options[:workflow_id] || @service_id).post(data)
-        transaction = new_transaction_from_response(response) 
+        transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
       def capture(transaction_id, amount, options = {})
@@ -156,15 +187,16 @@ module VaultedBilling
             :Amount => "%.2f" % amount
           }
         }
-        
+
         response = http(options[:workflow_id] || @service_id, transaction_id).put(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
       def purchase(customer, credit_card, amount, options = {})
+        credit_card = credit_card.try(:to_vaulted_billing)
         data = {
           "__type" => "AuthorizeAndCaptureTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
           :ApplicationProfileId => @application_id,
@@ -173,31 +205,25 @@ module VaultedBilling
             :"__type" => "BankcardTransaction:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Bankcard",
             :TransactionData => {
               :Amount => "%.2f" % amount,
+              :ApprovalCode => options[:approval_code],
               :CurrencyCode => 4,
               :TransactionDateTime => Time.now.xmlschema,
               :CustomerPresent => 0,
               :EmployeeId => options[:employee_id],
-              :EntryMode => 1,
+              :EntryMode => options[:entry_mode] || 1, # 1 => keyed
               :GoodsType => 0,
               :IndustryType => 2,
               :OrderNumber => options[:order_id] || generate_order_number,
               :SignatureCaptured => false
             },
-            :TenderData => {
-              :CardData => {
-                :CardholderName => nil,
-                :CardType => self.class.credit_card_type_id(credit_card.card_number),
-                :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
-                :PAN => credit_card.card_number
-              }
-            }
+            :TenderData => card_data(credit_card)
           }
         }
         response = http(options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
       def refund(transaction_id, amount, options = {})
@@ -212,14 +238,14 @@ module VaultedBilling
             :Amount => "%.2f" % amount
           }
         }
-        
+
         response = http(options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
-      
+
       ##
       # A stub, since the IP Commerce only generates tokens during
       # successful authorization transactions.
@@ -248,10 +274,10 @@ module VaultedBilling
       # A stub, since the IP Commerce only generates tokens during
       # successful authorization transactions.
       #
-      def update_customer_credit_card(customer, credit_card)
-        respond_with credit_card.to_vaulted_billing
+      def update_customer_credit_card(customer, credit_card, options = {})
+        add_customer_credit_card(customer, credit_card, options)
       end
-    
+
       def void(transaction_id, options = {})
         data = {
           :"__type" => "Undo:http://schemas.ipcommerce.com/CWS/v2.0/Transactions/Rest",
@@ -267,9 +293,45 @@ module VaultedBilling
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
-                     :success => (transaction.code == 1))
+                     :success => valid_code?(transaction.code))
       end
 
+
+      protected
+      
+      def valid_code?(code)
+        [0,1].include?(code)
+      end
+
+      def card_data(credit_card)
+        return nil if credit_card.nil?
+        
+        if credit_card.vault_id.present?
+          { :PaymentAccountDataToken => credit_card.vault_id }
+        else
+          {
+            :CardData => { 
+              :CardholderName => credit_card.name_on_card,
+              :CardType => self.class.credit_card_type_id(credit_card.card_number),
+              :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
+              :PAN => credit_card.card_number
+            },
+            :CardSecurityData => {
+              :AVSData => {
+                :CardholderName => credit_card.name_on_card,
+                :Street => credit_card.street_address.try(:[], (0...20)),
+                :City => credit_card.locality,
+                :StateProvince => credit_card.region,
+                :PostalCode => credit_card.postal_code.try(:[], (0...5)),
+                :Country => credit_card.country.try(:to_ipcommerce_id),
+                :Phone => credit_card.phone
+              }.select { |k, v| !v.nil? },
+              :CVDataProvided => credit_card.cvv_number.nil? ? 1 : 2,
+              :CVData => credit_card.cvv_number
+            }
+          }
+        end
+      end
 
       private
 
@@ -286,8 +348,7 @@ module VaultedBilling
         end
         return 1
       end
-
-
+      
       def generate_order_number
         (Time.now.to_f * 100000).to_i.to_s(36) + rand(60000000).to_s(36)
       end
@@ -304,23 +365,22 @@ module VaultedBilling
           :on_success => :on_success
         })
       end
-      
+
       def before_request(request)
         request.body = MultiJson.encode(request.body)
-        # request.delete "accept"
       end
-      
+
       def on_success(response)
         response.body = decode_body(response.body) || {}
         response.success = [1, 2].include?(response.body['Status'])
       end
-      
+
       def decode_body(string)
         MultiJson.decode(string)
       rescue MultiJson::DecodeError
         parse_error(string)
       end
-      
+
       def new_transaction_from_response(response)
         if response.success?
           Transaction.new({
@@ -346,27 +406,28 @@ module VaultedBilling
           end
         end
       end
-      
+
       def parse_validation_errors(response)
         errors = ChainableHash.new.merge(response.body || {})
         if errors['ErrorResponse']['ValidationErrors'].present?
           [errors['ErrorResponse']['ValidationErrors']['ValidationError']].flatten.collect { |e| e['RuleMessage'] }
         end
       end
-      
+
       def parse_error(response_body)
         MultiXml.parse(response_body)
       rescue MultiXml::ParseError
       end
-      
+
       def respond_with(object, response = nil, options = {}, &block)
         super(object, options, &block).tap do |o|
           if response
+            o.response = response
             o.raw_response = response.raw_response.try(:body)
             o.connection_error = response.connection_error
           end
         end
       end
-    end    
+    end
   end
 end

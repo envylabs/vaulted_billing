@@ -1,3 +1,5 @@
+require 'iso3166'
+
 module VaultedBilling
   ##
   # Intermediary class used to translate your local credit card information
@@ -15,8 +17,24 @@ module VaultedBilling
   # the card is already stored on the gateway and is not new information.
   #
   class CreditCard
+    class Country < String
+      def to_iso_3166
+        country.number.to_i if country.data
+      end
+      
+      def to_ipcommerce_id
+        VaultedBilling::Gateways::Ipcommerce::Countries.index(self) || 0
+      end
+
+      private
+      
+      def country
+        ISO3166::Country.new(self)
+      end
+    end
+    
     attr_accessor :card_number # The customer's credit card number
-    attr_accessor :country # The country of the credit card address.
+    attr_reader :country # The country of the credit card address.
     attr_accessor :currency # The currency used by the credit card.
     attr_accessor :cvv_number # The verification number (CVV2) on the card.
     attr_accessor :expires_on # The date on which the credit card expires.
@@ -41,9 +59,7 @@ module VaultedBilling
         send("#{key}=", value) if respond_to?("#{key}=")
       end
     end
-
-    def to_vaulted_billing; self; end
-
+    
     def ==(o)
       self.attributes == o.attributes
     end
@@ -65,5 +81,15 @@ module VaultedBilling
         :phone => phone
       }
     end
+
+    def country=(input)
+      @country = Country.new(input) if input
+    end
+
+    def name_on_card
+      [first_name, last_name].compact.join(" ")
+    end
+
+    def to_vaulted_billing; self; end
   end
 end

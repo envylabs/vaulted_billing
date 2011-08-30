@@ -58,7 +58,7 @@ module VaultedBilling
         respond_with(customer, result, :success => result.success?)
       end
 
-      def add_customer_credit_card(customer, credit_card)
+      def add_customer_credit_card(customer, credit_card, options = {})
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
         data = build_request('createCustomerPaymentProfileRequest') { |xml|
@@ -75,7 +75,7 @@ module VaultedBilling
         end
       end
 
-      def update_customer_credit_card(customer, credit_card)
+      def update_customer_credit_card(customer, credit_card, options = {})
         customer = customer.to_vaulted_billing
         credit_card = credit_card.to_vaulted_billing
         data = build_request('updateCustomerPaymentProfileRequest') { |xml|
