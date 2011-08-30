@@ -326,9 +326,9 @@ module VaultedBilling
                 :Country => credit_card.country.try(:to_ipcommerce_id),
                 :Phone => credit_card.phone
               }.select { |k, v| !v.nil? },
-              :CVDataProvided => credit_card.cvv_number.nil? ? 1 : 2,
+              :CVDataProvided => credit_card.cvv_number.nil? ? nil : 2,
               :CVData => credit_card.cvv_number
-            }
+            }.select { |k, v| !v.nil? }
           }
         end
       end
