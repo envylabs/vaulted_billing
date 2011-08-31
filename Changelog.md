@@ -1,3 +1,16 @@
+### 1.1.3 / 2011-08-31
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.2...v1.1.3)
+
+* Enhancements
+  * IP Commerce
+    * Update the path used for transactions to allow other libraries to reuse
+    * Update certification scripts and add TMS certification scripts
+
+* Bug Fixes
+  * IP Commerce
+    * Correctly store the session key
+
 ### 1.1.2 / 2011-08-30
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.1...v1.1.2)

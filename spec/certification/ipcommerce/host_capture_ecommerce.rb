@@ -14,10 +14,17 @@ describe VaultedBilling::Gateways::Ipcommerce do
     
     subject { IpcommerceTransaction.new(code, purchase) }
     
+    context 'setup' do
+      use_vcr_cassette 'ipcommerce/certification/host/a-setup'
+      it "clears captures" do
+        gateway.capture_all(options)
+      end
+    end
+    
     context 'F_A1' do
       let(:code) { "F_A1" }
       let(:amount) { 12.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_a1'
       
       it "outputs the result" do
@@ -28,7 +35,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_A2' do
       let(:code) { "F_A2" }
       let(:amount) { 12.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '6011000995504101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '6011000995504101', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_a2'
       
       it "outputs the result" do
@@ -39,7 +46,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_A3' do
       let(:code) { "F_A3" }
       let(:amount) { 25.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '371449635398456', :cvv_number => '1111') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :cvv_number => '1111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_a3'
       
       it "outputs the result" do
@@ -50,7 +57,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_A4' do
       let(:code) { "F_A4" }
       let(:amount) { 26.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '5454545454545454', :cvv_number => '111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :cvv_number => '111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_a4'
       
       it "outputs the result" do
@@ -61,7 +68,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_A5' do
       let(:code) { "F_A5" }
       let(:amount) { 12.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '371449635398456', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_a5'
       
       it "outputs the result" do
@@ -72,7 +79,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_A6' do
       let(:code) { "F_A6" }
       let(:amount) { 10.83 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :cvv_number => '777') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :cvv_number => '777', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_a6'
       
       it "outputs the result" do
@@ -89,7 +96,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_B1 - F_B2' do
       let(:purchase_amount) { 29.00 }
       let(:refund_amount) { 12.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :cvv_number => '111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :cvv_number => '111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_b1-b2'
       
       it "ouputs the result" do
@@ -101,7 +108,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_B3 - F_B4' do
       let(:purchase_amount) { 7.00 }
       let(:refund_amount) { purchase_amount }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '5454545454545454', :cvv_number => '111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :cvv_number => '111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_b3-b4'
       
       it "ouputs the result" do
@@ -117,7 +124,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
     context 'F_C1 - F_C2' do
       let(:amount) { 57.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '5454545454545454', :cvv_number => '111') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :cvv_number => '111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_c1-c2'
 
       it "ouputs the result" do
@@ -129,7 +136,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     context 'F_C3 - F_C4' do
       let(:amount) { 55.00 }
       let(:authorization) { gateway.authorize(nil, credit_card, amount, options) }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_c3-c4'
 
       it "ouputs the result" do
@@ -145,7 +152,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
     context 'F_D1' do
       let(:amount) { 17.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '6011000995504101', :cvv_number => '111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '6011000995504101', :cvv_number => '111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_d1'
 
       it "ouputs the result" do
@@ -155,7 +162,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
     context 'F_D2' do
       let(:amount) { 33.03 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_d2'
 
       it "ouputs the result" do
@@ -165,7 +172,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     
     context 'F_D3' do
       let(:amount) { 34.02 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_d3'
 
       it "ouputs the result" do
@@ -175,7 +182,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     
     context 'F_D4' do
       let(:amount) { 35.05 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '5454545454545454', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_d4'
 
       it "ouputs the result" do
@@ -187,7 +194,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
   context 'Voice Authorization Tests' do
     let(:purchase) { gateway.purchase(nil, credit_card, amount, options.merge(:approval_code => '555123')) }
     let(:amount) { 8.00 }
-    let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :cvv_number => '111') }
+    let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :cvv_number => '111') }
     use_vcr_cassette 'ipcommerce/certification/host/f_v1'
 
     it "F_V1" do
@@ -202,7 +209,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     
     context 'F_F1 - F_F2' do
       let(:amount) { 18.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '371449635398456', :postal_code => '10101') }  
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :postal_code => '10101') }  
       use_vcr_cassette 'ipcommerce/certification/host/f_f1-f2'
       
       it "ouputs the result" do
@@ -213,7 +220,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     
     context 'F_F3 - F_F4' do
       let(:amount) { 13.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '5454545454545454', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_f3-f4'
 
       it "ouputs the result" do
@@ -224,7 +231,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     
     context 'F_F5' do
       let(:amount) { 19.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_f5'
 
       it "ouputs the result" do
@@ -234,7 +241,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
     
     context 'F_F6' do
       let(:amount) { 87.00 }
-      let(:credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :cvv_number => '111', :postal_code => '10101') }
+      let(:credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :cvv_number => '111', :postal_code => '10101') }
       use_vcr_cassette 'ipcommerce/certification/host/f_f6'
 
       it "ouputs the result" do
@@ -245,11 +252,11 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
   context 'Secure Card Data Tokenization Tests' do
     let(:i1_authorization) { gateway.authorize(nil, i1_credit_card, 17.00, options) }
-    let(:i1_credit_card) { Factory.build(:blank_credit_card, :card_number => '4111111111111111', :street_address => '1000 1st Av', :postal_code => '10101') }
+    let(:i1_credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :street_address => '1000 1st Av', :postal_code => '10101') }
     let(:i2_authorization) { gateway.authorize(nil, i2_credit_card, 18.00, options) }
-    let(:i2_credit_card) { Factory.build(:blank_credit_card, :card_number => '5454545454545454', :cvv_number => '111', :postal_code => '10101') }
+    let(:i2_credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :cvv_number => '111', :postal_code => '10101') }
     let(:i3_authorization) { gateway.authorize(nil, i3_credit_card, 19.00, options) }
-    let(:i3_credit_card) { Factory.build(:blank_credit_card, :card_number => '371449635398456', :cvv_number => '1111', :postal_code => '10101') }
+    let(:i3_credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :cvv_number => '1111', :postal_code => '10101') }
     let(:i4_purchase) { gateway.purchase(nil, i1_credit_card, 16.00, options.merge(:transaction_id => i1_authorization.id)) }
     let(:i5_purchase) { gateway.purchase(nil, i2_credit_card, 18.00, options.merge(:transaction_id => i2_authorization.id)) }
     let(:i6_purchase) { gateway.purchase(nil, i3_credit_card, 31.83, options.merge(:transaction_id => i3_authorization.id)) }
@@ -265,7 +272,47 @@ describe VaultedBilling::Gateways::Ipcommerce do
     end
   end
   
-  context 'Transaction Management Services (TMS)' do
-    pending
+  context 'Transaction Management Services (TMS)', :focus => true do
+    let(:batch) { "fdc" }
+    let(:t1_purchase) { gateway.purchase(nil, t1_credit_card, 30.00, options) }
+    let(:t1_credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101', :cvv_number => '111') }
+    let(:t2_refund) { gateway.refund(t1_purchase.id, 30.00, options) }
+
+    let(:t3_authorization) { gateway.authorize(nil, t3_credit_card, 32.00, options) }
+    let(:t3_credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :postal_code => '10101', :cvv_number => '111') }
+    let(:t4_void) { gateway.void(t3_authorization.id, options) }
+
+    let(:t5_authorization) { gateway.authorize(nil, t5_credit_card, 33.00, options) }
+    let(:t5_credit_card) { Factory.build(:expires_credit_card, :card_number => '6011000995504101', :postal_code => '10101', :cvv_number => '111') }
+
+    let(:t6_purchase) { gateway.purchase(nil, t6_credit_card, 34.00, options) }
+    let(:t6_credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :postal_code => '10101', :cvv_number => '111') }
+
+    let(:t7_authorization) { gateway.authorize(nil, t7_credit_card, 34.00, options) }
+    let(:t7_credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :postal_code => '10101', :cvv_number => '111') }
+
+    use_vcr_cassette 'ipcommerce/certification/host/t', :record => :new_episodes
+    
+    context 'setup' do
+      use_vcr_cassette 'ipcommerce/certification/host/t-setup', :record => :new_episodes
+      it "clears captures" do
+        gateway.capture_all(options)
+      end
+    end
+
+    it "outputs the result" do
+      puts IpcommerceTransaction.new("#{batch}_T1", t1_purchase).print
+      puts IpcommerceTransaction.new("#{batch}_T2", t2_refund).print 
+      puts IpcommerceTransaction.new("#{batch}_T3", t3_authorization).print 
+      puts IpcommerceTransaction.new("#{batch}_T4", t4_void).print
+      puts IpcommerceTransaction.new("#{batch}_T5", t5_authorization).print
+      puts IpcommerceTransaction.new("#{batch}_T6", t6_purchase).print
+      puts IpcommerceTransaction.new("#{batch}_T7", t7_authorization).print
+
+      gateway.query_batch
+      gateway.query_transactions_summary
+      gateway.query_transactions_families({ :transaction_ids => [t5_authorization.id]})
+      gateway.query_transaction_details({ :transaction_ids => [t1_purchase.id]})
+    end
   end
 end

@@ -29,6 +29,6 @@ end
 Factory.define :blank_credit_card, :class => VaultedBilling::CreditCard do |c|
 end
 
-Factory.define :terminal_credit_card, :class => VaultedBilling::CreditCard do |c|
+Factory.define :expires_credit_card, :class => VaultedBilling::CreditCard do |c|
   c.expires_on { Date.today + 365 }
 end
