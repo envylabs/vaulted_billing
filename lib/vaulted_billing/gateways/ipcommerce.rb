@@ -169,7 +169,7 @@ module VaultedBilling
           }
         }
 
-        response = http(options[:workflow_id] || @service_id).post(data)
+        response = http("Txn", options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -188,7 +188,7 @@ module VaultedBilling
           }
         }
 
-        response = http(options[:workflow_id] || @service_id, transaction_id).put(data)
+        response = http("Txn", options[:workflow_id] || @service_id, transaction_id).put(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -219,7 +219,7 @@ module VaultedBilling
             :TenderData => card_data(credit_card)
           }
         }
-        response = http(options[:workflow_id] || @service_id).post(data)
+        response = http("Txn", options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -239,7 +239,7 @@ module VaultedBilling
           }
         }
 
-        response = http(options[:workflow_id] || @service_id).post(data)
+        response = http("Txn", options[:workflow_id] || @service_id).post(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -289,7 +289,7 @@ module VaultedBilling
           }
         }
 
-        response = http(options[:workflow_id] || @service_id, transaction_id).put(data)
+        response = http("Txn", options[:workflow_id] || @service_id, transaction_id).put(data)
         transaction = new_transaction_from_response(response)
         respond_with(transaction,
                      response,
@@ -355,8 +355,8 @@ module VaultedBilling
 
       def http(*params)
         urls = %W(
-          https://cws-01.cert.ipcommerce.com/REST/2.0.15/Txn/#{params.join('/')}
-          https://cws-02.cert.ipcommerce.com/REST/2.0.15/Txn/#{params.join('/')}
+          https://cws-01.cert.ipcommerce.com/REST/2.0.15/#{params.join('/')}
+          https://cws-02.cert.ipcommerce.com/REST/2.0.15/#{params.join('/')}
         )
         VaultedBilling::HTTP.new(self, urls, {
           :headers => { 'Content-Type' => 'application/json' },
