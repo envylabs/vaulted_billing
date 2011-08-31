@@ -272,7 +272,47 @@ describe VaultedBilling::Gateways::Ipcommerce do
     end
   end
   
-  context 'Transaction Management Services (TMS)' do
-    pending
+  context 'Transaction Management Services (TMS)', :focus => true do
+    let(:batch) { "fdc" }
+    let(:t1_purchase) { gateway.purchase(nil, t1_credit_card, 30.00, options) }
+    let(:t1_credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101', :cvv_number => '111') }
+    let(:t2_refund) { gateway.refund(t1_purchase.id, 30.00, options) }
+
+    let(:t3_authorization) { gateway.authorize(nil, t3_credit_card, 32.00, options) }
+    let(:t3_credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :postal_code => '10101', :cvv_number => '111') }
+    let(:t4_void) { gateway.void(t3_authorization.id, options) }
+
+    let(:t5_authorization) { gateway.authorize(nil, t5_credit_card, 33.00, options) }
+    let(:t5_credit_card) { Factory.build(:expires_credit_card, :card_number => '6011000995504101', :postal_code => '10101', :cvv_number => '111') }
+
+    let(:t6_purchase) { gateway.purchase(nil, t6_credit_card, 34.00, options) }
+    let(:t6_credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :postal_code => '10101', :cvv_number => '111') }
+
+    let(:t7_authorization) { gateway.authorize(nil, t7_credit_card, 34.00, options) }
+    let(:t7_credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :postal_code => '10101', :cvv_number => '111') }
+
+    use_vcr_cassette 'ipcommerce/certification/host/t', :record => :new_episodes
+    
+    context 'setup' do
+      use_vcr_cassette 'ipcommerce/certification/host/t-setup', :record => :new_episodes
+      it "clears captures" do
+        gateway.capture_all(options)
+      end
+    end
+
+    it "outputs the result" do
+      puts IpcommerceTransaction.new("#{batch}_T1", t1_purchase).print
+      puts IpcommerceTransaction.new("#{batch}_T2", t2_refund).print 
+      puts IpcommerceTransaction.new("#{batch}_T3", t3_authorization).print 
+      puts IpcommerceTransaction.new("#{batch}_T4", t4_void).print
+      puts IpcommerceTransaction.new("#{batch}_T5", t5_authorization).print
+      puts IpcommerceTransaction.new("#{batch}_T6", t6_purchase).print
+      puts IpcommerceTransaction.new("#{batch}_T7", t7_authorization).print
+
+      gateway.query_batch
+      gateway.query_transactions_summary
+      gateway.query_transactions_families({ :transaction_ids => [t5_authorization.id]})
+      gateway.query_transaction_details({ :transaction_ids => [t1_purchase.id]})
+    end
   end
 end

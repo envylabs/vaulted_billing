@@ -3,11 +3,11 @@ require_relative 'ipcommerce_transaction.rb'
 
 describe VaultedBilling::Gateways::Ipcommerce do
   let(:gateway) { VaultedBilling.gateway(:ipcommerce).new }
-  let(:options) { { :merchant_profile_id => 'TicketTest_C82ED00001', :workflow_id => 'C82ED00001' }} # Terminal Capture: Tsys
-  let(:batch) { "T" }
+  # let(:options) { { :merchant_profile_id => 'TicketTest_C82ED00001', :workflow_id => 'C82ED00001' }} # Terminal Capture: Tsys
+  # let(:batch) { "T" }
   
-  # let(:options) { { :merchant_profile_id => 'TicketTest_B447F00001', :workflow_id => 'B447F00001' }} # Terminal Capture: Vantiv / 5th 3rd Bank
-  # let(:batch) { "V" }
+  let(:options) { { :merchant_profile_id => 'TicketTest_B447F00001', :workflow_id => 'B447F00001' }} # Terminal Capture: Vantiv / 5th 3rd Bank
+  let(:batch) { "V" }
 
 
   before(:all) do
@@ -248,6 +248,51 @@ describe VaultedBilling::Gateways::Ipcommerce do
       puts IpcommerceTransaction.new("#{batch}_I6", i6_return_unlinked).print
       puts IpcommerceTransaction.new("#{batch}_I7", i7_authorization).print
       puts IpcommerceTransaction.new("#{batch}_I8", gateway.capture_all(options)).print
+    end
+  end
+
+  context 'Transaction Management Services (TMS)' do
+    let(:t1_authorization) { gateway.authorize(nil, t1_credit_card, 30.00, options) }
+    let(:t1_credit_card) { Factory.build(:expires_credit_card, :card_number => '4111111111111111', :postal_code => '10101', :cvv_number => '111') }
+    let(:t2_refund) { gateway.return_unlinked(nil, t1_credit_card, 30.00, options) }
+
+    let(:t3_authorization) { gateway.authorize(nil, t3_credit_card, 30.00, options) }
+    let(:t3_credit_card) { Factory.build(:expires_credit_card, :card_number => '5454545454545454', :postal_code => '10101', :cvv_number => '111') }
+    let(:t4_void) { gateway.void(t3_authorization.id, options) }
+
+    let(:t5_authorization) { gateway.authorize(nil, t5_credit_card, 33.00, options) }
+    let(:t5_credit_card) { Factory.build(:expires_credit_card, :card_number => '6011000995504101', :postal_code => '10101', :cvv_number => '111') }
+    let(:t6_capture) { gateway.capture_selective([t5_authorization.id], [{ :id => t5_authorization.id, :amount => 35.00 }], options) }
+
+    let(:t7_authorization) { gateway.authorize(nil, t7_credit_card, 33.00, options) }
+    let(:t7_credit_card) { Factory.build(:expires_credit_card, :card_number => '371449635398456', :postal_code => '10101', :cvv_number => '111') }
+
+    let(:t8_refund) { gateway.refund(t5_authorization.id, 33.00, options) }
+
+    use_vcr_cassette 'ipcommerce/certification/terminal/t'
+    
+    context 'setup' do
+      use_vcr_cassette 'ipcommerce/certification/terminal/t-setup'
+      it "clears captures" do
+        gateway.capture_all(options)
+      end
+    end
+
+    it "outputs the result" do
+      puts IpcommerceTransaction.new("#{batch}_T1", t1_authorization).print
+      puts IpcommerceTransaction.new("#{batch}_T2", t2_refund).print 
+      puts IpcommerceTransaction.new("#{batch}_T3", t3_authorization).print 
+      puts IpcommerceTransaction.new("#{batch}_T4", t4_void).print
+      puts IpcommerceTransaction.new("#{batch}_T5", t5_authorization).print
+      puts IpcommerceTransaction.new("#{batch}_T6", t6_capture).print
+      puts IpcommerceTransaction.new("#{batch}_T7", t7_authorization).print
+      puts IpcommerceTransaction.new("#{batch}_T8", t8_refund).print
+      puts IpcommerceTransaction.new("#{batch}_T9", gateway.capture_all(options)).print
+
+      gateway.query_batch
+      gateway.query_transactions_summary
+      gateway.query_transactions_families({ :transaction_ids => [t1_authorization.id]})
+      gateway.query_transaction_details({ :transaction_ids => [t1_authorization.id]})
     end
   end
 end
