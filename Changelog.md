@@ -1,3 +1,11 @@
+### 1.1.4 / 2011-08-31
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.3...v1.1.4)
+
+* Enhancements
+  * IP Commerce
+    * Add support for test/production API end points
+
 ### 1.1.3 / 2011-08-31
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.2...v1.1.3)
