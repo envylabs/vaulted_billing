@@ -54,15 +54,26 @@ module VaultedBilling
         6 => /^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/, # Discover
         7 => /^35(28|29|[3-8]\d)\d{12}$/ # JCB
       }.freeze
+      
+      Endpoints = [
+        "https://cws-01.ipcommerce.com/REST/2.0.15/",
+        "https://cws-02.ipcommerce.com/REST/2.0.15/"
+      ].freeze
+      
+      TestEndpoints = [
+        "https://cws-01.cert.ipcommerce.com/REST/2.0.15/",
+        "https://cws-02.cert.ipcommerce.com/REST/2.0.15/"
+      ].freeze
 
       class ServiceKeyStore
         UnavailableKeyError = Class.new(VaultedBilling::CredentialError)
 
         attr_reader :identity_token
 
-        def initialize(identity_token)
+        def initialize(identity_token, test_mode = false)
           @identity_token = identity_token
           @expires_at = nil
+          @test_mode = test_mode
         end
 
         def key
@@ -96,14 +107,22 @@ module VaultedBilling
         private
         def http
           @request ||= begin
-            urls = ["https://cws-01.cert.ipcommerce.com/REST/2.0.15/SvcInfo/token",
-                    "https://cws-02.cert.ipcommerce.com/REST/2.0.15/SvcInfo/token"]
             VaultedBilling::HTTP.new(self, urls, {
               :headers => {'Content-Type' => 'application/json'},
               :before_request => :before_request,
               :basic_auth => [@identity_token, ""]
             })
           end
+        end
+        
+        def urls
+          endpoints.collect do |url|
+            url + "SvcInfo/token"
+          end
+        end
+        
+        def endpoints
+          @test_mode ? TestEndpoints : Endpoints
         end
       end
 
@@ -115,7 +134,7 @@ module VaultedBilling
         @test_mode = options.has_key?(:test) ? options[:test] : (VaultedBilling.config.ipcommerce.test_mode || VaultedBilling.config.test_mode)
         @application_id = options[:application_id] || @raw_options["application_id"]
         @service_id = options[:service_id] || @raw_options["service_id"]
-        @service_key_store = options[:service_key_store] || ServiceKeyStore.new(@identity_token)
+        @service_key_store = options[:service_key_store] || ServiceKeyStore.new(@identity_token, @test_mode)
       end
 
 
@@ -354,16 +373,22 @@ module VaultedBilling
       end
 
       def http(*params)
-        urls = %W(
-          https://cws-01.cert.ipcommerce.com/REST/2.0.15/#{params.join('/')}
-          https://cws-02.cert.ipcommerce.com/REST/2.0.15/#{params.join('/')}
-        )
-        VaultedBilling::HTTP.new(self, urls, {
+        VaultedBilling::HTTP.new(self, urls(params), {
           :headers => { 'Content-Type' => 'application/json' },
           :before_request => :before_request,
           :basic_auth => [@service_key_store.key, ""],
           :on_success => :on_success
         })
+      end
+
+      def urls(params)
+        endpoints.collect do |url|
+          url + params.join('/')
+        end
+      end
+      
+      def endpoints
+        @test_mode ? TestEndpoints : Endpoints
       end
 
       def before_request(request)
