@@ -177,12 +177,13 @@ module VaultedBilling
               :ApprovalCode => options[:approval_code],
               :CurrencyCode => 4,
               :TransactionDateTime => Time.now.xmlschema,
-              :CustomerPresent => 0,
-              :EntryMode => options[:entry_mode] || 1, # 1 => keyed
-              :GoodsType => 0,
-              :IndustryType => 2,
-              :SignatureCaptured => false,
-              :OrderNumber => options[:order_id] || generate_order_number
+              :CustomerPresent => options[:customer_present] || 0, # Not Set
+              :EntryMode => options[:entry_mode] || 1, # Keyed
+              :GoodsType => options[:goods_type] || 0, # Not Set
+              :IndustryType => options[:industry_type] || 2, # Ecommerce
+              :SignatureCaptured => options[:signature_captured] || false,
+              :OrderNumber => options[:order_id] || generate_order_number,
+              :EmployeeId => options[:employee_id]
             },
             :TenderData => card_data(credit_card)
           }
@@ -227,13 +228,13 @@ module VaultedBilling
               :ApprovalCode => options[:approval_code],
               :CurrencyCode => 4,
               :TransactionDateTime => Time.now.xmlschema,
-              :CustomerPresent => 0,
+              :CustomerPresent => options[:customer_present] || 0, # Not Set
               :EmployeeId => options[:employee_id],
-              :EntryMode => options[:entry_mode] || 1, # 1 => keyed
-              :GoodsType => 0,
-              :IndustryType => 2,
+              :EntryMode => options[:entry_mode] || 1, # Keyed
+              :GoodsType => options[:goods_type] || 0, # Not Set
+              :IndustryType => options[:industry_type] || 2, # Ecommerce
               :OrderNumber => options[:order_id] || generate_order_number,
-              :SignatureCaptured => false
+              :SignatureCaptured => options[:signature_captured] || false
             },
             :TenderData => card_data(credit_card)
           }
