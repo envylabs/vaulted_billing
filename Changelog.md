@@ -1,3 +1,11 @@
+### 1.1.5 / 2011-09-06
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.4...v1.1.5)
+
+* Enhancements
+  * IP Commerce
+    * Add additional configuration options for transactions
+
 ### 1.1.4 / 2011-08-31
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.3...v1.1.4)
