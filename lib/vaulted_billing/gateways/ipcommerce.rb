@@ -342,7 +342,7 @@ module VaultedBilling
                 :Street => credit_card.street_address.try(:[], (0...20)),
                 :City => credit_card.locality,
                 :StateProvince => credit_card.region,
-                :PostalCode => credit_card.postal_code.try(:[], (0...5)),
+                :PostalCode => credit_card.postal_code.try(:gsub, /[^[:alnum:]]/, '').try(:[], (0...8)),
                 :Country => credit_card.country.try(:to_ipcommerce_id),
                 :Phone => credit_card.phone
               }.select { |k, v| !v.nil? },

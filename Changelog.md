@@ -1,3 +1,11 @@
+### 1.1.6 / 2011-09-09
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6)
+
+* Bug Fixes
+  * IP Commerce
+    * Strip out non-alphanumeric characters from postal code. IP Commerce accepts a 1-9 digit code of only alphanumeric characters.
+    
 ### 1.1.5 / 2011-09-06
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.4...v1.1.5)
