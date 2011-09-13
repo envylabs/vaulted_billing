@@ -1,6 +1,6 @@
 ### 1.1.6 / 2011-09-09
 
-[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.1.6)
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6)
 
 * Bug Fixes
   * IP Commerce
