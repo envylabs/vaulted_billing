@@ -1,3 +1,12 @@
+### 1.1.7 / ?
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.1.7)
+
+* Enhancements
+  * IP Commerce
+    * Return AVS Response as hash split out with responses for the individual responses (No Match, No Response, etc).
+    * Return CV Response as a string indicating what we receive from IP Commerce (Match, No Match, Invalid, etc).
+    
 ### 1.1.6 / 2011-09-09
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6)
