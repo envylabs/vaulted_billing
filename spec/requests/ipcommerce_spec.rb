@@ -407,7 +407,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
         it_should_behave_like 'a transaction request'
         it { should be_success }
         its(:id) { should_not be_nil }
-        its(:masked_card_number) { should_not be_present }
+        its(:masked_card_number) { should be_present }
         its(:authcode) { should_not be_nil }
         its(:message) { should == "APPROVED" }
         its(:code) { should == 1 }
