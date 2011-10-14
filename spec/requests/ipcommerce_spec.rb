@@ -305,15 +305,22 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
       context 'when successful' do
         use_vcr_cassette 'ipcommerce/authorize/existing/success'
-        let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card), { :merchant_profile_id => merchant_profile_id }) }
+        let(:credit_card) { gateway.add_customer_credit_card(customer, Factory.build(:ipcommerce_credit_card, :street_address => '1000 1st Av', :postal_code => '10101'), { :merchant_profile_id => merchant_profile_id }) }
 
         it_should_behave_like 'a transaction request'
         it { should be_success }
         its(:id) { should_not be_nil }
-        its(:masked_card_number) { should_not be_present }
+        its(:masked_card_number) { should be_present }
         its(:authcode) { should_not be_nil }
         its(:message) { should == "APPROVED" }
         its(:code) { should == 1 }
+        
+        context 'the avs response' do
+          subject { OpenStruct.new(authorization.avs_response) }
+          its(:result) { should == 'Y' }
+          its(:address) { should == 'Match' }
+          its(:postal_code) { should == 'Match' }
+        end
       end
 
       context 'with a failure' do
