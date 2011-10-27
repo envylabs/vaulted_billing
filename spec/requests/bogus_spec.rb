@@ -88,6 +88,7 @@ describe VaultedBilling::Gateways::Bogus do
       its(:authcode) { should_not be_present }
       its(:masked_card_number) { should be_present }
       its(:message) { should == 'This transaction has been declined.' }
+      its(:response_message) { should == 'This transaction has been declined.' }
     end
   end
 
