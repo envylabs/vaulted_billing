@@ -19,3 +19,4 @@ Factory.sequence :credit_card_number do |c|
 end
 
 Factory.sequence(:invalid_credit_card_number) { |c| '4111111111111112' }
+Factory.sequence(:failure_credit_card_number) { |c| VaultedBilling::Gateways::Bogus::FailureCards[rand(VaultedBilling::Gateways::Bogus::FailureCards.size)] }

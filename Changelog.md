@@ -1,3 +1,21 @@
+### 1.2.1 / ?
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.2.0...develop)
+
+### 1.2.0 / 2011-10-27
+
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.2.0)
+
+* Enhancements
+  * IP Commerce
+    * Return AVS Response as hash split out with responses for the individual responses (No Match, No Response, etc).
+    * Return CV Response as a string indicating what we receive from IP Commerce (Match, No Match, Invalid, etc).
+  * Bogus
+    * Extended to allow for failure case testing with a magic card number.
+
+* Bug Fixes
+  * Fix IP Commerce hash to JSON conversion issue with symbolized key names.
+    
 ### 1.1.6 / 2011-09-09
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6)

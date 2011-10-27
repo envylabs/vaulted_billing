@@ -17,6 +17,11 @@ module VaultedBilling
     #
     class Ipcommerce
       include VaultedBilling::Gateway
+      
+      AvsResults = [
+        "Not Set", "Not Included", "Match", "No Match", "Issuer Not Certified",
+        "No Response From Card Association", "Unknown Response From Card Association", "Not Verified", "Bad Format"
+      ]
 
       Countries = %w(
         !! AF AX AL DZ AS AD AO AI AQ
@@ -44,7 +49,7 @@ module VaultedBilling
         TG TK TP TO TT TN TR TM TC TV
         UG UA AE GB US UM UY UZ VU VE
         VN VG VI WF EH YE YU ZM ZW
-      )
+      ).freeze
        
       Companies = {
         2 => /^4\d{12}(\d{3})?$/, # Visa
@@ -54,6 +59,12 @@ module VaultedBilling
         6 => /^(6011|65\d{2}|64[4-9]\d)\d{12}|(62\d{14})$/, # Discover
         7 => /^35(28|29|[3-8]\d)\d{12}$/ # JCB
       }.freeze
+
+      CVResults = [
+        "Not Set", "Match", "No Match", "Not Processed", "Not Included",
+        "No Code Present", "Should Have Been Present", "Issuer Not Certified", "Invalid", "No Response",
+        "Not Applicable"
+      ].freeze
       
       Endpoints = [
         "https://cws-01.ipcommerce.com/REST/2.0.15/",
@@ -325,32 +336,28 @@ module VaultedBilling
 
       def card_data(credit_card)
         return nil if credit_card.nil?
-        
-        if credit_card.vault_id.present?
-          { :PaymentAccountDataToken => credit_card.vault_id }
-        else
-          {
-            :CardData => { 
-              :CardholderName => credit_card.name_on_card,
-              :CardType => self.class.credit_card_type_id(credit_card.card_number),
-              :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
-              :PAN => credit_card.card_number
-            },
-            :CardSecurityData => {
-              :AVSData => {
-                :CardholderName => credit_card.name_on_card,
-                :Street => credit_card.street_address.try(:[], (0...20)),
-                :City => credit_card.locality,
-                :StateProvince => credit_card.region,
-                :PostalCode => credit_card.postal_code.try(:gsub, /[^[:alnum:]]/, '').try(:[], (0...8)),
-                :Country => credit_card.country.try(:to_ipcommerce_id),
-                :Phone => credit_card.phone
-              }.select { |k, v| !v.nil? },
-              :CVDataProvided => credit_card.cvv_number.nil? ? nil : 2,
-              :CVData => credit_card.cvv_number
-            }.select { |k, v| !v.nil? }
-          }
-        end
+        { 
+          'PaymentAccountDataToken' => credit_card.vault_id,
+          'CardData' => { 
+            'CardholderName' => credit_card.name_on_card.blank? ? nil : credit_card.name_on_card,
+            'CardType' => self.class.credit_card_type_id(credit_card.card_number),
+            'Expire' => credit_card.expires_on.try(:strftime, "%m%y"),
+            'PAN' => credit_card.vault_id ? ("XXXXXXXXXXX%04d" % [credit_card.card_number[-4..-1]]) : credit_card.card_number
+          },
+          'CardSecurityData' => {
+            'AVSData' => {
+              'CardholderName' => credit_card.name_on_card.blank? ? nil : credit_card.name_on_card,
+              'Street' => credit_card.street_address.try(:[], (0...20)),
+              'City' => credit_card.locality,
+              'StateProvince' => credit_card.region,
+              'PostalCode' => credit_card.postal_code.try(:gsub, /[^[:alnum:]]/, '').try(:[], (0...8)),
+              'Country' => credit_card.country.try(:to_ipcommerce_id),
+              'Phone' => credit_card.phone
+            }.select { |k, v| !v.nil? },
+            'CVDataProvided' => credit_card.cvv_number.nil? ? nil : 2,
+            'CVData' => credit_card.cvv_number
+          }.select { |k, v| v.is_a?(Hash) ? !v.empty? : !v.nil?  }
+        }.select { |k, v| !v.nil? }
       end
 
       private
@@ -411,8 +418,8 @@ module VaultedBilling
         if response.success?
           Transaction.new({
             :id => response.body['TransactionId'],
-            :avs_response => response.body['AVSResult'] == 1,
-            :cvv_response => response.body['CVResult'] == 1,
+            :avs_response => parse_avs_result(response.body['AVSResult']),
+            :cvv_response => parse_cvv_result(response.body['CVResult']),
             :authcode => response.body['ApprovalCode'],
             :message => response.body['StatusMessage'],
             :code => response.body['Status'],
@@ -431,6 +438,25 @@ module VaultedBilling
             })
           end
         end
+      end
+
+      def parse_avs_result(result)
+        return nil unless result
+        { 
+          :result => result['ActualResult'],
+          :address => AvsResults[result['AddressResult']],
+          :country => AvsResults[result['CountryResult']],
+          :state => AvsResults[result['StateResult']],
+          :postal_code => AvsResults[result['PostalCodeResult']],
+          :phone => AvsResults[result['PhoneResult']],
+          :cardholder_name => AvsResults[result['CardholderNameResult']],
+          :city => AvsResults[result['CityResult']]
+        }
+      end
+
+      def parse_cvv_result(result)
+        return nil unless result
+        CVResults[result]
       end
 
       def parse_validation_errors(response)

@@ -67,13 +67,28 @@ describe VaultedBilling::Gateways::Bogus do
 
   context 'authorize' do
     let(:customer) { Factory.build(:existing_customer) }
-    let(:credit_card) { Factory.build(:existing_credit_card) }
-    subject { gateway.authorize(customer, credit_card, 1) }
-    it_should_behave_like 'a transaction request'
+    let(:amount) { 1 }
+    subject { gateway.authorize(customer, credit_card, amount) }
 
-    it { should be_success }
-    its(:authcode) { should be_present }
-    its(:masked_card_number) { should be_present }
+    context 'with a non-failure card' do
+      let(:credit_card) { Factory.build(:existing_credit_card) }
+
+      it_should_behave_like 'a transaction request'
+      it { should be_success }
+      its(:authcode) { should be_present }
+      its(:masked_card_number) { should be_present }
+    end
+
+    context 'with a failure card' do
+      let(:amount) { 3.00 }
+      let(:credit_card) { Factory.build(:failure_credit_card) }
+
+      it_should_behave_like 'a transaction request'
+      it { should_not be_success }
+      its(:authcode) { should_not be_present }
+      its(:masked_card_number) { should be_present }
+      its(:message) { should == 'This transaction has been declined.' }
+    end
   end
 
   context 'capture' do
@@ -86,12 +101,28 @@ describe VaultedBilling::Gateways::Bogus do
 
   context 'purchase' do
     let(:customer) { Factory.build(:existing_customer) }
-    let(:credit_card) { Factory.build(:existing_credit_card) }
-    subject { gateway.purchase(customer, credit_card, 1) }
-    it_should_behave_like 'a transaction request'
+    let(:amount) { 1 }
+    subject { gateway.purchase(customer, credit_card, amount) }
 
-    it { should be_success }
-    its(:masked_card_number) { should be_present }
+    context 'with a non-failure card' do
+      let(:credit_card) { Factory.build(:existing_credit_card) }
+
+      it_should_behave_like 'a transaction request'
+      it { should be_success }
+      its(:authcode) { should be_present }
+      its(:masked_card_number) { should be_present }
+    end
+
+    context 'with a failure card' do
+      let(:amount) { 3.00 }
+      let(:credit_card) { Factory.build(:failure_credit_card) }
+
+      it_should_behave_like 'a transaction request'
+      it { should_not be_success }
+      its(:authcode) { should_not be_present }
+      its(:masked_card_number) { should be_present }
+      its(:message) { should == 'This transaction has been declined.' }
+    end
   end
 
   context 'void' do
