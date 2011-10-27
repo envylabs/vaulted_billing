@@ -1,6 +1,10 @@
-### 1.2.1 / ?
+### 1.2.1 / 2011-10-27
 
-[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.2.0...develop)
+[full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1)
+
+* Bug Fixes
+  * Bogus
+    * Set the response_message for failed transaction responses.
 
 ### 1.2.0 / 2011-10-27
 
