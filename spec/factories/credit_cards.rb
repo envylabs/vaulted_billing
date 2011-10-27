@@ -32,3 +32,7 @@ end
 Factory.define :expires_credit_card, :class => VaultedBilling::CreditCard do |c|
   c.expires_on { Date.today + 365 }
 end
+
+Factory.define :failure_credit_card, :parent => :credit_card do |c|
+  c.card_number { Factory.next :failure_credit_card_number }
+end
