@@ -109,16 +109,17 @@ module VaultedBilling
         attributes[:masked_card_number] = "XXXX%04d" % [credit_card ? credit_card.card_number.to_s[-4..-1].to_i : rand(9999)]
         success = true
         error_code = nil
+        message = 'Success'
 
         if success?(credit_card, amount)
           attributes[:authcode] = new_identifier[0..5]
         else
           success = false
-          attributes[:message] = failure_message_for(credit_card, amount)
+          attributes[:message] = message = failure_message_for(credit_card, amount)
           error_code = error_code_for(credit_card, amount)
         end
 
-        respond_with VaultedBilling::Transaction.new(attributes), :success => success, :error_code => error_code
+        respond_with VaultedBilling::Transaction.new(attributes), :success => success, :error_code => error_code, :response_message => message
       end
     end
   end
