@@ -337,25 +337,25 @@ module VaultedBilling
       def card_data(credit_card)
         return nil if credit_card.nil?
         { 
-          :PaymentAccountDataToken => credit_card.vault_id,
-          :CardData => { 
-            :CardholderName => credit_card.name_on_card.blank? ? nil : credit_card.name_on_card,
-            :CardType => self.class.credit_card_type_id(credit_card.card_number),
-            :Expire => credit_card.expires_on.try(:strftime, "%m%y"),
-            :PAN => credit_card.vault_id ? ("XXXXXXXXXXX%04d" % [credit_card.card_number[-4..-1]]) : credit_card.card_number
+          'PaymentAccountDataToken' => credit_card.vault_id,
+          'CardData' => { 
+            'CardholderName' => credit_card.name_on_card.blank? ? nil : credit_card.name_on_card,
+            'CardType' => self.class.credit_card_type_id(credit_card.card_number),
+            'Expire' => credit_card.expires_on.try(:strftime, "%m%y"),
+            'PAN' => credit_card.vault_id ? ("XXXXXXXXXXX%04d" % [credit_card.card_number[-4..-1]]) : credit_card.card_number
           },
-          :CardSecurityData => {
-            :AVSData => {
-              :CardholderName => credit_card.name_on_card.blank? ? nil : credit_card.name_on_card,
-              :Street => credit_card.street_address.try(:[], (0...20)),
-              :City => credit_card.locality,
-              :StateProvince => credit_card.region,
-              :PostalCode => credit_card.postal_code.try(:gsub, /[^[:alnum:]]/, '').try(:[], (0...8)),
-              :Country => credit_card.country.try(:to_ipcommerce_id),
-              :Phone => credit_card.phone
+          'CardSecurityData' => {
+            'AVSData' => {
+              'CardholderName' => credit_card.name_on_card.blank? ? nil : credit_card.name_on_card,
+              'Street' => credit_card.street_address.try(:[], (0...20)),
+              'City' => credit_card.locality,
+              'StateProvince' => credit_card.region,
+              'PostalCode' => credit_card.postal_code.try(:gsub, /[^[:alnum:]]/, '').try(:[], (0...8)),
+              'Country' => credit_card.country.try(:to_ipcommerce_id),
+              'Phone' => credit_card.phone
             }.select { |k, v| !v.nil? },
-            :CVDataProvided => credit_card.cvv_number.nil? ? nil : 2,
-            :CVData => credit_card.cvv_number
+            'CVDataProvided' => credit_card.cvv_number.nil? ? nil : 2,
+            'CVData' => credit_card.cvv_number
           }.select { |k, v| v.is_a?(Hash) ? !v.empty? : !v.nil?  }
         }.select { |k, v| !v.nil? }
       end
