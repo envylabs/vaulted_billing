@@ -54,7 +54,7 @@ module VaultedBilling
 
       def add_customer_credit_card(customer, credit_card, options = {})
         data = storage_data('add_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing)
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(credit_card, response, :success => response.success?) do |c|
           c.vault_id = response.body['customer_vault_id']
         end
@@ -62,7 +62,7 @@ module VaultedBilling
 
       def update_customer_credit_card(customer, credit_card, options = {})
         data = storage_data('update_customer', customer.to_vaulted_billing, credit_card.to_vaulted_billing)
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(credit_card, response, :success => response.success?)
       end
 
@@ -71,7 +71,7 @@ module VaultedBilling
           :customer_vault => 'delete_customer',
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id
         }).to_querystring
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(credit_card, response, :success => response.success?)
       end
 
@@ -80,7 +80,7 @@ module VaultedBilling
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
         })
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
@@ -91,7 +91,7 @@ module VaultedBilling
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
         })
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
@@ -102,7 +102,7 @@ module VaultedBilling
           :transactionid => transaction_id,
           :amount => amount
         })
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
@@ -113,7 +113,7 @@ module VaultedBilling
           :transactionid => transaction_id,
           :amount => amount
         })
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)
@@ -123,7 +123,7 @@ module VaultedBilling
         data = transaction_data('void', {
           :transactionid => transaction_id
         })
-        response = http.post(data)
+        response = http.post(nil, query: data)
         respond_with(new_transaction_from_response(response.body),
                      response,
                      :success => response.success?)

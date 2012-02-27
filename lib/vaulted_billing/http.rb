@@ -78,6 +78,9 @@ module VaultedBilling
     
     def request(method, uris, body = nil, options = {})
       uri = uris.shift || raise(ArgumentError, "URI is empty")
+      query = options.delete(:query)
+      path = uri.path
+      path << "?#{URI.escape(query)}" if query
 
       request = case method
       when :get
@@ -88,7 +91,7 @@ module VaultedBilling
         Net::HTTP::Post
       else
         raise ArugmentError
-      end.new(uri.path)
+      end.new(path)
 
       request.initialize_http_header(@headers.merge(options[:headers] || {}).reverse_merge({
          'User-Agent' => user_agent_string
