@@ -1,9 +1,9 @@
 # vaulted_billing changelog
 
-## HEAD ([full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.3.0...develop))
+## [HEAD / unreleased][head.diff]
 
 
-## [1.3.0][1.3.0.diff] / 2012-02-29
+## [1.3.0 / 2012-02-29][1.3.0.diff]
 
 ### Bug Fixes
 * IP Commerce
@@ -98,4 +98,5 @@
 * Allow development dependencies to be more flexible
 
 
+[head.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...develop
 [1.3.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
