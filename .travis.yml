@@ -4,7 +4,7 @@ rvm:
   - 1.9.2
 gemfile:
   - gemfiles/2.3.gemfile
-  - gemfiles/3.0.gemfile
+  - gemfiles/3.x.gemfile
 branches:
   only:
     - production
