@@ -1,25 +1,26 @@
----
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: address1=49944 Crooks Spur&ccexp=0812&city=West Oceanemouth&country=US&customer_vault=add_customer&email=deven.ruecker@kossparisian.biz&first_name=Adeline&last_name=Kiehn&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=(930)214-0516
-      x96280&state=Florida&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=52461-2477
-    headers:
-      user-agent:
-      - vaulted_billing/1.0.2
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+    body: address1=6609 Frances River&ccexp=0213&city=North Wilton&country=US&customer_vault=add_customer&email=jett@hacketteffertz.org&first_name=Merritt&last_name=Witting&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=551.564.7372 x37059&state=South Carolina&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=27748-1586
+    headers: 
+      user-agent: 
+      - vaulted_billing/1.2.1 (Rubygems; Ruby 1.8.7 i686-darwin11.0.0)
+      content-type: 
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
-    headers:
-      date:
-      - Wed, 10 Aug 2011 17:29:31 GMT
-      server:
-      - Apache
-      content-length:
-      - '168'
-      content-type:
+    headers: 
+      content-type: 
       - text/html
-    body: response=3&responsetext=Required Field cc_number is Missing or Empty REFID:317102207&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300
-    http_version: '1.1'
+      server: 
+      - Apache
+      date: 
+      - Wed, 29 Feb 2012 04:48:53 GMT
+      content-length: 
+      - "239"
+    body: response=3&responsetext=Required Field cc_number is Missing or Empty REFID:327675160&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=300&merchant_defined_field_6=&merchant_defined_field_7=&customer_vault_id=
+    http_version: "1.1"

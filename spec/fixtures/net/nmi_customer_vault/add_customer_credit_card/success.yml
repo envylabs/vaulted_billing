@@ -1,24 +1,26 @@
----
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: address1=143 Marc Underpass&ccexp=0812&ccnumber=5120186265015108&city=Littleshire&country=US&customer_vault=add_customer&email=alec_becker@krajcik.info&first_name=Erich&last_name=Borer&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=1-992-755-6918&state=Illinois&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=41448-8620
-    headers:
-      user-agent:
-      - vaulted_billing/1.0.2
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+    body: address1=35105 Dereck Plains&ccexp=0213&ccnumber=4024007191655199&city=Altheamouth&country=US&customer_vault=add_customer&email=morton_crona@schneider.name&first_name=Elijah&last_name=Rohan&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=273-187-3007 x330&state=Massachusetts&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=68469-8399
+    headers: 
+      user-agent: 
+      - vaulted_billing/1.2.1 (Rubygems; Ruby 1.8.7 i686-darwin11.0.0)
+      content-type: 
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
-    headers:
-      date:
-      - Wed, 10 Aug 2011 17:27:44 GMT
-      server:
-      - Apache
-      content-length:
-      - '151'
-      content-type:
+    headers: 
+      content-type: 
       - text/html
-    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=1632871356
-    http_version: '1.1'
+      server: 
+      - Apache
+      date: 
+      - Wed, 29 Feb 2012 04:48:52 GMT
+      content-length: 
+      - "202"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&merchant_defined_field_6=&merchant_defined_field_7=&customer_vault_id=583471259
+    http_version: "1.1"

@@ -1,24 +1,26 @@
----
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: ! '%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&transactionid=INVALIDID&type=void&username=%{NMI_CUSTOMER_VAULT_USERNAME}'
-    headers:
-      user-agent:
-      - vaulted_billing/1.0.2
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+    body: "%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&transactionid=INVALIDID&type=void&username=%{NMI_CUSTOMER_VAULT_USERNAME}"
+    headers: 
+      user-agent: 
+      - vaulted_billing/1.2.1 (Rubygems; Ruby 1.8.7 i686-darwin11.0.0)
+      content-type: 
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
-    headers:
-      date:
-      - Wed, 10 Aug 2011 17:31:30 GMT
-      server:
-      - Apache
-      content-length:
-      - '160'
-      content-type:
+    headers: 
+      content-type: 
       - text/html
-    body: response=3&responsetext=Invalid Transaction ID specified REFID:317102393&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=void&response_code=300
-    http_version: '1.1'
+      server: 
+      - Apache
+      date: 
+      - Wed, 29 Feb 2012 04:49:34 GMT
+      content-length: 
+      - "231"
+    body: response=3&responsetext=Invalid Transaction ID specified REFID:327675169&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=void&response_code=300&merchant_defined_field_6=&merchant_defined_field_7=&customer_vault_id=
+    http_version: "1.1"

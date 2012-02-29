@@ -156,7 +156,7 @@ module VaultedBilling
 
       def http
         VaultedBilling::HTTP.new(self, uri, {
-          :headers => {'Content-Type' => 'text/xml'},
+          :headers => {'Content-Type' => 'application/x-www-form-urlencoded'},
           :on_complete => :on_complete,
           :on_error => :on_error
         })

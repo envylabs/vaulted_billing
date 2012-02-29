@@ -5,6 +5,8 @@
 * Bug Fixes
   * IPCommerce
     * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError.
+  * NMI
+    * Send correct Content-Type request header (from text/xml to application/x-www-form-urlencoded) correcting the Invalid Username issue.
 
 ### 1.2.1 / 2011-10-27
 
