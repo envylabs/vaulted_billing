@@ -1,3 +1,11 @@
+### HEAD
+
+[full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.2.1...develop)
+
+* Bug Fixes
+  * IPCommerce
+    * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError.
+
 ### 1.2.1 / 2011-10-27
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1)
