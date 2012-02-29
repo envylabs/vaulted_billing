@@ -97,7 +97,6 @@ describe VaultedBilling::Gateways::Ipcommerce do
 
     context 'with a new credit card' do
       context 'when successful' do
-        
         context 'for a general success' do
           use_vcr_cassette 'ipcommerce/authorize/new/success'
           let(:credit_card) { Factory.build(:ipcommerce_credit_card) }
@@ -110,7 +109,7 @@ describe VaultedBilling::Gateways::Ipcommerce do
           its(:message) { should == "APPROVED" }
           its(:code) { should == 1 }
         end
-        
+
         context 'with AVS Responses' do
           context 'with match' do
             use_vcr_cassette 'ipcommerce/authorize/new/avs/match'
@@ -320,6 +319,21 @@ describe VaultedBilling::Gateways::Ipcommerce do
           its(:result) { should == 'Y' }
           its(:address) { should == 'Match' }
           its(:postal_code) { should == 'Match' }
+        end
+      end
+
+      context 'for a card with zero-padded last four digits' do # regression test (bug #4)
+        use_vcr_cassette 'ipcommerce/authorize/existing/success'
+        let(:credit_card) { Factory.build(:ipcommerce_credit_card, :card_number => '0000000000000099', :vault_id => 'TESTID') }
+
+        before do
+          tv = credit_card.to_vaulted_billing
+          tv.stub(:card_number).and_return('0099')
+          credit_card.stub(:to_vaulted_billing).and_return(tv)
+        end
+
+        it 'does not raise an ArgumentError' do
+          expect { subject }.not_to raise_error(ArgumentError, /invalid value/i)
         end
       end
 

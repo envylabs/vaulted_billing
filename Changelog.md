@@ -1,3 +1,17 @@
+### HEAD
+
+[full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.3.0...develop)
+
+### 1.3.0 / 2012-02-29
+
+[full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0)
+
+* Bug Fixes
+  * IPCommerce
+    * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError.
+  * NMI
+    * Send correct Content-Type request header (from text/xml to application/x-www-form-urlencoded) correcting the Invalid Username issue.
+
 ### 1.2.1 / 2011-10-27
 
 [full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1)

@@ -342,7 +342,7 @@ module VaultedBilling
             'CardholderName' => credit_card.name_on_card.blank? ? nil : credit_card.name_on_card,
             'CardType' => self.class.credit_card_type_id(credit_card.card_number),
             'Expire' => credit_card.expires_on.try(:strftime, "%m%y"),
-            'PAN' => credit_card.vault_id ? ("XXXXXXXXXXX%04d" % [credit_card.card_number[-4..-1]]) : credit_card.card_number
+            'PAN' => credit_card.vault_id ? ("XXXXXXXXXXX%04d" % [credit_card.card_number.to_s[-4..-1].to_i]) : credit_card.card_number
           },
           'CardSecurityData' => {
             'AVSData' => {

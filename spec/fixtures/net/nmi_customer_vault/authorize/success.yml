@@ -1,47 +1,51 @@
----
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: address1=796 Rosendo Mountain&ccexp=0812&ccnumber=348690499380524&city=Deckowton&country=US&customer_vault=add_customer&email=chyna.koepp@mcglynnrenner.org&first_name=Jacky&last_name=Lindgren&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=(905)806-6629&state=Arkansas&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=57863-6104
-    headers:
-      user-agent:
-      - vaulted_billing/1.0.2
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+    body: address1=405 Carter Groves&ccexp=0213&ccnumber=5230002140732287&city=Port Bradford&country=US&customer_vault=add_customer&email=cydney.stark@reilly.com&first_name=Bette&last_name=Weber&method=creditcard&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&phone=846.410.5211 x7183&state=North Carolina&username=%{NMI_CUSTOMER_VAULT_USERNAME}&zip=19492
+    headers: 
+      user-agent: 
+      - vaulted_billing/1.2.1 (Rubygems; Ruby 1.8.7 i686-darwin11.0.0)
+      content-type: 
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
-    headers:
-      date:
-      - Wed, 10 Aug 2011 17:30:58 GMT
-      server:
-      - Apache
-      content-length:
-      - '150'
-      content-type:
+    headers: 
+      content-type: 
       - text/html
-    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&customer_vault_id=220737256
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
+      server: 
+      - Apache
+      date: 
+      - Wed, 29 Feb 2012 04:49:05 GMT
+      content-length: 
+      - "202"
+    body: response=1&responsetext=Customer Added&authcode=&transactionid=&avsresponse=&cvvresponse=&orderid=&type=&response_code=100&merchant_defined_field_6=&merchant_defined_field_7=&customer_vault_id=110341951
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.nmi.com:443/api/transact.php
-    body: amount=1.0&customer_vault_id=220737256&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&type=auth&username=%{NMI_CUSTOMER_VAULT_USERNAME}
-    headers:
-      user-agent:
-      - vaulted_billing/1.0.2
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
+    body: amount=1.0&customer_vault_id=110341951&%{NMI_CUSTOMER_VAULT_PASSWORD}=%{NMI_CUSTOMER_VAULT_PASSWORD}&type=auth&username=%{NMI_CUSTOMER_VAULT_USERNAME}
+    headers: 
+      user-agent: 
+      - vaulted_billing/1.2.1 (Rubygems; Ruby 1.8.7 i686-darwin11.0.0)
+      content-type: 
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
-    headers:
-      date:
-      - Wed, 10 Aug 2011 17:30:59 GMT
-      server:
-      - Apache
-      content-length:
-      - '164'
-      content-type:
+    headers: 
+      content-type: 
       - text/html
-    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1453229260&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&customer_vault_id=220737256
-    http_version: '1.1'
+      server: 
+      - Apache
+      date: 
+      - Wed, 29 Feb 2012 04:49:05 GMT
+      content-length: 
+      - "216"
+    body: response=1&responsetext=SUCCESS&authcode=123456&transactionid=1573007900&avsresponse=N&cvvresponse=&orderid=&type=auth&response_code=100&merchant_defined_field_6=&merchant_defined_field_7=&customer_vault_id=110341951
+    http_version: "1.1"
