@@ -7,9 +7,9 @@
 
 ### Bug Fixes
 * IP Commerce
-  * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError.
+  * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError. (reported by @pivotal-evo)
 * NMI
-  * Send correct Content-Type request header (from `text/xml` to `application/x-www-form-urlencoded`) correcting the Invalid Username issue.
+  * Send correct Content-Type request header (from `text/xml` to `application/x-www-form-urlencoded`) correcting the Invalid Username issue. (reported by @hoverlover)
 
 
 ## [1.2.1 / 2011-10-27][1.2.1.diff]
