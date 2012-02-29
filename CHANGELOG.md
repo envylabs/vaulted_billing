@@ -3,13 +3,13 @@
 ## HEAD ([full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.3.0...develop))
 
 
-## 1.3.0 / 2012-02-29 <small>([full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0))</small>
+## [1.3.0][1.3.0.diff] / 2012-02-29
 
 ### Bug Fixes
-IP Commerce
-* Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError.
-NMI
-* Send correct Content-Type request header (from text/xml to application/x-www-form-urlencoded) correcting the Invalid Username issue.
+* IP Commerce
+  * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError.
+* NMI
+  * Send correct Content-Type request header (from `text/xml` to `application/x-www-form-urlencoded`) correcting the Invalid Username issue.
 
 
 ## 1.2.1 / 2011-10-27 ([full changelog](http://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1))
@@ -96,3 +96,6 @@ NMI
 * Added optional options hash to gateway transaction calls
 * Add MultiJson and MultiXml dependencies
 * Allow development dependencies to be more flexible
+
+
+[1.3.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
