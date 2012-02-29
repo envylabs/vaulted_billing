@@ -7,9 +7,9 @@
 
 ### Bug Fixes
 * IP Commerce
-  * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError. (reported by @pivotal-evo)
+  * Fix an issue where the card number may be received as a Numeric, resulting in an ArgumentError. (reported by [@pivotal-evo][pivotal-evo])
 * NMI
-  * Send correct Content-Type request header (from `text/xml` to `application/x-www-form-urlencoded`) correcting the Invalid Username issue. (reported by @hoverlover)
+  * Send correct Content-Type request header (from `text/xml` to `application/x-www-form-urlencoded`) correcting the Invalid Username issue. (reported by [@hoverlover][hoverlover])
 
 
 ## [1.2.1 / 2011-10-27][1.2.1.diff]
@@ -100,12 +100,15 @@
 
 [head.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...develop
 [1.3.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
-[1.2.1.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1
-[1.2.0.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.2.0
-[1.1.6.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6
-[1.1.5.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.1.4...v1.1.5
-[1.1.4.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.1.3...v1.1.4
-[1.1.3.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.1.2...v1.1.3
-[1.1.2.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.1.1...v1.1.2
-[1.1.1.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.1.0...v1.1.1
-[1.1.0.diff]: http://github.com/envylabs/vaulted_billing/compare/v1.0.2...v1.1.0
+[1.2.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1
+[1.2.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.2.0
+[1.1.6.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6
+[1.1.5.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.4...v1.1.5
+[1.1.4.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.3...v1.1.4
+[1.1.3.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.2...v1.1.3
+[1.1.2.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.1...v1.1.2
+[1.1.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.0...v1.1.1
+[1.1.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.0.2...v1.1.0
+
+[pivotal-evo]: https://github.com/pivotal-evo
+[hoverlover]: https://github.com/hoverlover
