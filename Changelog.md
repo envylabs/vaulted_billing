@@ -1,6 +1,10 @@
 ### HEAD
 
-[full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.2.1...develop)
+[full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.3.0...develop)
+
+### 1.3.0 / 2012-02-29
+
+[full changelog](https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0)
 
 * Bug Fixes
   * IPCommerce
