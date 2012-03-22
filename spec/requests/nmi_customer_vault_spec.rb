@@ -179,7 +179,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
 
     context 'with a successful result' do
       use_vcr_cassette 'nmi_customer_vault/purchase/success'
-      subject { gateway.purchase(customer, credit_card, 1.00) }
+      subject { gateway.purchase(credit_card, 1.00) }
       it_should_behave_like 'a transaction request'
 
       it 'is successful' do
@@ -195,7 +195,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
 
     context 'with an DECLINE result' do
       use_vcr_cassette 'nmi_customer_vault/purchase/decline'
-      subject { gateway.purchase(customer, credit_card, 0.01) }
+      subject { gateway.purchase(credit_card, 0.01) }
       it_should_behave_like 'a transaction request'
 
       it 'is unsuccessful' do
@@ -204,7 +204,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     end
 
     request_exception_context do
-      subject { gateway.purchase(customer, credit_card, 0.01) }
+      subject { gateway.purchase(credit_card, 0.01) }
       it_should_behave_like 'a failed connection attempt'
     end
   end
@@ -215,7 +215,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
 
     context 'with a successful result' do
       use_vcr_cassette 'nmi_customer_vault/authorize/success'
-      subject { gateway.authorize(customer, credit_card, 1.00) }
+      subject { gateway.authorize(credit_card, 1.00) }
       it_should_behave_like 'a transaction request'
 
       it 'is successful' do
@@ -231,7 +231,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
 
     context 'with an DECLINE result' do
       use_vcr_cassette 'nmi_customer_vault/authorize/decline'
-      subject { gateway.authorize(customer, credit_card, 0.01) }
+      subject { gateway.authorize(credit_card, 0.01) }
       it_should_behave_like 'a transaction request'
 
       it 'is unsuccessful' do
@@ -240,7 +240,7 @@ describe VaultedBilling::Gateways::NmiCustomerVault do
     end
 
     request_exception_context do
-      subject { gateway.authorize(customer, credit_card, 0.01) }
+      subject { gateway.authorize(credit_card, 0.01) }
       it_should_behave_like 'a failed connection attempt'
     end
   end
