@@ -105,6 +105,8 @@ module VaultedBilling
       end
 
       def transaction_response(credit_card, amount)
+        credit_card = credit_card.to_vaulted_billing if credit_card
+
         attributes = { :id => new_identifier }
         attributes[:masked_card_number] = "XXXX%04d" % [credit_card ? credit_card.card_number.to_s[-4..-1].to_i : rand(9999)]
         success = true
