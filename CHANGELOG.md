@@ -2,6 +2,10 @@
 
 ## [HEAD / unreleased][head.diff]
 
+### Bug Fixes
+* Bogus
+  * Force credit_card.to_vaulted_billing for transaction methods. (reported and fixed by [@hoverlover][hoverlover])
+
 
 ## [1.3.0 / 2012-02-29][1.3.0.diff]
 
