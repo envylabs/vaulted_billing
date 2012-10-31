@@ -105,7 +105,7 @@
 * Allow development dependencies to be more flexible
 
 
-[head.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...develop
+[head.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...master
 [1.3.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
 [1.2.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1
 [1.2.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.2.0
