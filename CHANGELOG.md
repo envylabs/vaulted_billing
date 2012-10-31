@@ -2,6 +2,10 @@
 
 ## [HEAD / unreleased][head.diff]
 
+No significant changes.
+
+## [1.3.1 / 2012-10-30][1.3.1.diff]
+
 ### Enhancements
 * Identified and added MIT License information to the library and gemspec.
 
@@ -105,7 +109,8 @@
 * Allow development dependencies to be more flexible
 
 
-[head.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...master
+[head.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.1...master
+[1.3.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...v1.3.1
 [1.3.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
 [1.2.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1
 [1.2.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.2.0
