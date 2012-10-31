@@ -2,6 +2,9 @@
 
 ## [HEAD / unreleased][head.diff]
 
+### Enhancements
+* Identified and added MIT License information to the library and gemspec.
+
 ### Bug Fixes
 * Bogus
   * Force credit_card.to_vaulted_billing for transaction methods. (reported and fixed by [@hoverlover][hoverlover])
