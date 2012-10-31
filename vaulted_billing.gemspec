@@ -31,6 +31,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'open4'
   s.add_development_dependency 'appraisal'
 
-  s.files = Dir.glob("lib/**/*") + %w(README.md LICENSE)
+  s.files = `git ls-files -- lib/*`.split("\n")
+  s.files += %w(README.md LICENSE)
+  s.test_files = `git ls-files -- spec/*`.split("\n")
   s.require_path = 'lib'
 end
