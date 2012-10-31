@@ -6,6 +6,7 @@ require 'vaulted_billing/version'
 Gem::Specification.new do |s|
   s.name = 'vaulted_billing'
   s.version = VaultedBilling::Version
+  s.licenses = ['MIT']
   s.platform = Gem::Platform::RUBY
   s.authors = ['Nathaniel Bibler']
   s.email = ['nate@envylabs.com']
@@ -30,6 +31,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'open4'
   s.add_development_dependency 'appraisal'
 
-  s.files = Dir.glob("lib/**/*") + %w(README.md)
+  s.files = Dir.glob("lib/**/*") + %w(README.md LICENSE)
   s.require_path = 'lib'
 end
