@@ -6,7 +6,7 @@ require 'vaulted_billing/version'
 Gem::Specification.new do |s|
   s.name = 'vaulted_billing'
   s.version = VaultedBilling::Version
-  s.licenses = ['MIT']
+  s.license = 'MIT'
   s.platform = Gem::Platform::RUBY
   s.authors = ['Nathaniel Bibler']
   s.email = ['nate@envylabs.com']
