@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ['Nathaniel Bibler']
   s.email = ['nate@envylabs.com']
-  s.homepage = 'http://github.com/envylabs/vaulted_billing'
+  s.homepage = 'https://github.com/envylabs/vaulted_billing'
   s.summary = 'A library for working with credit card storage gateways'
   s.description = 'Several card processors and gateways support offloading the storage of credit card information onto their service.  This offloads PCI compliance to the gateway rather than keeping it with each retailer.  This library abstracts the interface to many of them, making it trivial to work with any or all of them.'
   s.required_rubygems_version = '>= 1.3.6'
