@@ -8,8 +8,7 @@ gemfile:
   - gemfiles/3.x.gemfile
 branches:
   only:
-    - production
-    - develop
+    - master
 notifications:
   disabled: true
 script: "cp spec/config.example.yml spec/config.yml; bundle exec rake"
