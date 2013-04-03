@@ -1,4 +1,5 @@
 require 'pathname'
+require 'yaml'
 
 path = Pathname.new(File.expand_path('../../config.yml', __FILE__))
 if path.exist?
