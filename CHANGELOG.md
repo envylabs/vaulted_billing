@@ -2,6 +2,10 @@
 
 ## [HEAD][head] / unreleased
 
+* No significant changes.
+
+## [1.4.0][v1.4.0] / 2013-04-03
+
 ### Enhancements
 * Update multi_xml dependency due to security vulnerabilities (`~> 0.5.3`).
 * Remove Watchr development dependency.
@@ -111,7 +115,8 @@
 * Allow development dependencies to be more flexible
 
 
-[head]: https://github.com/envylabs/vaulted_billing/compare/v1.3.1...master
+[head]: https://github.com/envylabs/vaulted_billing/compare/v1.4.0...master
+[v1.4.0]: https://github.com/envylabs/vaulted_billing/compare/v1.3.1...v1.4.0
 [v1.3.1]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...v1.3.1
 [v1.3.0]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
 [v1.2.1]: https://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1
