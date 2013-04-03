@@ -3,7 +3,7 @@
 ## [HEAD][head] / unreleased
 
 ### Enhancements
-* Update multi_xml dependency due to security vulnerabilities.
+* Update multi_xml dependency due to security vulnerabilities (`~> 0.5.3`).
 * Remove Watchr development dependency.
 
 ## [1.3.1][v1.3.1] / 2012-10-30
