@@ -1,4 +1,4 @@
-# VaultedBilling [![Build status][ci-image]][ci]
+# VaultedBilling [![Build status][ci-image]][ci] [![Dependency Status][gemnasium-image]][gemnasium] [![Code Climate][codeclimate-image]][codeclimate]
 
 VaultedBilling is an abstraction library for use when working with "vaulted" payment processors.  These processors store your customer's data - being their credit card number, verification number, name, address, and more - on their systems to alleviate your need for expensive software auditing, hardware security, and more.  In nearly all cases, these processors provide you a unique customer and/or payment token in exchange for your actual customer payment information.  Then, all current and future interactions with the payment processor on behalf of the customer are made using their identifiers, rather than credit card details.
 
@@ -76,6 +76,10 @@ Strictly for testing interaction with the VaultedBilling library, there is a "Bo
 
 [ci]: http://travis-ci.org/envylabs/vaulted_billing
 [ci-image]: https://secure.travis-ci.org/envylabs/vaulted_billing.png
+[gemnasium]: https://gemnasium.com/envylabs/vaulted_billing
+[gemnasium-image]: https://gemnasium.com/envylabs/vaulted_billing.png
+[codeclimate]: https://codeclimate.com/github/envylabs/vaulted_billing
+[codeclimate-image]: https://codeclimate.com/github/envylabs/vaulted_billing.png
 [authorize-net-cim]: http://www.authorize.net/solutions/merchantsolutions/merchantservices/cim/
 [ipcommerce-tokenization]: http://developer.ipcommerce.com/developer/integration/value_added_capabilities.aspx
 [nmi-vault]: https://www.nmi.com/newsmedia/index.php?ann_id=14
