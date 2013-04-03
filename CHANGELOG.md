@@ -1,10 +1,12 @@
 # vaulted_billing changelog
 
-## [HEAD / unreleased][head.diff]
+## [HEAD][head] / unreleased
 
-No significant changes.
+### Enhancements
+* Update multi_xml dependency due to security vulnerabilities.
+* Remove Watchr development dependency.
 
-## [1.3.1 / 2012-10-30][1.3.1.diff]
+## [1.3.1][v1.3.1] / 2012-10-30
 
 ### Enhancements
 * Identified and added MIT License information to the library and gemspec.
@@ -14,7 +16,7 @@ No significant changes.
   * Force credit_card.to_vaulted_billing for transaction methods. (reported and fixed by [@hoverlover][hoverlover])
 
 
-## [1.3.0 / 2012-02-29][1.3.0.diff]
+## [1.3.0][v1.3.0] / 2012-02-29
 
 ### Bug Fixes
 * IP Commerce
@@ -23,14 +25,14 @@ No significant changes.
   * Send correct Content-Type request header (from `text/xml` to `application/x-www-form-urlencoded`) correcting the Invalid Username issue. (reported by [@hoverlover][hoverlover])
 
 
-## [1.2.1 / 2011-10-27][1.2.1.diff]
+## [1.2.1][v1.2.1] / 2011-10-27
 
 ### Bug Fixes
 * Bogus
   * Set the response_message for failed transaction responses.
 
 
-## [1.2.0 / 2011-10-27][1.2.0.diff]
+## [1.2.0][v1.2.0] / 2011-10-27
 
 ### Enhancements
 * IP Commerce
@@ -44,28 +46,28 @@ No significant changes.
   * Fix hash to JSON conversion issue with symbolized key names.
     
 
-## [1.1.6 / 2011-09-09][1.1.6.diff]
+## [1.1.6][v1.1.6] / 2011-09-09
 
 ### Bug Fixes
 * IP Commerce
   * Strip out non-alphanumeric characters from postal code. IP Commerce accepts a 1-9 digit code of only alphanumeric characters.
     
 
-## [1.1.5 / 2011-09-06][1.1.5.diff]
+## [1.1.5][v1.1.5] / 2011-09-06
 
 ### Enhancements
 * IP Commerce
   * Add additional configuration options for transactions
 
 
-## [1.1.4 / 2011-08-31][1.1.4.diff]
+## [1.1.4][v1.1.4] / 2011-08-31
 
 ### Enhancements
 * IP Commerce
   * Add support for test/production API end points
 
 
-## [1.1.3 / 2011-08-31][1.1.3.diff]
+## [1.1.3][v1.1.3] / 2011-08-31
 
 ### Enhancements
 * IP Commerce
@@ -77,14 +79,14 @@ No significant changes.
   * Correctly store the session key
 
 
-## [1.1.2 / 2011-08-30][1.1.2.diff]
+## [1.1.2][v1.1.2] / 2011-08-30
 
 ### Bug Fixes
 * IP Commerce
   * Fix certification test issues
 
 
-## [1.1.1 / 2011-08-30][1.1.1.diff]
+## [1.1.1][v1.1.1] / 2011-08-30
 
 ### Enhancements
 * IP Commerce
@@ -98,7 +100,7 @@ No significant changes.
   * Handle session key non-renewals
   
 
-## [1.1.0 / 2011-08-17][1.1.0.diff]
+## [1.1.0][v1.1.0] / 2011-08-17
 
 ### Enhancements
 * Add IP Commerce gateway
@@ -109,18 +111,18 @@ No significant changes.
 * Allow development dependencies to be more flexible
 
 
-[head.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.1...master
-[1.3.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...v1.3.1
-[1.3.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
-[1.2.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1
-[1.2.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.2.0
-[1.1.6.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6
-[1.1.5.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.4...v1.1.5
-[1.1.4.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.3...v1.1.4
-[1.1.3.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.2...v1.1.3
-[1.1.2.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.1...v1.1.2
-[1.1.1.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.1.0...v1.1.1
-[1.1.0.diff]: https://github.com/envylabs/vaulted_billing/compare/v1.0.2...v1.1.0
+[head]: https://github.com/envylabs/vaulted_billing/compare/v1.3.1...master
+[v1.3.1]: https://github.com/envylabs/vaulted_billing/compare/v1.3.0...v1.3.1
+[v1.3.0]: https://github.com/envylabs/vaulted_billing/compare/v1.2.1...v1.3.0
+[v1.2.1]: https://github.com/envylabs/vaulted_billing/compare/v1.2.0...v1.2.1
+[v1.2.0]: https://github.com/envylabs/vaulted_billing/compare/v1.1.6...v1.2.0
+[v1.1.6]: https://github.com/envylabs/vaulted_billing/compare/v1.1.5...v1.1.6
+[v1.1.5]: https://github.com/envylabs/vaulted_billing/compare/v1.1.4...v1.1.5
+[v1.1.4]: https://github.com/envylabs/vaulted_billing/compare/v1.1.3...v1.1.4
+[v1.1.3]: https://github.com/envylabs/vaulted_billing/compare/v1.1.2...v1.1.3
+[v1.1.2]: https://github.com/envylabs/vaulted_billing/compare/v1.1.1...v1.1.2
+[v1.1.1]: https://github.com/envylabs/vaulted_billing/compare/v1.1.0...v1.1.1
+[v1.1.0]: https://github.com/envylabs/vaulted_billing/compare/v1.0.2...v1.1.0
 
 [pivotal-evo]: https://github.com/pivotal-evo
 [hoverlover]: https://github.com/hoverlover
