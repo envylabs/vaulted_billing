@@ -79,7 +79,7 @@ module VaultedBilling
         data = transaction_data('sale', {
           :customer_vault_id => credit_card.to_vaulted_billing.vault_id,
           :amount => amount
-        })
+        }.merge(options))
         response = http.post(data)
         respond_with(new_transaction_from_response(response.body),
                      response,
